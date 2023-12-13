@@ -1,42 +1,43 @@
 import { makeApi, Zodios, type ZodiosOptions } from "@zodios/core";
 import { z } from "zod";
 
-const User = z
+const Task = z
   .object({
     id: z.string(),
-    name: z.string(),
+    title: z.string(),
+    description: z.string(),
     createdAt: z.string(),
     updatedAt: z.string(),
   })
   .passthrough();
-const CreateUserInput = z
-  .object({ name: z.string().min(1).max(200) })
+const CreateTaskInput = z
+  .object({ title: z.string().min(1).max(200) })
   .passthrough();
 
 export const schemas = {
-  User,
-  CreateUserInput,
+  Task,
+  CreateTaskInput,
 };
 
 const endpoints = makeApi([
   {
     method: "get",
-    path: "/users",
+    path: "/tasks",
     requestFormat: "json",
-    response: z.array(User),
+    response: z.array(Task),
   },
   {
     method: "post",
-    path: "/users",
+    path: "/tasks",
     requestFormat: "json",
     parameters: [
       {
         name: "body",
         type: "Body",
-        schema: z.object({ name: z.string().min(1).max(200) }).passthrough(),
+        schema: z.object({ title: z.string().min(1).max(200) }).passthrough(),
       },
     ],
-    response: User,
+    response: Task,
   },
 ]);
 

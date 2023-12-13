@@ -6,22 +6,22 @@ import { api } from "./api";
 
 function App() {
   const client = useQueryClient();
-  const [username, setUserName] = useState("");
+  const [title, setTitle] = useState("");
 
   const {
-    data: uesrs,
+    data: tasks,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["users"],
+    queryKey: ["tasks"],
     queryFn: async () => {
-      return await api.get("/users");
+      return await api.get("/tasks");
     },
   });
 
   const { mutate } = useMutation({
-    mutationFn: (newUser: z.infer<typeof schemas.CreateUserInput>) => {
-      return api.post("/users", newUser);
+    mutationFn: (newTask: z.infer<typeof schemas.CreateTaskInput>) => {
+      return api.post("/tasks", newTask);
     },
     onSuccess: () => {
       client.invalidateQueries();
@@ -43,20 +43,20 @@ function App() {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          await mutate({ name: username });
-          setUserName("");
+          await mutate({ title });
+          setTitle("");
         }}
       >
         <input
-          placeholder="ユーザー名"
-          value={username}
-          onChange={(e) => setUserName(e.target.value)}
+          placeholder="タスクを入力してください..."
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
       </form>
-      {uesrs?.map((user) => {
+      {tasks?.map((task) => {
         return (
-          <div key={user.id} className="m-1">
-            <p>{user.name}</p>
+          <div key={task.id} className="m-1">
+            <p>{task.title}</p>
           </div>
         );
       })}

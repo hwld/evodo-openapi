@@ -5,9 +5,9 @@
   "scripts": {
     "backend": "pnpm -F backend",
     "frontend": "pnpm -F frontend",
-    "studio": "pnpm backend exec drizzle-kit studio",
-    "orval": "pnpm frontend exec orval",
-    "codegen": "pnpm frontend exec openapi-zod-client \"http://localhost:8787/doc\" -o \"./src/api/schema.ts\" --no-with-alias --api-client-name \"_api\""
+    "codegen": "pnpm frontend exec openapi-zod-client \"http://localhost:8787/doc\" -o \"./src/api/schema.ts\" --no-with-alias --api-client-name \"_api\"",
+    "db:migrate": "pnpm backend exec drizzle-kit generate:sqlite",
+    "db:studio": "pnpm backend exec drizzle-kit studio"
   },
   "keywords": [],
   "author": "",
