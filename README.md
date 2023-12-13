@@ -12,6 +12,7 @@ monorepo で作ってるけど、OpenAPI を試したいから`hono RPC`では�
 - @hono/openapi-zod
 - vite
 - React
+- openapi-zod-client
 
 ## インフラ(想定)
 

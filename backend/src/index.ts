@@ -18,6 +18,12 @@ const UserSchema = z
   })
   .openapi("User");
 
+const CreateUserInput = z
+  .object({
+    name: z.string().min(1).max(200).openapi({}),
+  })
+  .openapi("CreateUserInput");
+
 const getUsersRoute = createRoute({
   method: "get",
   path: "/users",
@@ -40,7 +46,7 @@ const createUserRoute = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: z.object({ name: z.string().min(1).max(200).openapi({}) }),
+          schema: CreateUserInput,
         },
       },
     },

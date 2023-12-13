@@ -1,19 +1,33 @@
 import { useState } from "react";
-import { useGetUsers, usePostUsers } from "./api";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { schemas } from "./api/schema";
+import { z } from "zod";
+import { api } from "./api";
 
 function App() {
   const client = useQueryClient();
   const [username, setUserName] = useState("");
-  const { data: uesrs, isLoading, isError } = useGetUsers();
-  const { mutate } = usePostUsers({
-    mutation: {
-      onSuccess: () => {
-        client.invalidateQueries();
-      },
-      onError: () => {
-        window.alert("error");
-      },
+
+  const {
+    data: uesrs,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      return await api.get("/users");
+    },
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: (newUser: z.infer<typeof schemas.CreateUserInput>) => {
+      return api.post("/users", newUser);
+    },
+    onSuccess: () => {
+      client.invalidateQueries();
+    },
+    onError: () => {
+      window.alert("error");
     },
   });
 
@@ -29,7 +43,7 @@ function App() {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          await mutate({ data: { name: username } });
+          await mutate({ name: username });
           setUserName("");
         }}
       >
@@ -39,7 +53,7 @@ function App() {
           onChange={(e) => setUserName(e.target.value)}
         />
       </form>
-      {uesrs?.data.map((user) => {
+      {uesrs?.map((user) => {
         return (
           <div key={user.id} className="m-1">
             <p>{user.name}</p>
