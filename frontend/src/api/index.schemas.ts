@@ -10,4 +10,3 @@ export interface User {
   name: string;
   updatedAt: string;
 }
-

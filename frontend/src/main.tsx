@@ -14,5 +14,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <App />
       </QueryClientProvider>
     </AxiosProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
