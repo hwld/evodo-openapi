@@ -4,7 +4,7 @@ function App() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const data = await fetch(import.meta.env.VITE_API_URL);
+      const data = await fetch(`${import.meta.env.VITE_API_URL}/users`);
       return data.json();
     },
   });

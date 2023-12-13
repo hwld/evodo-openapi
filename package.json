@@ -5,6 +5,7 @@
   "scripts": {
     "backend": "pnpm -F backend",
     "frontend": "pnpm -F frontend",
+    "studio": "pnpm backend exec drizzle-kit studio",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

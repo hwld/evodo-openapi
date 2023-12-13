@@ -2,9 +2,11 @@
   "name": "backend",
   "scripts": {
     "dev": "wrangler dev src/index.ts",
-    "deploy": "wrangler deploy --minify src/index.ts"
+    "deploy": "wrangler deploy --minify src/index.ts",
+    "wrangler": "wrangler"
   },
   "dependencies": {
+    "@hono/swagger-ui": "^0.2.0",
     "@hono/zod-openapi": "^0.9.3",
     "@paralleldrive/cuid2": "^2.2.2",
     "better-sqlite3": "^9.2.2",

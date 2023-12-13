@@ -14,6 +14,9 @@ importers:
 
   backend:
     dependencies:
+      '@hono/swagger-ui':
+        specifier: ^0.2.0
+        version: 0.2.0(hono@3.11.4)
       '@hono/zod-openapi':
         specifier: ^0.9.3
         version: 0.9.3(hono@3.11.4)(zod@3.22.4)
@@ -888,6 +891,14 @@ packages:
     resolution: {integrity: sha512-+KpH+QxZU7O4675t3mnkQKcZZg56u+K/Ct2K+N2AZYNVK8kyeo/bI18tI8aPm3tvNNRyTWfj6s5tnGNlcbQRsA==}
     engines: {node: '>=14'}
     dev: true
+
+  /@hono/swagger-ui@0.2.0(hono@3.11.4):
+    resolution: {integrity: sha512-ulWqCI+38vTlxxBmOAi5VTOUDa5/7fKHPTwyq00kRUjUxPp3Ej5Cs+B/fvGs5gd3KraArLArkln7sHhb5vODZA==}
+    peerDependencies:
+      hono: '*'
+    dependencies:
+      hono: 3.11.4
+    dev: false
 
   /@hono/zod-openapi@0.9.3(hono@3.11.4)(zod@3.22.4):
     resolution: {integrity: sha512-PdKWwUvMdoQ2eqJZtbo4N4qb2VRjHNnDcfWW3/IqSeJDyK4vIPHAzWfgtUOYHAXJAiooQQ87m0sw2iME2H1+zQ==}
