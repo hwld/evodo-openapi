@@ -4,16 +4,18 @@
  * My API
  * OpenAPI spec version: 1.0.0
  */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
 import * as axios from "axios";
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import type { User } from "./index.schemas";
+import type { PostUsersBody, User } from "./index.schemas";
 
 export const getUsers = (
   options?: AxiosRequestConfig,
@@ -72,4 +74,65 @@ export const useGetUsers = <
   query.queryKey = queryOptions.queryKey;
 
   return query;
+};
+
+export const postUsers = (
+  postUsersBody: PostUsersBody,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<User>> => {
+  return axios.default.post(`/users`, postUsersBody, options);
+};
+
+export const getPostUsersMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postUsers>>,
+    TError,
+    { data: PostUsersBody },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postUsers>>,
+  TError,
+  { data: PostUsersBody },
+  TContext
+> => {
+  const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postUsers>>,
+    { data: PostUsersBody }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return postUsers(data, axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostUsersMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postUsers>>
+>;
+export type PostUsersMutationBody = PostUsersBody;
+export type PostUsersMutationError = AxiosError<unknown>;
+
+export const usePostUsers = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postUsers>>,
+    TError,
+    { data: PostUsersBody },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}) => {
+  const mutationOptions = getPostUsersMutationOptions(options);
+
+  return useMutation(mutationOptions);
 };

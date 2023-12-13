@@ -4,6 +4,10 @@
  * My API
  * OpenAPI spec version: 1.0.0
  */
+export type PostUsersBody = {
+  name: string;
+};
+
 export interface User {
   createdAt: string;
   id: string;

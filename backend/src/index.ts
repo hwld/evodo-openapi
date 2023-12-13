@@ -1,4 +1,3 @@
-import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { drizzle } from "drizzle-orm/d1";
 import { users } from "./db/schema";
@@ -19,7 +18,7 @@ const UserSchema = z
   })
   .openapi("User");
 
-const route = createRoute({
+const getUsersRoute = createRoute({
   method: "get",
   path: "/users",
   responses: {
@@ -34,15 +33,49 @@ const route = createRoute({
   },
 });
 
+const createUserRoute = createRoute({
+  method: "post",
+  path: "/users",
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: z.object({ name: z.string().min(1).max(200).openapi({}) }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: UserSchema,
+        },
+      },
+      description: "Create a user",
+    },
+  },
+});
+
 const app = new OpenAPIHono<{ Bindings: Bindings }>();
 app.use("*", (c, next) => {
   return cors({ origin: c.env.CLIENT_URL })(c, next);
 });
-app.openapi(route, async (c) => {
+
+app.openapi(getUsersRoute, async (c) => {
   const db = drizzle(c.env.DB);
   const result = await db.select().from(users).all();
   return c.json(result);
 });
+
+app.openapi(createUserRoute, async (c) => {
+  const db = drizzle(c.env.DB);
+  const { name } = c.req.valid("json");
+  const createdUser = (await db.insert(users).values({ name }).returning())[0];
+
+  return c.json(createdUser);
+});
+
 app.doc("/doc", {
   openapi: "3.0.0",
   info: {

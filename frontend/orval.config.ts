@@ -9,5 +9,8 @@ export default defineConfig({
       client: "react-query",
       mode: "split",
     },
+    hooks: {
+      afterAllFilesWrite: "prettier --write",
+    },
   },
 });
