@@ -1,13 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useGetUsers } from "./api";
 
 function App() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["users"],
-    queryFn: async () => {
-      const data = await fetch(`${import.meta.env.VITE_API_URL}/users`);
-      return data.json();
-    },
-  });
+  const { data: uesrs, isLoading, isError } = useGetUsers();
 
   if (isError) {
     return <div>error</div>;
@@ -18,8 +12,12 @@ function App() {
 
   return (
     <div className="h-[100dvh] bg-gray-200 text-gray-700 p-5">
-      {data.map((user: { id: string }) => {
-        return <div key={user.id}>{JSON.stringify(user)}</div>;
+      {uesrs?.data.map((user) => {
+        return (
+          <div key={user.id} className="m-1">
+            <p>{user.name}</p>
+          </div>
+        );
       })}
     </div>
   );
