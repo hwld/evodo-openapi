@@ -1,3 +1,3 @@
-import { createHono } from "../../app";
+import { appRouter } from "../../app";
 
-export const userRoute = createHono();
+export const userRoute = appRouter();

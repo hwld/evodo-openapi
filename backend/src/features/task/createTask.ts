@@ -1,7 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { TaskSchema } from "./schema";
-import { createHono } from "../../app";
-import { drizzle } from "drizzle-orm/d1";
+import { route } from "../../app";
 import { tasks } from "../../db/schema";
 
 const CreateTaskInput = z
@@ -34,12 +33,14 @@ const createTaskRoute = createRoute({
   },
 });
 
-export const createTask = createHono().openapi(createTaskRoute, async (c) => {
-  const db = drizzle(c.env.DB);
-  const { title } = c.req.valid("json");
-  const created = (
-    await db.insert(tasks).values({ title, description: "" }).returning()
-  )[0];
+export const createTask = route().openapi(
+  createTaskRoute,
+  async ({ req, var: { db }, json }) => {
+    const { title } = req.valid("json");
+    const created = (
+      await db.insert(tasks).values({ title, description: "" }).returning()
+    )[0];
 
-  return c.json(created);
-});
+    return json(created);
+  },
+);

@@ -1,10 +1,10 @@
 import { cors } from "hono/cors";
 import { swaggerUI } from "@hono/swagger-ui";
-import { createHono } from "./app";
+import { createApp } from "./app";
 import { taskRoute } from "./features/task";
 import { userRoute } from "./features/user";
 
-const app = createHono();
+const app = createApp();
 
 app.use("*", (c, next) => {
   return cors({ origin: c.env.CLIENT_URL })(c, next);

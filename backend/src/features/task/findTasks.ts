@@ -1,8 +1,7 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { createHono } from "../../app";
 import { TaskSchema } from "./schema";
-import { drizzle } from "drizzle-orm/d1";
 import { tasks } from "../../db/schema";
+import { route } from "../../app";
 
 const getUsersRoute = createRoute({
   method: "get",
@@ -19,8 +18,10 @@ const getUsersRoute = createRoute({
   },
 });
 
-export const findTasks = createHono().openapi(getUsersRoute, async (c) => {
-  const db = drizzle(c.env.DB);
-  const result = await db.select().from(tasks).all();
-  return c.json(result);
-});
+export const findTasks = route().openapi(
+  getUsersRoute,
+  async ({ json, var: { db } }) => {
+    const result = await db.select().from(tasks).all();
+    return json(result);
+  },
+);
