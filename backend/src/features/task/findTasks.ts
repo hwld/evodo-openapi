@@ -1,11 +1,12 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { TaskSchema } from "./schema";
-import { tasks } from "../../db/schema";
+import { tasksTable } from "../../db/schema";
 import { route } from "../../app";
+import { tasksPath } from "./path";
 
-const getUsersRoute = createRoute({
+const getTasksRoute = createRoute({
   method: "get",
-  path: "/",
+  path: tasksPath,
   responses: {
     200: {
       content: {
@@ -19,9 +20,9 @@ const getUsersRoute = createRoute({
 });
 
 export const findTasks = route().openapi(
-  getUsersRoute,
+  getTasksRoute,
   async ({ json, var: { db } }) => {
-    const result = await db.select().from(tasks).all();
+    const result = await db.select().from(tasksTable).all();
     return json(result);
   },
 );

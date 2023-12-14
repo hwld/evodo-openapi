@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { text, sqliteTable } from "drizzle-orm/sqlite-core";
 import { createId } from "@paralleldrive/cuid2";
 
-export const tasks = sqliteTable("tasks", {
+export const tasksTable = sqliteTable("tasks", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => createId()),

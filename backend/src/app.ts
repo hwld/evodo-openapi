@@ -1,5 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { DrizzleD1Database, drizzle } from "drizzle-orm/d1";
+import * as schema from "./db/schema";
 
 type Bindings = {
   CLIENT_URL: string;
@@ -9,7 +10,7 @@ type Bindings = {
 type Env = {
   Bindings: Bindings;
 };
-type RouteEnv = Env & { Variables: { db: DrizzleD1Database } };
+type RouteEnv = Env & { Variables: { db: DrizzleD1Database<typeof schema> } };
 
 /**
  * routerをつなげるトップレベルのHono
@@ -29,8 +30,8 @@ export const createApp = () => new OpenAPIHono<Env>();
  * Routeをつなげる
  * @example
  * appRouter()
- *  .route("api1", route1)
- *  .route("api2", route2);
+ *  .route("/", route1)
+ *  .route("/", route2);
  */
 export const appRouter = () => new OpenAPIHono();
 
@@ -42,7 +43,8 @@ export const appRouter = () => new OpenAPIHono();
 export const route = () => {
   const app = new OpenAPIHono<RouteEnv>();
   app.use("*", async (c, next) => {
-    c.set("db", drizzle(c.env.DB));
+    const d = drizzle(c.env.DB, { schema });
+    c.set("db", drizzle(c.env.DB, { schema }));
     await next();
   });
 

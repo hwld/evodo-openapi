@@ -1,7 +1,8 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { TaskSchema } from "./schema";
 import { route } from "../../app";
-import { tasks } from "../../db/schema";
+import { tasksTable } from "../../db/schema";
+import { tasksPath } from "./path";
 
 const CreateTaskInput = z
   .object({
@@ -11,7 +12,7 @@ const CreateTaskInput = z
 
 const createTaskRoute = createRoute({
   method: "post",
-  path: "/",
+  path: tasksPath,
   request: {
     body: {
       content: {
@@ -38,7 +39,7 @@ export const createTask = route().openapi(
   async ({ req, var: { db }, json }) => {
     const { title } = req.valid("json");
     const created = (
-      await db.insert(tasks).values({ title, description: "" }).returning()
+      await db.insert(tasksTable).values({ title, description: "" }).returning()
     )[0];
 
     return json(created);

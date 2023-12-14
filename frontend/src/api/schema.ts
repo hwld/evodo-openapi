@@ -13,10 +13,17 @@ const Task = z
 const CreateTaskInput = z
   .object({ title: z.string().min(1).max(200) })
   .passthrough();
+const UpdateTaskInput = z
+  .object({
+    title: z.string().min(1).max(200),
+    description: z.string().max(1000),
+  })
+  .passthrough();
 
 export const schemas = {
   Task,
   CreateTaskInput,
+  UpdateTaskInput,
 };
 
 const endpoints = makeApi([
@@ -35,6 +42,50 @@ const endpoints = makeApi([
         name: "body",
         type: "Body",
         schema: z.object({ title: z.string().min(1).max(200) }).passthrough(),
+      },
+    ],
+    response: Task,
+  },
+  {
+    method: "get",
+    path: "/tasks/:id",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: Task,
+  },
+  {
+    method: "delete",
+    path: "/tasks/:id",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: Task,
+  },
+  {
+    method: "put",
+    path: "/tasks/:id",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
+        schema: UpdateTaskInput,
+      },
+      {
+        name: "id",
+        type: "Path",
+        schema: z.string(),
       },
     ],
     response: Task,
