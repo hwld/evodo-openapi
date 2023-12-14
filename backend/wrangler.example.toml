@@ -1,0 +1,14 @@
+name = "***"
+compatibility_date = "***"
+
+[env.test]
+# テスト専用のDB
+d1_databases = [
+  { binding = "DB", database_name = "test_evodo_openapi", database_id = "test", migrations_dir = "./drizzle" }
+]
+
+[env.dev]
+# ローカルで動かすときのDB
+d1_databases = [
+  { binding = "DB", database_name = "evodo_openapi", database_id = "***", migrations_dir = "./drizzle" }
+]

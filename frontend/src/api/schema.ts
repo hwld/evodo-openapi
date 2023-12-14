@@ -11,7 +11,10 @@ const Task = z
   })
   .passthrough();
 const CreateTaskInput = z
-  .object({ title: z.string().min(1).max(200) })
+  .object({
+    title: z.string().min(1).max(200),
+    description: z.string().max(1000),
+  })
   .passthrough();
 const UpdateTaskInput = z
   .object({
@@ -41,7 +44,7 @@ const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: z.object({ title: z.string().min(1).max(200) }).passthrough(),
+        schema: CreateTaskInput,
       },
     ],
     response: Task,

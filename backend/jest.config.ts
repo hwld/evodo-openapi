@@ -1,7 +1,6 @@
 import type { Config } from "jest";
 
 const config: Config = {
-  testEnvironment: "miniflare",
   testMatch: ["**/*.test.ts"],
   preset: "ts-jest/presets/js-with-ts",
   // yamlのパッケージがimportを使ってるので、ts-jestのpresetでCJSに変換する
@@ -17,6 +16,7 @@ const config: Config = {
       },
     ],
   },
+  setupFilesAfterEnv: ["<rootDir>/setup-jest.ts"],
 };
 
 module.exports = config;

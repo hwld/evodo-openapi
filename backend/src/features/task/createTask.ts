@@ -7,6 +7,7 @@ import { tasksPath } from "./path";
 const CreateTaskInput = z
   .object({
     title: z.string().min(1).max(200),
+    description: z.string().max(1000),
   })
   .openapi("CreateTaskInput");
 
@@ -37,9 +38,9 @@ const createTaskRoute = createRoute({
 export const createTask = route().openapi(
   createTaskRoute,
   async ({ req, var: { db }, json }) => {
-    const { title } = req.valid("json");
+    const { title, description } = req.valid("json");
     const created = (
-      await db.insert(tasksTable).values({ title, description: "" }).returning()
+      await db.insert(tasksTable).values({ title, description }).returning()
     )[0];
 
     return json(created);

@@ -7,7 +7,9 @@
     "frontend": "pnpm -F frontend",
     "codegen": "pnpm frontend exec openapi-zod-client \"http://localhost:8787/doc\" -o \"./src/api/schema.ts\" --no-with-alias --api-client-name \"_api\"",
     "db:migrate": "pnpm backend exec drizzle-kit generate:sqlite",
-    "db:studio": "pnpm backend exec drizzle-kit studio"
+    "db:studio": "pnpm backend exec drizzle-kit studio",
+    "test:api": "pnpm backend exec jest -i",
+    "tesst:api-setup": "pnpm backend exec wrangler d1 migrations apply test_evodo_openapi --local --env test"
   },
   "keywords": [],
   "author": "",

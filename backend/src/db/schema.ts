@@ -1,3 +1,4 @@
+// テーブル以外をexportしない
 import { sql } from "drizzle-orm";
 import { text, sqliteTable } from "drizzle-orm/sqlite-core";
 import { createId } from "@paralleldrive/cuid2";
