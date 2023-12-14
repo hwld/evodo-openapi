@@ -1,12 +1,19 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "strict": true,
-    "lib": ["esnext"],
-    "types": ["@cloudflare/workers-types"],
+    "lib": [
+      "esnext"
+    ],
+    "types": [
+      "jest",
+      "@cloudflare/workers-types",
+      "jest-environment-miniflare/globals"
+    ],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx"
   }
