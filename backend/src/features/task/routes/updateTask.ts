@@ -1,9 +1,9 @@
 import { createRoute } from "@hono/zod-openapi";
 import { z } from "zod";
-import { taskPath } from "./path";
-import { TaskSchema } from "./schema";
-import { route } from "../../app";
-import { tasksTable } from "../../db/schema";
+import { taskPath } from "../path";
+import { TaskSchema } from "../schema";
+import { route } from "../../../app";
+import { tasksTable } from "../../../db/schema";
 import { eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 

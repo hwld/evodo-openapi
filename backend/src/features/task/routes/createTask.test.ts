@@ -1,6 +1,6 @@
 import { testClient } from "hono/testing";
 import { createTask } from "./createTask";
-import { testD1, testDb } from "../../../setup-jest";
+import { testD1, testDb } from "../../../../setup-jest";
 
 const client = () => testClient(createTask, { DB: testD1 });
 

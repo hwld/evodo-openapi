@@ -43,7 +43,7 @@ function App() {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          await mutate({ title });
+          await mutate({ title, description: "" });
           setTitle("");
         }}
       >

@@ -1,8 +1,8 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { TaskSchema } from "./schema";
-import { route } from "../../app";
-import { tasksTable } from "../../db/schema";
-import { tasksPath } from "./path";
+import { TaskSchema } from "../schema";
+import { route } from "../../../app";
+import { tasksTable } from "../../../db/schema";
+import { tasksPath } from "../path";
 
 const CreateTaskInput = z
   .object({

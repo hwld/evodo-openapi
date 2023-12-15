@@ -43,7 +43,6 @@ export const appRouter = () => new OpenAPIHono();
 export const route = () => {
   const app = new OpenAPIHono<RouteEnv>();
   app.use("*", async (c, next) => {
-    const d = drizzle(c.env.DB, { schema });
     c.set("db", drizzle(c.env.DB, { schema }));
     await next();
   });
