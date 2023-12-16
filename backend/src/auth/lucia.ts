@@ -9,7 +9,7 @@ export const luciaTableNames = {
   user: "users",
   key: "user_keys",
   session: "user_sessions",
-};
+} as const;
 
 export const initializeLucia = (db: D1Database, bindnigs: Bindings) => {
   const { user, key, session } = luciaTableNames;
