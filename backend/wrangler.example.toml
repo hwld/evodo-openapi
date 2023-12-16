@@ -1,6 +1,11 @@
 name = "***"
 compatibility_date = "***"
 
+[env.dev.vars]
+CLIENT_URL="http://localhost:5173"
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+
 [env.test]
 # テスト専用のDB
 d1_databases = [

@@ -32,6 +32,38 @@ export const schemas = {
 const endpoints = makeApi([
   {
     method: "get",
+    path: "/login/google",
+    requestFormat: "json",
+    response: z.void(),
+    errors: [
+      {
+        status: 302,
+        description: `GoogleのログインURLにリダイレクト`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/login/google/callback",
+    requestFormat: "json",
+    response: z.void(),
+    errors: [
+      {
+        status: 302,
+        description: `リダイレクト`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "post",
+    path: "/logout",
+    requestFormat: "json",
+    response: z.void(),
+  },
+  {
+    method: "get",
     path: "/tasks",
     requestFormat: "json",
     response: z.array(Task),
