@@ -11,6 +11,11 @@ const logoutRoute = createRoute({
   responses: {
     200: {
       description: "ログアウト",
+      content: {
+        "application/json": {
+          schema: z.object({}),
+        },
+      },
     },
   },
 });

@@ -22,6 +22,11 @@ export const initializeLucia = (db: D1Database, bindnigs: Bindings) => {
       key,
       session,
     }),
+    getUserAttributes: (data) => {
+      return {
+        name: data.name,
+      };
+    },
   });
 
   const googleAuth = google(auth, {
