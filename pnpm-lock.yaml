@@ -23,6 +23,12 @@ importers:
       '@hono/zod-openapi':
         specifier: ^0.9.3
         version: 0.9.3(hono@3.11.4)(zod@3.22.4)
+      '@lucia-auth/adapter-sqlite':
+        specifier: ^2.0.1
+        version: 2.0.1(better-sqlite3@9.2.2)(lucia@2.7.5)
+      '@lucia-auth/oauth':
+        specifier: ^3.5.0
+        version: 3.5.0(lucia@2.7.5)
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
@@ -35,6 +41,9 @@ importers:
       hono:
         specifier: ^3.11.4
         version: 3.11.4
+      lucia:
+        specifier: ^2.7.5
+        version: 2.7.5
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -1659,6 +1668,30 @@ packages:
       '@types/fs-extra': 9.0.13
       fs-extra: 10.1.0
     dev: true
+
+  /@lucia-auth/adapter-sqlite@2.0.1(better-sqlite3@9.2.2)(lucia@2.7.5):
+    resolution: {integrity: sha512-yc7XQ4X3sWG1gyUGHqaXipJIkmvB4MOgJypnSMWy7Vjhn3AOCM2xw51xTs+dGpLOQIn2Laomg9xpmDM2/9tgqQ==}
+    peerDependencies:
+      '@libsql/client': ^0.3.0
+      better-sqlite3: 8.x - 9.x
+      lucia: ^2.0.0
+    peerDependenciesMeta:
+      '@libsql/client':
+        optional: true
+      better-sqlite3:
+        optional: true
+    dependencies:
+      better-sqlite3: 9.2.2
+      lucia: 2.7.5
+    dev: false
+
+  /@lucia-auth/oauth@3.5.0(lucia@2.7.5):
+    resolution: {integrity: sha512-JSwAMVwlDJtbvfcJV1nbkv41OD830pgICrx8zFT71SYd5I1MnEQ+GqMTXBGRyxzc5XlLatT8ZS1Jt0k81487xg==}
+    peerDependencies:
+      lucia: ^2.0.0
+    dependencies:
+      lucia: 2.7.5
+    dev: false
 
   /@miniflare/cache@2.14.1:
     resolution: {integrity: sha512-f/o6UBV6UX+MlhjcEch73/wjQvvNo37dgYmP6Pn2ax1/mEHhJ7allNAqenmonT4djNeyB3eEYV3zUl54wCEwrg==}
@@ -4888,6 +4921,10 @@ packages:
     dependencies:
       es5-ext: 0.10.62
     dev: true
+
+  /lucia@2.7.5:
+    resolution: {integrity: sha512-2e/Oezb+b2qjQLyP28CraBlad2s9GAp22bfPLn05IsXi99FEX/oTo2TGMM4Gn9nJT7ow15kEFkwL3lBUpknopA==}
+    dev: false
 
   /magic-string@0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
