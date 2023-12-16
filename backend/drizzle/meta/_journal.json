@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1702494445134,
-      "tag": "0000_create_tasks_table",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1702697063571,
-      "tag": "0001_soft_gorgon",
+      "when": 1702747917123,
+      "tag": "0000_bumpy_xavin",
       "breakpoints": true
     }
   ]

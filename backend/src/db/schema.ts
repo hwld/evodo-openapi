@@ -16,7 +16,9 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 
 export const userKeysTable = sqliteTable(luciaTableNames.key, {
   id: text("id").primaryKey(),
-  userId: text("user_id").notNull(),
+  userId: text("user_id")
+    .references(() => usersTable.id, { onDelete: "cascade" })
+    .notNull(),
   hashedPassword: text("hashed_password"),
 });
 
@@ -29,7 +31,9 @@ export const userKeysRelations = relations(userKeysTable, ({ one }) => ({
 
 export const sessionsTable = sqliteTable(luciaTableNames.session, {
   id: text("id").primaryKey(),
-  userId: text("user_id").notNull(),
+  userId: text("user_id")
+    .references(() => usersTable.id, { onDelete: "cascade" })
+    .notNull(),
   activeExpires: integer("active_expires").notNull(),
   idleExpires: integer("idle_expires").notNull(),
 });
