@@ -6,6 +6,7 @@ import { route } from "../../../app";
 import { tasksTable } from "../../../db/schema";
 import { eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import { Features } from "../../features";
 
 const UpdasteTaskInput = z
   .object({
@@ -15,6 +16,7 @@ const UpdasteTaskInput = z
   .openapi("UpdateTaskInput");
 
 const UpdateTaskRoute = createRoute({
+  tags: [Features.task],
   method: "put",
   path: taskPath,
   request: {

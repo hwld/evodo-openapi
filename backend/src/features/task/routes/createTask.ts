@@ -3,6 +3,7 @@ import { TaskSchema } from "../schema";
 import { route } from "../../../app";
 import { tasksTable } from "../../../db/schema";
 import { tasksPath } from "../path";
+import { Features } from "../../features";
 
 const CreateTaskInput = z
   .object({
@@ -12,6 +13,7 @@ const CreateTaskInput = z
   .openapi("CreateTaskInput");
 
 const createTaskRoute = createRoute({
+  tags: [Features.task],
   method: "post",
   path: tasksPath,
   request: {

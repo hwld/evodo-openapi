@@ -5,8 +5,10 @@ import { route } from "../../../app";
 import { tasksTable } from "../../../db/schema";
 import { eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import { Features } from "../../features";
 
 const DeleteTaskRoute = createRoute({
+  tags: [Features.task],
   method: "delete",
   path: taskPath,
   request: {

@@ -5,8 +5,10 @@ import { route } from "../../../app";
 import { eq } from "drizzle-orm";
 import { tasksTable } from "../../../db/schema";
 import { HTTPException } from "hono/http-exception";
+import { Features } from "../../features";
 
 const getTaskRoute = createRoute({
+  tags: [Features.task],
   method: "get",
   path: taskPath,
   request: {

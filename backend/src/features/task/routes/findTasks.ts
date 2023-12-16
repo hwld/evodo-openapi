@@ -3,8 +3,10 @@ import { TaskSchema } from "../schema";
 import { tasksTable } from "../../../db/schema";
 import { route } from "../../../app";
 import { tasksPath } from "../path";
+import { Features } from "../../features";
 
 const getTasksRoute = createRoute({
+  tags: [Features.task],
   method: "get",
   path: tasksPath,
   responses: {
