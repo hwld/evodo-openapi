@@ -1,6 +1,12 @@
 import { makeApi, Zodios, type ZodiosOptions } from "@zodios/core";
 import { z } from "zod";
 
+const SignupInput = z
+  .object({
+    username: z.string().min(1).max(100),
+    profile: z.string().max(1000),
+  })
+  .passthrough();
 const User = z.object({ id: z.string(), name: z.string() }).passthrough();
 const Task = z
   .object({
@@ -25,6 +31,7 @@ const UpdateTaskInput = z
   .passthrough();
 
 export const schemas = {
+  SignupInput,
   User,
   Task,
   CreateTaskInput,
@@ -69,6 +76,31 @@ const endpoints = makeApi([
     path: "/session",
     requestFormat: "json",
     response: z.object({ user: User }).passthrough().nullable(),
+  },
+  {
+    method: "post",
+    path: "/signup",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
+        schema: SignupInput,
+      },
+    ],
+    response: z.object({ userId: z.string() }).passthrough(),
+    errors: [
+      {
+        status: 400,
+        description: `不正なリクエスト`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `不明なエラー`,
+        schema: z.void(),
+      },
+    ],
   },
   {
     method: "get",

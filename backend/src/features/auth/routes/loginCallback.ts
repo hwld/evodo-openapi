@@ -2,8 +2,8 @@ import { createRoute } from "@hono/zod-openapi";
 import { route } from "../../../app";
 import { loginCallbackPath } from "../path";
 import { Features } from "../../features";
-import { getCookie } from "hono/cookie";
-import { OAUTH_STATE_COOKIE_NAME } from "../consts";
+import { getCookie, setCookie } from "hono/cookie";
+import { OAUTH_CODE_COOKIE_NAME, OAUTH_STATE_COOKIE_NAME } from "../consts";
 import { OAuthRequestError } from "@lucia-auth/oauth";
 import { HTTPException } from "hono/http-exception";
 
@@ -38,31 +38,25 @@ export const loginCallback = route().openapi(
     ) {
       throw new HTTPException(400, { message: "Bad request" });
     }
-
     try {
-      const { getExistingUser, createUser, googleUser } =
-        await googleAuth.validateCallback(code);
+      const { getExistingUser } = await googleAuth.validateCallback(code);
 
-      const getUser = async () => {
-        const existingUser = await getExistingUser();
-        if (existingUser) {
-          return existingUser;
-        }
+      const existingUser = await getExistingUser();
 
-        const user = await createUser({
-          attributes: { name: googleUser.name },
-        });
-        return user;
-      };
+      // 新規登録のユーザーは認可コードをcookieに含めて新規登録ページに飛ばす
+      if (!existingUser) {
+        setCookie(context, OAUTH_CODE_COOKIE_NAME, code, { httpOnly: true });
+        return context.redirect(`${env.CLIENT_URL}/signUp`);
+      }
 
-      const user = await getUser();
       const session = await auth.createSession({
-        userId: user.userId,
+        userId: existingUser.userId,
         attributes: {},
       });
 
       const authRequest = auth.handleRequest(context);
       authRequest.setSession(session);
+
       return context.redirect(env.CLIENT_URL);
     } catch (e) {
       if (e instanceof OAuthRequestError) {

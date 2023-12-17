@@ -7,6 +7,7 @@ import { luciaTableNames } from "../auth/lucia";
 export const usersTable = sqliteTable(luciaTableNames.user, {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
+  profile: text("profile").notNull(),
 });
 
 export const usersRelations = relations(usersTable, ({ many }) => ({
