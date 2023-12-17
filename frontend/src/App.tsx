@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { schemas } from "./api/schema";
 import { z } from "zod";
 import { api } from "./api";
+import { Link } from "@tanstack/react-router";
 
 function App() {
   const client = useQueryClient();
@@ -51,7 +52,8 @@ function App() {
   }
 
   return (
-    <div className="h-[100dvh] bg-gray-200 text-gray-700 p-5">
+    <div>
+      <Link to="/auth/signup">新規登録</Link>
       <div className="flex">
         {session ? (
           <>
