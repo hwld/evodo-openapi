@@ -7,6 +7,7 @@ import { SIGNUP_SESSION_COOKIE_NAME } from "../consts";
 import { HTTPException } from "hono/http-exception";
 import { signupSessionsTable } from "../../../db/schema";
 import { eq } from "drizzle-orm";
+import { validateSignupSession } from "../../../auth/signupSession";
 
 const SignupInput = z
   .object({
@@ -39,7 +40,6 @@ const signupRoute = createRoute({
       },
     },
     400: { description: "不正なリクエスト" },
-    500: { description: "不明なエラー" },
   },
 });
 
@@ -50,26 +50,10 @@ export const signup = route().openapi(signupRoute, async (context) => {
     var: { auth, db },
   } = context;
 
-  // 新規登録セッションが存在するかを確認する
-  const signupSessionId = getCookie(context, SIGNUP_SESSION_COOKIE_NAME);
-  if (!signupSessionId) {
-    deleteCookie(context, SIGNUP_SESSION_COOKIE_NAME);
-    throw new HTTPException(401);
-  }
-
-  const signupSession = await db.query.signupSessionsTable.findFirst({
-    where: eq(signupSessionsTable.id, signupSessionId),
-  });
+  const signupSession = await validateSignupSession(context, db);
   if (!signupSession) {
     deleteCookie(context, SIGNUP_SESSION_COOKIE_NAME);
-    throw new HTTPException(401);
-  }
-  if (Date.now() > signupSession.expires) {
-    await db
-      .delete(signupSessionsTable)
-      .where(eq(signupSessionsTable.id, signupSession.id));
-    deleteCookie(context, SIGNUP_SESSION_COOKIE_NAME);
-    throw new HTTPException(401);
+    throw new HTTPException(400);
   }
 
   const { username, profile } = req.valid("json");

@@ -24,12 +24,12 @@ export const login = route().openapi(loginRoute, async (context) => {
   } = context;
 
   const [url, state] = await googleAuth.getAuthorizationUrl();
+
   setCookie(context, OAUTH_STATE_COOKIE_NAME, state, {
     httpOnly: true,
     secure: env.ENVIRONMENT === "prod",
     path: "/",
     maxAge: 60 * 60,
   });
-
   return redirect(url.toString());
 });

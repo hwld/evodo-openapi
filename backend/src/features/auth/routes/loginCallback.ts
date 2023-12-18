@@ -2,7 +2,7 @@ import { createRoute } from "@hono/zod-openapi";
 import { route } from "../../../app";
 import { loginCallbackPath } from "../path";
 import { Features } from "../../features";
-import { getCookie, setCookie } from "hono/cookie";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { SIGNUP_SESSION_COOKIE_NAME, OAUTH_STATE_COOKIE_NAME } from "../consts";
 import { OAuthRequestError } from "@lucia-auth/oauth";
 import { HTTPException } from "hono/http-exception";
@@ -33,14 +33,10 @@ export const loginCallback = route().openapi(
     const storedState = getCookie(context, OAUTH_STATE_COOKIE_NAME);
     const { code, state } = req.query();
 
-    if (
-      !storedState ||
-      !state ||
-      storedState !== state ||
-      typeof code !== "string"
-    ) {
+    if (!storedState || !state || storedState !== state) {
       throw new HTTPException(400, { message: "Bad request" });
     }
+
     try {
       const { getExistingUser, googleUser } =
         await googleAuth.validateCallback(code);
@@ -56,7 +52,7 @@ export const loginCallback = route().openapi(
         let signupSessionId = existingSignupSession?.id ?? "";
 
         if (!existingSignupSession) {
-          signupSessionId = generateRandomString(15);
+          signupSessionId = generateRandomString(40);
           await db.insert(signupSessionsTable).values({
             id: signupSessionId,
             googleUserId: googleUser.sub,
@@ -71,13 +67,15 @@ export const loginCallback = route().openapi(
         return context.redirect(`${env.CLIENT_URL}/auth/signup`);
       }
 
+      const authRequest = auth.handleRequest(context);
+
       const session = await auth.createSession({
         userId: existingUser.userId,
         attributes: {},
       });
 
-      const authRequest = auth.handleRequest(context);
       authRequest.setSession(session);
+      deleteCookie(context, OAUTH_STATE_COOKIE_NAME);
 
       return context.redirect(env.CLIENT_URL);
     } catch (e) {

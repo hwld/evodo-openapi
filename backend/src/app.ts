@@ -2,6 +2,7 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { DrizzleD1Database, drizzle } from "drizzle-orm/d1";
 import * as schema from "./db/schema";
 import { Auth, GoogleAuth } from "./auth/lucia";
+import { DB } from "./db";
 
 export type Bindings = {
   CLIENT_URL: string;
@@ -20,7 +21,7 @@ type Env = {
 
 type RouteEnv = Env & {
   Variables: Variables & {
-    db: DrizzleD1Database<typeof schema>;
+    db: DB;
   };
 };
 
