@@ -3,9 +3,10 @@ import { Features } from "../../features";
 import { signupPath } from "../path";
 import { route } from "../../../app";
 import { deleteCookie, getCookie } from "hono/cookie";
-import { OAUTH_CODE_COOKIE_NAME } from "../consts";
+import { SIGNUP_SESSION_COOKIE_NAME } from "../consts";
 import { HTTPException } from "hono/http-exception";
-import { OAuthRequestError } from "@lucia-auth/oauth";
+import { signupSessionsTable } from "../../../db/schema";
+import { eq } from "drizzle-orm";
 
 const SignupInput = z
   .object({
@@ -19,7 +20,7 @@ const signupRoute = createRoute({
   method: "post",
   path: signupPath,
   request: {
-    cookies: z.object({ [OAUTH_CODE_COOKIE_NAME]: z.string() }),
+    cookies: z.object({ [SIGNUP_SESSION_COOKIE_NAME]: z.string() }),
     body: {
       content: {
         "application/json": {
@@ -46,35 +47,57 @@ export const signup = route().openapi(signupRoute, async (context) => {
   const {
     json,
     req,
-    var: { googleAuth, auth },
+    var: { auth, db },
   } = context;
 
-  const code = getCookie(context, OAUTH_CODE_COOKIE_NAME);
-  if (typeof code !== "string") {
-    throw new HTTPException(400, { message: "Bad request" });
+  // 新規登録セッションが存在するかを確認する
+  const signupSessionId = getCookie(context, SIGNUP_SESSION_COOKIE_NAME);
+  if (!signupSessionId) {
+    deleteCookie(context, SIGNUP_SESSION_COOKIE_NAME);
+    throw new HTTPException(401);
   }
 
-  try {
-    const { createUser } = await googleAuth.validateCallback(code);
-    const { username, profile } = req.valid("json");
-    const newUser = await createUser({
-      attributes: { name: username, profile },
-    });
-
-    const session = await auth.createSession({
-      userId: newUser.userId,
-      attributes: {},
-    });
-
-    const authRequest = auth.handleRequest(context);
-    authRequest.setSession(session);
-
-    deleteCookie(context, OAUTH_CODE_COOKIE_NAME);
-    return json({ userId: newUser.userId });
-  } catch (e) {
-    if (e instanceof OAuthRequestError) {
-      throw new HTTPException(400, { message: "Bad request" });
-    }
-    throw new HTTPException(500, { message: "An unknown error occurred" });
+  const signupSession = await db.query.signupSessionsTable.findFirst({
+    where: eq(signupSessionsTable.id, signupSessionId),
+  });
+  if (!signupSession) {
+    deleteCookie(context, SIGNUP_SESSION_COOKIE_NAME);
+    throw new HTTPException(401);
   }
+  if (Date.now() > signupSession.expires) {
+    await db
+      .delete(signupSessionsTable)
+      .where(eq(signupSessionsTable.id, signupSession.id));
+    deleteCookie(context, SIGNUP_SESSION_COOKIE_NAME);
+    throw new HTTPException(401);
+  }
+
+  const { username, profile } = req.valid("json");
+  const newUser = await auth.createUser({
+    key: {
+      // https://github.com/lucia-auth/lucia/blob/625350e1dba70c68a7eb47ec792b768bb7353741/packages/oauth/src/providers/google.ts#L19
+      // と合わせる必要がある。
+      // GoogleUserAuthのcreateUserを使用したかったのだが、このエンドポイントでは認可コードの検証が失敗するため、
+      // validateCallbackの返り値のGoogleUserAuthが使えない。そのため、AuthのcreateUserを使う。
+      // 合わせる必要があるのは、GoogleUserAuthでexistingUserを使用する場合に間接的にproviderIdを比較するため。
+      providerId: "google",
+      providerUserId: signupSession.googleUserId,
+      password: null,
+    },
+    attributes: { name: username, profile: profile },
+  });
+
+  const session = await auth.createSession({
+    userId: newUser.userId,
+    attributes: {},
+  });
+
+  const authRequest = auth.handleRequest(context);
+  authRequest.setSession(session);
+
+  await db
+    .delete(signupSessionsTable)
+    .where(eq(signupSessionsTable.id, signupSession.id));
+  deleteCookie(context, SIGNUP_SESSION_COOKIE_NAME);
+  return json({ userId: newUser.userId });
 });

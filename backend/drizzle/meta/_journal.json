@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1702747917123,
-      "tag": "0000_bumpy_xavin",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1702781082342,
-      "tag": "0001_rich_garia",
+      "when": 1702882370341,
+      "tag": "0000_thick_skaar",
       "breakpoints": true
     }
   ]

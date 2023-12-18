@@ -3,9 +3,12 @@ import { route } from "../../../app";
 import { loginCallbackPath } from "../path";
 import { Features } from "../../features";
 import { getCookie, setCookie } from "hono/cookie";
-import { OAUTH_CODE_COOKIE_NAME, OAUTH_STATE_COOKIE_NAME } from "../consts";
+import { SIGNUP_SESSION_COOKIE_NAME, OAUTH_STATE_COOKIE_NAME } from "../consts";
 import { OAuthRequestError } from "@lucia-auth/oauth";
 import { HTTPException } from "hono/http-exception";
+import { signupSessionsTable } from "../../../db/schema";
+import { generateRandomString } from "lucia/utils";
+import { eq } from "drizzle-orm";
 
 const authCallbackRoute = createRoute({
   tags: [Features.auth],
@@ -23,7 +26,7 @@ export const loginCallback = route().openapi(
   async (context) => {
     const {
       req,
-      var: { googleAuth, auth },
+      var: { googleAuth, auth, db },
       env,
     } = context;
 
@@ -39,14 +42,33 @@ export const loginCallback = route().openapi(
       throw new HTTPException(400, { message: "Bad request" });
     }
     try {
-      const { getExistingUser } = await googleAuth.validateCallback(code);
-
+      const { getExistingUser, googleUser } =
+        await googleAuth.validateCallback(code);
       const existingUser = await getExistingUser();
 
-      // 新規登録のユーザーは認可コードをcookieに含めて新規登録ページに飛ばす
+      // 新規登録のユーザーは新規登録セッションを作成してsignupページにリダイレクトする
       if (!existingUser) {
-        setCookie(context, OAUTH_CODE_COOKIE_NAME, code, { httpOnly: true });
-        return context.redirect(`${env.CLIENT_URL}/signUp`);
+        const existingSignupSession =
+          await db.query.signupSessionsTable.findFirst({
+            where: eq(signupSessionsTable.googleUserId, googleUser.sub),
+          });
+
+        let signupSessionId = existingSignupSession?.id ?? "";
+
+        if (!existingSignupSession) {
+          signupSessionId = generateRandomString(15);
+          await db.insert(signupSessionsTable).values({
+            id: signupSessionId,
+            googleUserId: googleUser.sub,
+            // 有効期限を30分にする
+            expires: new Date().getTime() + 1000 * 60 * 30,
+          });
+        }
+
+        setCookie(context, SIGNUP_SESSION_COOKIE_NAME, signupSessionId, {
+          httpOnly: true,
+        });
+        return context.redirect(`${env.CLIENT_URL}/auth/signup`);
       }
 
       const session = await auth.createSession({
