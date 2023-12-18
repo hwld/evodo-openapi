@@ -1,8 +1,8 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { DrizzleD1Database, drizzle } from "drizzle-orm/d1";
+import { drizzle } from "drizzle-orm/d1";
 import * as schema from "./db/schema";
-import { Auth, GoogleAuth } from "./auth/lucia";
 import { DB } from "./db";
+import { GoogleAuth, LuciaAuth } from "./auth/lucia";
 
 export type Bindings = {
   CLIENT_URL: string;
@@ -12,7 +12,7 @@ export type Bindings = {
   GOOGLE_CLIENT_SECRET: string;
   DB: D1Database;
 };
-type Variables = { auth: Auth; googleAuth: GoogleAuth };
+type Variables = { auth: LuciaAuth; googleAuth: GoogleAuth };
 
 type Env = {
   Bindings: Bindings;

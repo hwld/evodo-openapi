@@ -8,13 +8,14 @@
   "dependencies": {
     "@hono/swagger-ui": "^0.2.0",
     "@hono/zod-openapi": "^0.9.3",
-    "@lucia-auth/adapter-sqlite": "^2.0.1",
-    "@lucia-auth/oauth": "^3.5.0",
+    "@lucia-auth/adapter-sqlite": "3.0.0-beta.10",
     "@paralleldrive/cuid2": "^2.2.2",
+    "arctic": "^0.10.0",
     "better-sqlite3": "^9.2.2",
     "drizzle-orm": "^0.29.1",
     "hono": "^3.11.4",
-    "lucia": "^2.7.5",
+    "lucia": "3.0.0-beta.12",
+    "oslo": "^0.24.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

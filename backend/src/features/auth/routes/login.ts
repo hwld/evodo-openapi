@@ -3,7 +3,9 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { route } from "../../../app";
 import { loginPath } from "../path";
 import { Features } from "../../features";
-import { OAUTH_STATE_COOKIE_NAME } from "../consts";
+import { CODE_VERIFIER_COOKIE, STATE_COOKIE } from "../consts";
+import { generateCodeVerifier, generateState } from "arctic";
+import { CookieOptions } from "hono/utils/cookie";
 
 const loginRoute = createRoute({
   tags: [Features.auth],
@@ -23,13 +25,17 @@ export const login = route().openapi(loginRoute, async (context) => {
     redirect,
   } = context;
 
-  const [url, state] = await googleAuth.getAuthorizationUrl();
+  const state = generateState();
+  const codeVerifier = generateCodeVerifier();
+  const url = await googleAuth.createAuthorizationURL(state, codeVerifier);
 
-  setCookie(context, OAUTH_STATE_COOKIE_NAME, state, {
+  const cookieOptions: CookieOptions = {
     httpOnly: true,
     secure: env.ENVIRONMENT === "prod",
     path: "/",
-    maxAge: 60 * 60,
-  });
+    maxAge: 60 * 10,
+  };
+  setCookie(context, STATE_COOKIE, state, cookieOptions);
+  setCookie(context, CODE_VERIFIER_COOKIE, codeVerifier, cookieOptions);
   return redirect(url.toString());
 });

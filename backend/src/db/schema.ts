@@ -6,28 +6,13 @@ import { luciaTableNames } from "../auth/lucia";
 
 export const usersTable = sqliteTable(luciaTableNames.user, {
   id: text("id").primaryKey(),
+  googleId: text("google_id").unique().notNull(),
   name: text("name").notNull(),
   profile: text("profile").notNull(),
 });
 
 export const usersRelations = relations(usersTable, ({ many }) => ({
-  keys: many(userKeysTable),
   sessions: many(sessionsTable),
-}));
-
-export const userKeysTable = sqliteTable(luciaTableNames.key, {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
-    .references(() => usersTable.id, { onDelete: "cascade" })
-    .notNull(),
-  hashedPassword: text("hashed_password"),
-});
-
-export const userKeysRelations = relations(userKeysTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [userKeysTable.userId],
-    references: [usersTable.id],
-  }),
 }));
 
 export const sessionsTable = sqliteTable(luciaTableNames.session, {
@@ -35,8 +20,7 @@ export const sessionsTable = sqliteTable(luciaTableNames.session, {
   userId: text("user_id")
     .references(() => usersTable.id, { onDelete: "cascade" })
     .notNull(),
-  activeExpires: integer("active_expires").notNull(),
-  idleExpires: integer("idle_expires").notNull(),
+  expiresAt: integer("expires_at").notNull(),
 });
 
 export const sessionsRelations = relations(sessionsTable, ({ one }) => ({

@@ -3,6 +3,7 @@ import { Features } from "../../features";
 import { UserSchema } from "../../user/schema";
 import { route } from "../../../app";
 import { sessionPath } from "../path";
+import { validateLoginSession } from "../../../auth/session";
 
 const sessionRoute = createRoute({
   tags: [Features.auth],
@@ -23,15 +24,13 @@ const sessionRoute = createRoute({
 export const session = route().openapi(sessionRoute, async (context) => {
   const {
     json,
-    var: { auth },
+    var: { auth, db },
   } = context;
 
-  const authRequest = auth.handleRequest(context);
-  const session = await authRequest.validate();
+  const { session, user } = await validateLoginSession(context, auth, db);
   if (!session) {
     return json(null);
   }
 
-  const user = session.user;
-  return json({ user: { id: user.userId, name: user.name } });
+  return json({ user: { id: user.id, name: user.name } });
 });

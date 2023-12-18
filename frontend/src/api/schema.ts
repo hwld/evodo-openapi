@@ -95,12 +95,13 @@ const endpoints = makeApi([
         description: `不正なリクエスト`,
         schema: z.void(),
       },
-      {
-        status: 500,
-        description: `不明なエラー`,
-        schema: z.void(),
-      },
     ],
+  },
+  {
+    method: "post",
+    path: "/signup/cancel",
+    requestFormat: "json",
+    response: z.object({}).partial().passthrough(),
   },
   {
     method: "get",

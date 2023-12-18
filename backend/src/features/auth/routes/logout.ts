@@ -3,6 +3,9 @@ import { Features } from "../../features";
 import { logoutPath } from "../path";
 import { route } from "../../../app";
 import { HTTPException } from "hono/http-exception";
+import { validateLoginSession } from "../../../auth/session";
+import { deleteCookie, setCookie } from "hono/cookie";
+import { LOGIN_SESSION_COOKIE } from "../consts";
 
 const logoutRoute = createRoute({
   tags: [Features.auth],
@@ -23,17 +26,16 @@ const logoutRoute = createRoute({
 export const logout = route().openapi(logoutRoute, async (context) => {
   const {
     json,
-    var: { auth },
+    var: { auth, db },
   } = context;
 
-  const authRequest = auth.handleRequest(context);
-  const session = await authRequest.validate();
+  const { session } = await validateLoginSession(context, auth, db);
   if (!session) {
-    throw new HTTPException(401, { message: "Unauthorized" });
+    throw new HTTPException(401);
   }
 
-  await auth.invalidateSession(session.sessionId);
-  authRequest.setSession(null);
+  await auth.invalidateSession(session.id);
+  deleteCookie(context, LOGIN_SESSION_COOKIE);
 
   return json({});
 });

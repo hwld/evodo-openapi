@@ -2,12 +2,13 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { Features } from "../../features";
 import { signupPath } from "../path";
 import { route } from "../../../app";
-import { deleteCookie, getCookie } from "hono/cookie";
-import { SIGNUP_SESSION_COOKIE_NAME } from "../consts";
+import { deleteCookie } from "hono/cookie";
+import { SIGNUP_SESSION_COOKIE } from "../consts";
 import { HTTPException } from "hono/http-exception";
-import { signupSessionsTable } from "../../../db/schema";
+import { signupSessionsTable, usersTable } from "../../../db/schema";
 import { eq } from "drizzle-orm";
-import { validateSignupSession } from "../../../auth/signupSession";
+import { setSessionCookie, validateSignupSession } from "../../../auth/session";
+import { alphabet, generateRandomString } from "oslo/random";
 
 const SignupInput = z
   .object({
@@ -21,7 +22,7 @@ const signupRoute = createRoute({
   method: "post",
   path: signupPath,
   request: {
-    cookies: z.object({ [SIGNUP_SESSION_COOKIE_NAME]: z.string() }),
+    cookies: z.object({ [SIGNUP_SESSION_COOKIE]: z.string() }),
     body: {
       content: {
         "application/json": {
@@ -52,36 +53,30 @@ export const signup = route().openapi(signupRoute, async (context) => {
 
   const signupSession = await validateSignupSession(context, db);
   if (!signupSession) {
-    deleteCookie(context, SIGNUP_SESSION_COOKIE_NAME);
-    throw new HTTPException(400);
+    throw new HTTPException(401);
   }
 
-  const { username, profile } = req.valid("json");
-  const newUser = await auth.createUser({
-    key: {
-      // https://github.com/lucia-auth/lucia/blob/625350e1dba70c68a7eb47ec792b768bb7353741/packages/oauth/src/providers/google.ts#L19
-      // と合わせる必要がある。
-      // GoogleUserAuthのcreateUserを使用したかったのだが、このエンドポイントでは認可コードの検証が失敗するため、
-      // validateCallbackの返り値のGoogleUserAuthが使えない。そのため、AuthのcreateUserを使う。
-      // 合わせる必要があるのは、GoogleUserAuthでexistingUserを使用する場合に間接的にproviderIdを比較するため。
-      providerId: "google",
-      providerUserId: signupSession.googleUserId,
-      password: null,
-    },
-    attributes: { name: username, profile: profile },
-  });
+  const { username: name, profile } = req.valid("json");
+  const newUser = (
+    await db
+      .insert(usersTable)
+      .values({
+        id: generateRandomString(15, alphabet("a-z", "0-9")),
+        name,
+        profile,
+        googleId: signupSession.googleUserId,
+      })
+      .returning()
+  )[0];
 
-  const session = await auth.createSession({
-    userId: newUser.userId,
-    attributes: {},
-  });
-
-  const authRequest = auth.handleRequest(context);
-  authRequest.setSession(session);
+  const session = await auth.createSession(newUser.id, {});
+  const sessionCookie = auth.createSessionCookie(session.id);
+  setSessionCookie(context, sessionCookie);
 
   await db
     .delete(signupSessionsTable)
     .where(eq(signupSessionsTable.id, signupSession.id));
-  deleteCookie(context, SIGNUP_SESSION_COOKIE_NAME);
-  return json({ userId: newUser.userId });
+  deleteCookie(context, SIGNUP_SESSION_COOKIE);
+
+  return json({ userId: newUser.id });
 });

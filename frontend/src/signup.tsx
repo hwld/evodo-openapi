@@ -1,13 +1,20 @@
 import { useState } from "react";
 import { api } from "./api";
-import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 
 export const SignupPage: React.FC = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [profile, setProfile] = useState("");
 
   const handleSignup = async () => {
     await api.post("/signup", { username, profile });
+    await navigate({ to: "/" });
+  };
+
+  const handleCancel = async () => {
+    await api.post("/signup/cancel", undefined);
+    await navigate({ to: "/" });
   };
 
   return (
@@ -26,7 +33,7 @@ export const SignupPage: React.FC = () => {
         />
       </div>
       <div className="flex gap-1">
-        <Link to="/">キャンセル</Link>
+        <button onClick={handleCancel}>キャンセル</button>
         <button onClick={handleSignup}>登録</button>
       </div>
     </div>
