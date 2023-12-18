@@ -1,6 +1,6 @@
 import { testClient } from "hono/testing";
 import { testD1, testDb } from "../../../../setup-jest";
-import { tasksTable } from "../../../db/schema";
+import { tasks } from "../../../db/schema";
 import { findTask } from "./findTask";
 
 const client = () => testClient(findTask, { DB: testD1 });
@@ -10,7 +10,7 @@ describe("タスクの取得", () => {
     const title = "title";
     const description = "description";
     const created = await testDb
-      .insert(tasksTable)
+      .insert(tasks)
       .values({ title, description })
       .returning();
 

@@ -14,7 +14,7 @@ describe("タスクの作成", () => {
     });
     const created = await result.json();
 
-    const finded = await testDb.query.tasksTable.findMany();
+    const finded = await testDb.query.tasks.findMany();
     expect(finded.length).toBe(1);
     expect(finded[0].id).toBe(created.id);
     expect(finded[0].title).toBe(title);

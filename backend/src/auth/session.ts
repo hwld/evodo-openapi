@@ -5,7 +5,7 @@ import {
   LOGIN_SESSION_COOKIE,
   SIGNUP_SESSION_COOKIE,
 } from "../features/auth/consts";
-import { sessionsTable, signupSessionsTable } from "../db/schema";
+import { sessions, signupSessions } from "../db/schema";
 import { InferSelectModel, eq } from "drizzle-orm";
 import { LuciaAuth } from "./lucia";
 import { SessionCookie } from "lucia";
@@ -35,7 +35,7 @@ export const validateLoginSession = async (
 
   const { session, user } = await auth.validateSession(id);
   if (!session) {
-    await db.delete(sessionsTable).where(eq(sessionsTable.id, id));
+    await db.delete(sessions).where(eq(sessions.id, id));
     deleteCookie(context, LOGIN_SESSION_COOKIE);
     return { session: null, user: null };
   }
@@ -46,14 +46,14 @@ export const validateLoginSession = async (
 export const validateSignupSession = async (
   context: Context,
   db: DB,
-): Promise<InferSelectModel<typeof signupSessionsTable> | null> => {
+): Promise<InferSelectModel<typeof signupSessions> | null> => {
   const sessionId = getCookie(context, SIGNUP_SESSION_COOKIE);
   if (!sessionId) {
     return null;
   }
 
-  const session = await db.query.signupSessionsTable.findFirst({
-    where: eq(signupSessionsTable.id, sessionId),
+  const session = await db.query.signupSessions.findFirst({
+    where: eq(signupSessions.id, sessionId),
   });
   if (!session) {
     deleteCookie(context, SIGNUP_SESSION_COOKIE);
@@ -61,9 +61,7 @@ export const validateSignupSession = async (
   }
 
   if (Date.now() > session.expires) {
-    await db
-      .delete(signupSessionsTable)
-      .where(eq(signupSessionsTable.id, sessionId));
+    await db.delete(signupSessions).where(eq(signupSessions.id, sessionId));
     deleteCookie(context, SIGNUP_SESSION_COOKIE);
     return null;
   }

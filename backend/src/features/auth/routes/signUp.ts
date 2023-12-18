@@ -5,7 +5,7 @@ import { route } from "../../../app";
 import { deleteCookie } from "hono/cookie";
 import { SIGNUP_SESSION_COOKIE } from "../consts";
 import { HTTPException } from "hono/http-exception";
-import { signupSessionsTable, usersTable } from "../../../db/schema";
+import { signupSessions, users } from "../../../db/schema";
 import { eq } from "drizzle-orm";
 import { setSessionCookie, validateSignupSession } from "../../../auth/session";
 import { alphabet, generateRandomString } from "oslo/random";
@@ -59,7 +59,7 @@ export const signup = route().openapi(signupRoute, async (context) => {
   const { username: name, profile } = req.valid("json");
   const newUser = (
     await db
-      .insert(usersTable)
+      .insert(users)
       .values({
         id: generateRandomString(15, alphabet("a-z", "0-9")),
         name,
@@ -74,8 +74,8 @@ export const signup = route().openapi(signupRoute, async (context) => {
   setSessionCookie(context, sessionCookie);
 
   await db
-    .delete(signupSessionsTable)
-    .where(eq(signupSessionsTable.id, signupSession.id));
+    .delete(signupSessions)
+    .where(eq(signupSessions.id, signupSession.id));
   deleteCookie(context, SIGNUP_SESSION_COOKIE);
 
   return json({ userId: newUser.id });

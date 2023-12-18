@@ -5,7 +5,7 @@ CREATE TABLE `user_sessions` (
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `signup_session` (
+CREATE TABLE `signup_sessions` (
 	`id` text PRIMARY KEY NOT NULL,
 	`google_user_id` text NOT NULL,
 	`expires` integer NOT NULL
@@ -26,5 +26,5 @@ CREATE TABLE `users` (
 	`profile` text NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `signup_session_google_user_id_unique` ON `signup_session` (`google_user_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `signup_sessions_google_user_id_unique` ON `signup_sessions` (`google_user_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `users_google_id_unique` ON `users` (`google_id`);

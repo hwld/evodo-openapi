@@ -12,7 +12,7 @@ import {
 import { HTTPException } from "hono/http-exception";
 import { eq } from "drizzle-orm";
 import { decodeIdToken } from "../../../auth/utils";
-import { signupSessionsTable, usersTable } from "../../../db/schema";
+import { signupSessions, users } from "../../../db/schema";
 import { OAuth2RequestError } from "arctic";
 import { setSessionCookie } from "../../../auth/session";
 
@@ -61,22 +61,21 @@ export const loginCallback = route().openapi(
 
       // https://developers.google.com/identity/openid-connect/openid-connect?hl=ja#an-id-tokens-payload
       const { sub: googleId } = decodeIdToken<{ sub: string }>(tokens.idToken);
-      const existingUser = await db.query.usersTable.findFirst({
-        where: eq(usersTable.googleId, googleId),
+      const existingUser = await db.query.users.findFirst({
+        where: eq(users.googleId, googleId),
       });
 
       // 新規登録のユーザーは新規登録セッションを作成してsignupページにリダイレクトする
       if (!existingUser) {
-        const existingSignupSession =
-          await db.query.signupSessionsTable.findFirst({
-            where: eq(signupSessionsTable.googleUserId, googleId),
-          });
+        const existingSignupSession = await db.query.signupSessions.findFirst({
+          where: eq(signupSessions.googleUserId, googleId),
+        });
 
         let signupSessionId = existingSignupSession?.id ?? "";
 
         if (!existingSignupSession) {
           signupSessionId = generateRandomString(40, alphabet("a-z", "0-9"));
-          await db.insert(signupSessionsTable).values({
+          await db.insert(signupSessions).values({
             id: signupSessionId,
             googleUserId: googleId,
             // 有効期限を30分にする

@@ -15,6 +15,7 @@
       "jest-environment-miniflare/globals"
     ],
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "jsxImportSource": "hono/jsx",
+    "skipLibCheck": true
   }
 }

@@ -4,39 +4,39 @@ import { text, sqliteTable, integer } from "drizzle-orm/sqlite-core";
 import { createId } from "@paralleldrive/cuid2";
 import { luciaTableNames } from "../auth/lucia";
 
-export const usersTable = sqliteTable(luciaTableNames.user, {
+export const users = sqliteTable(luciaTableNames.user, {
   id: text("id").primaryKey(),
   googleId: text("google_id").unique().notNull(),
   name: text("name").notNull(),
   profile: text("profile").notNull(),
 });
 
-export const usersRelations = relations(usersTable, ({ many }) => ({
-  sessions: many(sessionsTable),
+export const usersRelations = relations(users, ({ many }) => ({
+  sessions: many(sessions),
 }));
 
-export const sessionsTable = sqliteTable(luciaTableNames.session, {
+export const sessions = sqliteTable(luciaTableNames.session, {
   id: text("id").primaryKey(),
   userId: text("user_id")
-    .references(() => usersTable.id, { onDelete: "cascade" })
+    .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
   expiresAt: integer("expires_at").notNull(),
 });
 
-export const sessionsRelations = relations(sessionsTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [sessionsTable.userId],
-    references: [usersTable.id],
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
   }),
 }));
 
-export const signupSessionsTable = sqliteTable("signup_session", {
+export const signupSessions = sqliteTable("signup_sessions", {
   id: text("id").primaryKey(),
   googleUserId: text("google_user_id").unique().notNull(),
   expires: integer("expires").notNull(),
 });
 
-export const tasksTable = sqliteTable("tasks", {
+export const tasks = sqliteTable("tasks", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => createId()),

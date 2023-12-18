@@ -3,7 +3,7 @@ import { z } from "zod";
 import { taskPath } from "../path";
 import { TaskSchema } from "../schema";
 import { route } from "../../../app";
-import { tasksTable } from "../../../db/schema";
+import { tasks } from "../../../db/schema";
 import { eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Features } from "../../features";
@@ -50,9 +50,9 @@ export const updateTask = route().openapi(
     const { title, description } = req.valid("json");
 
     const result = await db
-      .update(tasksTable)
+      .update(tasks)
       .set({ title, description })
-      .where(eq(tasksTable.id, taskId))
+      .where(eq(tasks.id, taskId))
       .returning();
 
     const updated = result[0];

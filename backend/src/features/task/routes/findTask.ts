@@ -3,7 +3,7 @@ import { taskPath } from "../path";
 import { TaskSchema } from "../schema";
 import { route } from "../../../app";
 import { eq } from "drizzle-orm";
-import { tasksTable } from "../../../db/schema";
+import { tasks } from "../../../db/schema";
 import { HTTPException } from "hono/http-exception";
 import { Features } from "../../features";
 
@@ -32,8 +32,8 @@ export const findTask = route().openapi(
   getTaskRoute,
   async ({ req, json, var: { db } }) => {
     const taskId = req.valid("param").id;
-    const task = await db.query.tasksTable.findFirst({
-      where: eq(tasksTable.id, taskId),
+    const task = await db.query.tasks.findFirst({
+      where: eq(tasks.id, taskId),
     });
 
     if (!task) {

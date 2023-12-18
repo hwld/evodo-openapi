@@ -2,7 +2,7 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { taskPath } from "../path";
 import { TaskSchema } from "../schema";
 import { route } from "../../../app";
-import { tasksTable } from "../../../db/schema";
+import { tasks } from "../../../db/schema";
 import { eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Features } from "../../features";
@@ -34,8 +34,8 @@ export const deleteTask = route().openapi(
     const taskId = req.valid("param").id;
 
     const result = await db
-      .delete(tasksTable)
-      .where(eq(tasksTable.id, taskId))
+      .delete(tasks)
+      .where(eq(tasks.id, taskId))
       .returning();
 
     const deleted = result[0];

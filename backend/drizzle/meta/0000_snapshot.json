@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "4a8b9fa5-79f3-44f8-b40f-bdc4ce722522",
+  "id": "6fd7cc9b-fa17-46d0-b14e-6108b22526e9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "user_sessions": {
@@ -48,8 +48,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "signup_session": {
-      "name": "signup_session",
+    "signup_sessions": {
+      "name": "signup_sessions",
       "columns": {
         "id": {
           "name": "id",
@@ -74,8 +74,8 @@
         }
       },
       "indexes": {
-        "signup_session_google_user_id_unique": {
-          "name": "signup_session_google_user_id_unique",
+        "signup_sessions_google_user_id_unique": {
+          "name": "signup_sessions_google_user_id_unique",
           "columns": [
             "google_user_id"
           ],

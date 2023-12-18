@@ -1,6 +1,6 @@
 import { testClient } from "hono/testing";
 import { testD1, testDb } from "../../../../setup-jest";
-import { tasksTable } from "../../../db/schema";
+import { tasks } from "../../../db/schema";
 import { deleteTask } from "./deleteTask";
 
 const client = () => testClient(deleteTask, { DB: testD1 });
@@ -9,7 +9,7 @@ describe("タスクの削除", () => {
   it("タスクを削除でき、削除したタスクが返される", async () => {
     const task = (
       await testDb
-        .insert(tasksTable)
+        .insert(tasks)
         .values({ title: "title", description: "" })
         .returning()
     )[0];
@@ -19,7 +19,7 @@ describe("タスクの削除", () => {
     });
     const deleted = await result.json();
 
-    const finded = await testDb.query.tasksTable.findMany();
+    const finded = await testDb.query.tasks.findMany();
     expect(finded.length).toBe(0);
     expect(deleted.id).toBe(task.id);
   });

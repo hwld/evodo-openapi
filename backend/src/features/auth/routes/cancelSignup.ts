@@ -4,7 +4,7 @@ import { cancelSignupPath } from "../path";
 import { route } from "../../../app";
 import { validateSignupSession } from "../../../auth/session";
 import { HTTPException } from "hono/http-exception";
-import { signupSessionsTable } from "../../../db/schema";
+import { signupSessions } from "../../../db/schema";
 import { eq } from "drizzle-orm";
 import { deleteCookie } from "hono/cookie";
 import { SIGNUP_SESSION_COOKIE } from "../consts";
@@ -36,8 +36,8 @@ export const cancelSignup = route().openapi(
     }
 
     await db
-      .delete(signupSessionsTable)
-      .where(eq(signupSessionsTable.id, signupSession.id));
+      .delete(signupSessions)
+      .where(eq(signupSessions.id, signupSession.id));
     deleteCookie(context, SIGNUP_SESSION_COOKIE);
 
     return json({});

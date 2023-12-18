@@ -2,13 +2,13 @@ import { testClient } from "hono/testing";
 import { findTasks } from "./findTasks";
 import { testD1, testDb } from "../../../../setup-jest";
 import { desc } from "drizzle-orm";
-import { tasksTable } from "../../../db/schema";
+import { tasks } from "../../../db/schema";
 
 const client = () => testClient(findTasks, { DB: testD1 });
 
 describe("タスクをすべて収録", () => {
   it("作成された全てのタスクを取得できる", async () => {
-    await testDb.insert(tasksTable).values([
+    await testDb.insert(tasks).values([
       { title: "1", description: "" },
       { title: "2", description: "" },
       { title: "3", description: "" },
