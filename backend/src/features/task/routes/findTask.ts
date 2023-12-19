@@ -6,17 +6,20 @@ import { eq } from "drizzle-orm";
 import { tasks } from "../../../db/schema";
 import { HTTPException } from "hono/http-exception";
 import { Features } from "../../features";
+import { errorResponse } from "../../../lib/openapi";
 
 const getTaskRoute = createRoute({
   tags: [Features.task],
   method: "get",
   path: taskPath,
+  summary: "タスクを取得する",
   request: {
     params: z.object({
       id: z.string().openapi({ param: { name: "id", in: "path" } }),
     }),
   },
   responses: {
+    ...errorResponse(500),
     200: {
       content: {
         "application/json": {

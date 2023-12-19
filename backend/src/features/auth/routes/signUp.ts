@@ -10,6 +10,7 @@ import {
   validateSignupSession,
 } from "../../../auth/signupSession";
 import { setLoginSessionCookie } from "../../../auth/loginSession";
+import { errorResponse } from "../../../lib/openapi";
 
 const SignupInput = z
   .object({
@@ -22,8 +23,11 @@ const signupRoute = createRoute({
   tags: [Features.auth],
   method: "post",
   path: signupPath,
+  summary: "新規登録を行う",
   request: {
-    cookies: z.object({ [SIGNUP_SESSION_COOKIE]: z.string() }),
+    cookies: z.object({
+      [SIGNUP_SESSION_COOKIE]: z.string(),
+    }),
     body: {
       content: {
         "application/json": {
@@ -33,6 +37,8 @@ const signupRoute = createRoute({
     },
   },
   responses: {
+    ...errorResponse(500),
+    ...errorResponse(400),
     200: {
       description: "新規登録成功",
       content: {
@@ -41,7 +47,6 @@ const signupRoute = createRoute({
         },
       },
     },
-    400: { description: "不正なリクエスト" },
   },
 });
 

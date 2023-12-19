@@ -7,17 +7,11 @@ import { LuciaAuth } from "./lucia";
 
 const convertCookieAttr = (attributes: CookieAttributes): CookieOptions => {
   const sameSite = attributes.sameSite;
+  const map = { lax: "Lax", strict: "Strict", none: "None" } as const;
 
   return {
     ...attributes,
-    sameSite:
-      sameSite === "lax"
-        ? "Lax"
-        : sameSite === "strict"
-          ? "Strict"
-          : sameSite === "none"
-            ? "None"
-            : undefined,
+    sameSite: sameSite && map[sameSite],
   };
 };
 
@@ -34,9 +28,12 @@ export const setLoginSessionCookie = (
 };
 
 /**
- *  ログインセッションを検証する。
- *  セッションが無効であればセッションを削除し、Cookieもリセットする。
- *  セッションが更新されていればCookieを更新する。
+ * @summary
+ * ログインセッションを検証する。
+ *
+ * @description
+ * セッションが無効であればセッションを削除し、Cookieもリセットする。
+ * セッションが更新されていればCookieを更新する。
  */
 export const validateLoginSession = async (
   context: Context,
@@ -58,4 +55,20 @@ export const validateLoginSession = async (
   }
 
   return { session, user };
+};
+
+/**
+ * @summary
+ * ログインセッションを無効にする。
+ *
+ * @description
+ * セッションストレージからセッションを削除して、クッキーをリセットする。
+ */
+export const invalidateLoginSession = async (
+  context: Context,
+  auth: LuciaAuth,
+  sessionId: string,
+) => {
+  await auth.invalidateSession(sessionId);
+  setLoginSessionCookie(context, auth.createBlankSessionCookie());
 };

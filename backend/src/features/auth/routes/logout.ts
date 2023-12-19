@@ -3,22 +3,21 @@ import { Features } from "../../features";
 import { logoutPath } from "../path";
 import { route } from "../../../app";
 import {
-  setLoginSessionCookie,
+  invalidateLoginSession,
   validateLoginSession,
 } from "../../../auth/loginSession";
+import { errorResponse } from "../../../lib/openapi";
 
 const logoutRoute = createRoute({
   tags: [Features.auth],
   method: "post",
   path: logoutPath,
+  summary: "ログアウトする",
   responses: {
+    ...errorResponse(500),
     200: {
       description: "ログアウト",
-      content: {
-        "application/json": {
-          schema: z.null(),
-        },
-      },
+      content: { "application/json": { schema: z.object({}) } },
     },
   },
 });
@@ -31,11 +30,9 @@ export const logout = route().openapi(logoutRoute, async (context) => {
 
   const { session } = await validateLoginSession(context, auth);
   if (!session) {
-    return json(null);
+    return json({});
   }
 
-  await auth.invalidateSession(session.id);
-  setLoginSessionCookie(context, auth.createBlankSessionCookie());
-
-  return json(null);
+  await invalidateLoginSession(context, auth, session.id);
+  return json({});
 });

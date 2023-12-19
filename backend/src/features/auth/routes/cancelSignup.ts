@@ -5,15 +5,23 @@ import { route } from "../../../app";
 import { deleteCookie, getCookie } from "hono/cookie";
 import { SIGNUP_SESSION_COOKIE } from "../consts";
 import { invalidateSignupSession } from "../../../auth/signupSession";
+import { errorResponse } from "../../../lib/openapi";
 
 const cancelSignupRoute = createRoute({
   tags: [Features.auth],
   method: "post",
   path: cancelSignupPath,
-  request: {},
+  summary: "新規登録をキャンセルする",
+  description: "新規登録セッションを破棄して新規登録をキャンセルする",
+  request: {
+    cookies: z.object({
+      [SIGNUP_SESSION_COOKIE]: z.string(),
+    }),
+  },
   responses: {
+    ...errorResponse(500),
     200: {
-      description: "新規登録のキャンセルが成功",
+      description: "キャンセル成功",
       content: { "application/json": { schema: z.object({}) } },
     },
   },

@@ -7,6 +7,7 @@ import { tasks } from "../../../db/schema";
 import { eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Features } from "../../features";
+import { errorResponse } from "../../../lib/openapi";
 
 const UpdasteTaskInput = z
   .object({
@@ -19,6 +20,7 @@ const UpdateTaskRoute = createRoute({
   tags: [Features.task],
   method: "put",
   path: taskPath,
+  summary: "タスクを更新する",
   request: {
     params: z.object({
       id: z.string().openapi({ param: { name: "id", in: "path" } }),
@@ -32,6 +34,7 @@ const UpdateTaskRoute = createRoute({
     },
   },
   responses: {
+    ...errorResponse(500),
     200: {
       description: "更新後のタスクを返す",
       content: {

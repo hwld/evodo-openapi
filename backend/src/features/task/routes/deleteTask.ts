@@ -6,17 +6,20 @@ import { tasks } from "../../../db/schema";
 import { eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Features } from "../../features";
+import { errorResponse } from "../../../lib/openapi";
 
 const DeleteTaskRoute = createRoute({
   tags: [Features.task],
   method: "delete",
   path: taskPath,
+  summary: "タスクを削除する",
   request: {
     params: z.object({
       id: z.string().openapi({ param: { name: "id", in: "path" } }),
     }),
   },
   responses: {
+    ...errorResponse(500),
     200: {
       description: "削除したタスクを返す",
       content: {

@@ -4,12 +4,15 @@ import { tasks } from "../../../db/schema";
 import { route } from "../../../app";
 import { tasksPath } from "../path";
 import { Features } from "../../features";
+import { errorResponse } from "../../../lib/openapi";
 
 const getTasksRoute = createRoute({
   tags: [Features.task],
   method: "get",
   path: tasksPath,
+  summary: "全てのタスクを取得する",
   responses: {
+    ...errorResponse(500),
     200: {
       content: {
         "application/json": {

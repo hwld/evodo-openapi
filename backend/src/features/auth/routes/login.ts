@@ -6,14 +6,17 @@ import { Features } from "../../features";
 import { CODE_VERIFIER_COOKIE, STATE_COOKIE } from "../consts";
 import { generateCodeVerifier, generateState } from "arctic";
 import { CookieOptions } from "hono/utils/cookie";
+import { errorResponse } from "../../../lib/openapi";
 
 const loginRoute = createRoute({
   tags: [Features.auth],
   method: "get",
   path: loginPath,
+  summary: "GoogleのログインURLにリダイレクト",
   responses: {
+    ...errorResponse(500),
     302: {
-      description: "GoogleのログインURLにリダイレクト",
+      description: "リダイレクト",
     },
   },
 });

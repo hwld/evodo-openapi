@@ -4,6 +4,7 @@ import { route } from "../../../app";
 import { tasks } from "../../../db/schema";
 import { tasksPath } from "../path";
 import { Features } from "../../features";
+import { errorResponse } from "../../../lib/openapi";
 
 const CreateTaskInput = z
   .object({
@@ -16,6 +17,7 @@ const createTaskRoute = createRoute({
   tags: [Features.task],
   method: "post",
   path: tasksPath,
+  summary: "タスクを作成する",
   request: {
     body: {
       content: {
@@ -26,6 +28,7 @@ const createTaskRoute = createRoute({
     },
   },
   responses: {
+    ...errorResponse(500),
     200: {
       content: {
         "application/json": {

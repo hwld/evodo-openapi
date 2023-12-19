@@ -14,11 +14,16 @@ import {
   createSignupSession,
   setSignupSessionCookie,
 } from "../../../auth/signupSession";
+import { errorResponse } from "../../../lib/openapi";
 
 const authCallbackRoute = createRoute({
   tags: [Features.auth],
   method: "get",
   path: loginCallbackPath,
+  summary: "Googleから認可コードが渡されるログイン用コールバック",
+  description: `ユーザーが登録されていればログインセッションを作成し、ログイン後の画面にリダイレクトする。  
+    ユーザーが登録されていなければ新規登録セッションを作成し、新規登録画面にリダイレクトする。  
+    ※ユーザーからは呼び出さない。`,
   request: {
     cookies: z.object({
       [STATE_COOKIE]: z.string(),
@@ -30,6 +35,7 @@ const authCallbackRoute = createRoute({
     }),
   },
   responses: {
+    ...errorResponse(500),
     302: {
       description: "リダイレクト",
     },

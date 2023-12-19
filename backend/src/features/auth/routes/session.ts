@@ -4,12 +4,15 @@ import { UserSchema } from "../../user/schema";
 import { route } from "../../../app";
 import { sessionPath } from "../path";
 import { validateLoginSession } from "../../../auth/loginSession";
+import { errorResponse } from "../../../lib/openapi";
 
 const sessionRoute = createRoute({
   tags: [Features.auth],
   method: "get",
   path: sessionPath,
+  summary: "ログインしているユーザーを取得する",
   responses: {
+    ...errorResponse(500),
     200: {
       content: {
         "application/json": {

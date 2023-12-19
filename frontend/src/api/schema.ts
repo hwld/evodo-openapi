@@ -56,6 +56,13 @@ const endpoints = makeApi([
     method: "get",
     path: "/login/google/callback",
     requestFormat: "json",
+    parameters: [
+      {
+        name: "code",
+        type: "Query",
+        schema: z.string(),
+      },
+    ],
     response: z.void(),
     errors: [
       {
