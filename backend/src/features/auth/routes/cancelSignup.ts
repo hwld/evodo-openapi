@@ -2,9 +2,11 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { Features } from "../../features";
 import { cancelSignupPath } from "../path";
 import { route } from "../../../app";
-import { deleteCookie, getCookie } from "hono/cookie";
 import { SIGNUP_SESSION_COOKIE } from "../consts";
-import { invalidateSignupSession } from "../../../auth/signupSession";
+import {
+  invalidateSignupSession,
+  validateSignupSession,
+} from "../../../auth/signupSession";
 import { errorResponse } from "../../../lib/openapi";
 
 const cancelSignupRoute = createRoute({
@@ -36,13 +38,11 @@ export const cancelSignup = route().openapi(
       var: { db },
     } = context;
 
-    const sessionId = getCookie(context, SIGNUP_SESSION_COOKIE);
-    deleteCookie(context, SIGNUP_SESSION_COOKIE);
-    if (!sessionId) {
-      return json({});
+    const session = await validateSignupSession(context, db);
+    if (session) {
+      await invalidateSignupSession(context, session.id, db);
     }
 
-    invalidateSignupSession(context, sessionId, db);
     return json({});
   },
 );

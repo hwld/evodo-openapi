@@ -29,10 +29,9 @@ export const logout = route().openapi(logoutRoute, async (context) => {
   } = context;
 
   const { session } = await validateLoginSession(context, auth);
-  if (!session) {
-    return json({});
+  if (session) {
+    await invalidateLoginSession(context, auth, session.id);
   }
 
-  await invalidateLoginSession(context, auth, session.id);
   return json({});
 });
