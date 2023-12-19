@@ -19,6 +19,8 @@ const getTaskRoute = createRoute({
     }),
   },
   responses: {
+    ...errorResponse(400),
+    ...errorResponse(404, "タスクが存在しない"),
     ...errorResponse(500),
     200: {
       content: {

@@ -35,6 +35,8 @@ const authCallbackRoute = createRoute({
     }),
   },
   responses: {
+    ...errorResponse(400),
+    ...errorResponse(401),
     ...errorResponse(500),
     302: {
       description: "リダイレクト",
@@ -58,6 +60,7 @@ export const loginCallback = route().openapi(
     deleteCookie(context, CODE_VERIFIER_COOKIE);
 
     if (stateCookie !== state) {
+      console.error("stateの比較に失敗");
       throw new HTTPException(400, { message: "Bad request" });
     }
 
@@ -87,9 +90,9 @@ export const loginCallback = route().openapi(
 
       return context.redirect(env.CLIENT_URL);
     } catch (e) {
-      console.error(e);
       if (e instanceof OAuth2RequestError) {
-        throw new HTTPException(400);
+        console.error("認可コードの検証エラー");
+        throw new HTTPException(401);
       }
       throw e;
     }

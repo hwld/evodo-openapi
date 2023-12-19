@@ -19,6 +19,7 @@ const cancelSignupRoute = createRoute({
     }),
   },
   responses: {
+    ...errorResponse(400),
     ...errorResponse(500),
     200: {
       description: "キャンセル成功",

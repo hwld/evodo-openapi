@@ -39,6 +39,7 @@ const signupRoute = createRoute({
   responses: {
     ...errorResponse(500),
     ...errorResponse(400),
+    ...errorResponse(401),
     200: {
       description: "新規登録成功",
       content: {
@@ -59,6 +60,7 @@ export const signup = route().openapi(signupRoute, async (context) => {
 
   const signupSession = await validateSignupSession(context, db);
   if (!signupSession) {
+    console.error("新規登録セッションが存在しない");
     throw new HTTPException(401);
   }
 

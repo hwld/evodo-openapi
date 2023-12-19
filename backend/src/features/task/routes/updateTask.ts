@@ -34,6 +34,8 @@ const UpdateTaskRoute = createRoute({
     },
   },
   responses: {
+    ...errorResponse(400),
+    ...errorResponse(404, "タスクが存在しない"),
     ...errorResponse(500),
     200: {
       description: "更新後のタスクを返す",

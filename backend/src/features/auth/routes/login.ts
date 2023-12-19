@@ -40,5 +40,6 @@ export const login = route().openapi(loginRoute, async (context) => {
   };
   setCookie(context, STATE_COOKIE, state, cookieOptions);
   setCookie(context, CODE_VERIFIER_COOKIE, codeVerifier, cookieOptions);
+
   return redirect(url.toString());
 });

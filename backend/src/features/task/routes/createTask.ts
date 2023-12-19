@@ -28,6 +28,7 @@ const createTaskRoute = createRoute({
     },
   },
   responses: {
+    ...errorResponse(400),
     ...errorResponse(500),
     200: {
       content: {
