@@ -2,12 +2,9 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { Features } from "../../features";
 import { cancelSignupPath } from "../path";
 import { route } from "../../../app";
-import { validateSignupSession } from "../../../auth/session";
-import { HTTPException } from "hono/http-exception";
-import { signupSessions } from "../../../db/schema";
-import { eq } from "drizzle-orm";
-import { deleteCookie } from "hono/cookie";
+import { deleteCookie, getCookie } from "hono/cookie";
 import { SIGNUP_SESSION_COOKIE } from "../consts";
+import { invalidateSignupSession } from "../../../auth/signupSession";
 
 const cancelSignupRoute = createRoute({
   tags: [Features.auth],
@@ -30,16 +27,13 @@ export const cancelSignup = route().openapi(
       var: { db },
     } = context;
 
-    const signupSession = await validateSignupSession(context, db);
-    if (!signupSession) {
-      throw new HTTPException(401);
+    const sessionId = getCookie(context, SIGNUP_SESSION_COOKIE);
+    deleteCookie(context, SIGNUP_SESSION_COOKIE);
+    if (!sessionId) {
+      return json({});
     }
 
-    await db
-      .delete(signupSessions)
-      .where(eq(signupSessions.id, signupSession.id));
-    deleteCookie(context, SIGNUP_SESSION_COOKIE);
-
+    invalidateSignupSession(context, sessionId, db);
     return json({});
   },
 );

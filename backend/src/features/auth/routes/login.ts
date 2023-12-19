@@ -1,5 +1,5 @@
 import { setCookie } from "hono/cookie";
-import { createRoute, z } from "@hono/zod-openapi";
+import { createRoute } from "@hono/zod-openapi";
 import { route } from "../../../app";
 import { loginPath } from "../path";
 import { Features } from "../../features";

@@ -2,10 +2,10 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { Features } from "../../features";
 import { logoutPath } from "../path";
 import { route } from "../../../app";
-import { HTTPException } from "hono/http-exception";
-import { validateLoginSession } from "../../../auth/session";
-import { deleteCookie, setCookie } from "hono/cookie";
-import { LOGIN_SESSION_COOKIE } from "../consts";
+import {
+  setLoginSessionCookie,
+  validateLoginSession,
+} from "../../../auth/loginSession";
 
 const logoutRoute = createRoute({
   tags: [Features.auth],
@@ -16,7 +16,7 @@ const logoutRoute = createRoute({
       description: "ログアウト",
       content: {
         "application/json": {
-          schema: z.object({}),
+          schema: z.null(),
         },
       },
     },
@@ -26,16 +26,16 @@ const logoutRoute = createRoute({
 export const logout = route().openapi(logoutRoute, async (context) => {
   const {
     json,
-    var: { auth, db },
+    var: { auth },
   } = context;
 
-  const { session } = await validateLoginSession(context, auth, db);
+  const { session } = await validateLoginSession(context, auth);
   if (!session) {
-    throw new HTTPException(401);
+    return json(null);
   }
 
   await auth.invalidateSession(session.id);
-  deleteCookie(context, LOGIN_SESSION_COOKIE);
+  setLoginSessionCookie(context, auth.createBlankSessionCookie());
 
-  return json({});
+  return json(null);
 });

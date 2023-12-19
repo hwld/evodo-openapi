@@ -2,13 +2,14 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { Features } from "../../features";
 import { signupPath } from "../path";
 import { route } from "../../../app";
-import { deleteCookie } from "hono/cookie";
 import { SIGNUP_SESSION_COOKIE } from "../consts";
 import { HTTPException } from "hono/http-exception";
-import { signupSessions, users } from "../../../db/schema";
-import { eq } from "drizzle-orm";
-import { setSessionCookie, validateSignupSession } from "../../../auth/session";
-import { alphabet, generateRandomString } from "oslo/random";
+import { users } from "../../../db/schema";
+import {
+  invalidateSignupSession,
+  validateSignupSession,
+} from "../../../auth/signupSession";
+import { setLoginSessionCookie } from "../../../auth/loginSession";
 
 const SignupInput = z
   .object({
@@ -60,23 +61,15 @@ export const signup = route().openapi(signupRoute, async (context) => {
   const newUser = (
     await db
       .insert(users)
-      .values({
-        id: generateRandomString(15, alphabet("a-z", "0-9")),
-        name,
-        profile,
-        googleId: signupSession.googleUserId,
-      })
+      .values({ name, profile, googleId: signupSession.googleUserId })
       .returning()
   )[0];
 
   const session = await auth.createSession(newUser.id, {});
   const sessionCookie = auth.createSessionCookie(session.id);
-  setSessionCookie(context, sessionCookie);
+  setLoginSessionCookie(context, sessionCookie);
 
-  await db
-    .delete(signupSessions)
-    .where(eq(signupSessions.id, signupSession.id));
-  deleteCookie(context, SIGNUP_SESSION_COOKIE);
+  await invalidateSignupSession(context, signupSession.id, db);
 
   return json({ userId: newUser.id });
 });

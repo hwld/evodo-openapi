@@ -5,7 +5,9 @@ import { createId } from "@paralleldrive/cuid2";
 import { luciaTableNames } from "../auth/lucia";
 
 export const users = sqliteTable(luciaTableNames.user, {
-  id: text("id").primaryKey(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
   googleId: text("google_id").unique().notNull(),
   name: text("name").notNull(),
   profile: text("profile").notNull(),

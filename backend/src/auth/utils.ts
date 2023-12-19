@@ -1,9 +1,6 @@
 //https://github.com/lucia-auth/lucia/blob/625350e1dba70c68a7eb47ec792b768bb7353741/packages/oauth/src/core/oidc.ts
 
-import { SessionCookieAttributesOptions } from "lucia";
 import { decodeBase64url } from "oslo/encoding";
-import type { CookieAttributes } from "oslo/cookie";
-import { CookieOptions } from "hono/utils/cookie";
 
 const decoder = new TextDecoder();
 /**
@@ -30,22 +27,4 @@ export const decodeIdToken = <_Claims extends {}>(
     aud: string;
     exp: number;
   } & _Claims;
-};
-
-export const convertCookieAttr = (
-  attributes: CookieAttributes,
-): CookieOptions => {
-  const sameSite = attributes.sameSite;
-
-  return {
-    ...attributes,
-    sameSite:
-      sameSite === "lax"
-        ? "Lax"
-        : sameSite === "strict"
-          ? "Strict"
-          : sameSite === "none"
-            ? "None"
-            : undefined,
-  };
 };
