@@ -13,6 +13,7 @@ monorepo で作ってるけど、OpenAPI を試したいから`hono RPC`では�
 - vite
 - React
 - openapi-zod-client
+- lucia
 
 ## インフラ(想定)
 
