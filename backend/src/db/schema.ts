@@ -2,7 +2,7 @@
 import { relations, sql } from "drizzle-orm";
 import { text, sqliteTable, integer } from "drizzle-orm/sqlite-core";
 import { createId } from "@paralleldrive/cuid2";
-import { luciaTableNames } from "../auth/lucia";
+import { luciaTableNames } from "../auth/auth";
 
 export const users = sqliteTable(luciaTableNames.user, {
   id: text("id")

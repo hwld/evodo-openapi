@@ -2,10 +2,6 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { Features } from "../../features";
 import { logoutPath } from "../path";
 import { route } from "../../../app";
-import {
-  invalidateLoginSession,
-  validateLoginSession,
-} from "../../../auth/loginSession";
 import { errorResponse } from "../../../lib/openapi";
 
 const logoutRoute = createRoute({
@@ -28,9 +24,9 @@ export const logout = route().openapi(logoutRoute, async (context) => {
     var: { auth },
   } = context;
 
-  const { session } = await validateLoginSession(context, auth);
+  const { session } = await auth.loginSession.validate();
   if (session) {
-    await invalidateLoginSession(context, auth, session.id);
+    await auth.loginSession.invalidate(session.id);
   }
 
   return json({});

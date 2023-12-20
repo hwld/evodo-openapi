@@ -6,6 +6,8 @@ import { loginCallbackPath } from "../features/auth/path";
 import { LOGIN_SESSION_COOKIE } from "../features/auth/consts";
 import { DB } from "../db";
 import { Context } from "hono";
+import { LoginSession } from "./loginSession";
+import { SignupSession } from "./signupSession";
 
 export const luciaTableNames = {
   user: "users",
@@ -14,8 +16,7 @@ export const luciaTableNames = {
 
 declare module "lucia" {
   interface Register {
-    // Authを渡すとUserAttrsをinferできないっぽくて補完が動かないので・・・
-    Lucia: Lucia<SessionAttrs, UserAttrs>;
+    Lucia: AppLucia;
   }
   interface DatabaseUserAttributes {
     name: string;
@@ -26,15 +27,23 @@ declare module "lucia" {
 
 type SessionAttrs = {};
 type UserAttrs = { name: string; profile: string };
-export class Auth extends Lucia<SessionAttrs, UserAttrs> {
-  public google: Google;
-  private honoContext: Context;
-  private db: DB;
+export type AppLucia = Lucia<SessionAttrs, UserAttrs>;
+export class Auth {
+  // TODO: Sessionクラスのインターフェースを修正する
+  public loginSession: LoginSession;
+  public signupSession: SignupSession;
 
-  constructor(context: Context, env: Bindings, db: DB) {
+  private lucia: AppLucia;
+  private google: Google;
+
+  constructor(
+    private context: Context,
+    private db: DB,
+    env: Bindings,
+  ) {
     const { user, session } = luciaTableNames;
 
-    super(new D1Adapter(env.DB, { user, session }), {
+    this.lucia = new Lucia(new D1Adapter(env.DB, { user, session }), {
       sessionCookie: {
         name: LOGIN_SESSION_COOKIE,
         attributes: {
@@ -55,8 +64,8 @@ export class Auth extends Lucia<SessionAttrs, UserAttrs> {
       `${env.BASE_URL}${loginCallbackPath}`,
     );
 
-    this.db = db;
-    this.honoContext = context;
+    this.loginSession = new LoginSession(this.lucia, this.context);
+    this.signupSession = new SignupSession(this.db, this.context, env);
   }
 
   public createAuthUrl = async (

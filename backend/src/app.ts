@@ -2,7 +2,7 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { drizzle } from "drizzle-orm/d1";
 import * as schema from "./db/schema";
 import { DB } from "./db";
-import { Auth } from "./auth/lucia";
+import { Auth } from "./auth/auth";
 
 export type Bindings = {
   CLIENT_URL: string;

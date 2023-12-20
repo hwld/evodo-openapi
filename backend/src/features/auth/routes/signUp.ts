@@ -5,11 +5,6 @@ import { route } from "../../../app";
 import { SIGNUP_SESSION_COOKIE } from "../consts";
 import { HTTPException } from "hono/http-exception";
 import { users } from "../../../db/schema";
-import {
-  invalidateSignupSession,
-  validateSignupSession,
-} from "../../../auth/signupSession";
-import { setLoginSessionCookie } from "../../../auth/loginSession";
 import { errorResponse } from "../../../lib/openapi";
 
 const SignupInput = z
@@ -58,7 +53,7 @@ export const signup = route().openapi(signupRoute, async (context) => {
     var: { auth, db },
   } = context;
 
-  const signupSession = await validateSignupSession(context, db);
+  const signupSession = await auth.signupSession.validate();
   if (!signupSession) {
     console.error("新規登録セッションが存在しない");
     throw new HTTPException(401);
@@ -72,11 +67,8 @@ export const signup = route().openapi(signupRoute, async (context) => {
       .returning()
   )[0];
 
-  const session = await auth.createSession(newUser.id, {});
-  const sessionCookie = auth.createSessionCookie(session.id);
-  setLoginSessionCookie(context, sessionCookie);
-
-  await invalidateSignupSession(context, signupSession.id, db);
+  await auth.loginSession.create(newUser.id);
+  await auth.signupSession.invalidate(signupSession.id);
 
   return json({ userId: newUser.id });
 });

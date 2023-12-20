@@ -3,7 +3,6 @@ import { Features } from "../../features";
 import { UserSchema } from "../../user/schema";
 import { route } from "../../../app";
 import { sessionPath } from "../path";
-import { validateLoginSession } from "../../../auth/loginSession";
 import { errorResponse } from "../../../lib/openapi";
 
 const sessionRoute = createRoute({
@@ -30,7 +29,7 @@ export const session = route().openapi(sessionRoute, async (context) => {
     var: { auth },
   } = context;
 
-  const { session, user } = await validateLoginSession(context, auth);
+  const { session, user } = await auth.loginSession.validate();
   if (!session) {
     return json(null);
   }

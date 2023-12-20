@@ -9,11 +9,6 @@ import { eq } from "drizzle-orm";
 import { decodeIdToken } from "../../../auth/utils";
 import { users } from "../../../db/schema";
 import { OAuth2RequestError } from "arctic";
-import { setLoginSessionCookie } from "../../../auth/loginSession";
-import {
-  createSignupSession,
-  setSignupSessionCookie,
-} from "../../../auth/signupSession";
 import { errorResponse } from "../../../lib/openapi";
 
 const authCallbackRoute = createRoute({
@@ -75,15 +70,11 @@ export const loginCallback = route().openapi(
 
       // 新規登録のユーザーは新規登録セッションを作成してsignupページにリダイレクトする
       if (!existingUser) {
-        const signupSession = await createSignupSession(db, googleId);
-        setSignupSessionCookie(context, signupSession.id, env);
-
+        await auth.signupSession.create(googleId);
         return context.redirect(`${env.CLIENT_URL}/auth/signup`);
       }
 
-      const session = await auth.createSession(existingUser.id, {});
-      const sessionCookie = auth.createSessionCookie(session.id);
-      setLoginSessionCookie(context, sessionCookie);
+      await auth.loginSession.create(existingUser.id);
 
       return context.redirect(env.CLIENT_URL);
     } catch (e) {

@@ -3,69 +3,65 @@ import { getCookie, setCookie } from "hono/cookie";
 import { CookieOptions } from "hono/utils/cookie";
 import { SessionCookie } from "lucia";
 import { CookieAttributes } from "oslo/cookie";
-import { Auth } from "./lucia";
+import { AppLucia } from "./auth";
 
-const convertCookieAttr = (attributes: CookieAttributes): CookieOptions => {
-  const sameSite = attributes.sameSite;
-  const map = { lax: "Lax", strict: "Strict", none: "None" } as const;
+export class LoginSession {
+  constructor(
+    private lucia: AppLucia,
+    private context: Context,
+  ) {}
 
-  return {
-    ...attributes,
-    sameSite: sameSite && map[sameSite],
+  /**
+   * セッションを作成して、cookieにセットする
+   */
+  public create = async (userId: string) => {
+    const session = await this.lucia.createSession(userId, {});
+    const sessionCookie = this.lucia.createSessionCookie(session.id);
+
+    this.setCookie(sessionCookie);
   };
-};
 
-export const setLoginSessionCookie = (
-  context: Context,
-  sessionCookie: SessionCookie,
-) => {
-  setCookie(
-    context,
-    sessionCookie.name,
-    sessionCookie.value,
-    convertCookieAttr(sessionCookie.attributes),
-  );
-};
+  public validate = async () => {
+    const id = getCookie(this.context, this.lucia.sessionCookieName);
+    if (!id) {
+      return { session: null, user: null };
+    }
 
-/**
- * @summary
- * ログインセッションを検証する。
- *
- * @description
- * セッションが無効であればセッションを削除し、Cookieもリセットする。
- * セッションが更新されていればCookieを更新する。
- */
-export const validateLoginSession = async (context: Context, auth: Auth) => {
-  const id = getCookie(context, auth.sessionCookieName);
-  if (!id) {
-    return { session: null, user: null };
-  }
-  const { session, user } = await auth.validateSession(id);
-  if (!session) {
-    setLoginSessionCookie(context, auth.createBlankSessionCookie());
-    return { session: null, user: null };
-  }
+    const { session, user } = await this.lucia.validateSession(id);
+    if (!session) {
+      this.setCookie(this.lucia.createBlankSessionCookie());
+      return { session: null, user: null };
+    }
 
-  // 有効期限が延長されたらcookieを作り直す
-  if (session.fresh) {
-    setLoginSessionCookie(context, auth.createSessionCookie(session.id));
-  }
+    // 有効期限が延長されたらcookieを作り直す
+    if (session.fresh) {
+      this.setCookie(this.lucia.createSessionCookie(session.id));
+    }
 
-  return { session, user };
-};
+    return { session, user };
+  };
 
-/**
- * @summary
- * ログインセッションを無効にする。
- *
- * @description
- * セッションストレージからセッションを削除して、クッキーをリセットする。
- */
-export const invalidateLoginSession = async (
-  context: Context,
-  auth: Auth,
-  sessionId: string,
-) => {
-  await auth.invalidateSession(sessionId);
-  setLoginSessionCookie(context, auth.createBlankSessionCookie());
-};
+  public invalidate = async (sessionId: string) => {
+    await this.lucia.invalidateSession(sessionId);
+    this.setCookie(this.lucia.createBlankSessionCookie());
+  };
+
+  private setCookie = (sessionCookie: SessionCookie) => {
+    setCookie(
+      this.context,
+      sessionCookie.name,
+      sessionCookie.value,
+      this.convertCookieAttr(sessionCookie.attributes),
+    );
+  };
+
+  private convertCookieAttr = (attributes: CookieAttributes): CookieOptions => {
+    const sameSite = attributes.sameSite;
+    const map = { lax: "Lax", strict: "Strict", none: "None" } as const;
+
+    return {
+      ...attributes,
+      sameSite: sameSite && map[sameSite],
+    };
+  };
+}

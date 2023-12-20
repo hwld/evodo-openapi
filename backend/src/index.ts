@@ -5,7 +5,7 @@ import { createApp } from "./app";
 import { taskRoute } from "./features/task";
 import { userRoute } from "./features/user";
 import { authRoute } from "./features/auth";
-import { Auth } from "./auth/lucia";
+import { Auth } from "./auth/auth";
 import { drizzle } from "drizzle-orm/d1";
 import * as schema from "./db/schema";
 
@@ -17,7 +17,7 @@ app.use("*", (c, next) => {
 app.use("*", logger());
 app.use("*", async (c, next) => {
   const db = drizzle(c.env.DB, { schema });
-  const auth = new Auth(c, c.env, db);
+  const auth = new Auth(c, db, c.env);
 
   c.set("db", db);
   c.set("auth", auth);
