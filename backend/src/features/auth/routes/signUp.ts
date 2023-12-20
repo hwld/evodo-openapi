@@ -46,29 +46,26 @@ const signupRoute = createRoute({
   },
 });
 
-export const signup = route().openapi(signupRoute, async (context) => {
-  const {
-    json,
-    req,
-    var: { auth, db },
-  } = context;
+export const signup = route().openapi(
+  signupRoute,
+  async ({ json, req, var: { auth, db } }) => {
+    const signupSession = await auth.signupSession.validate();
+    if (!signupSession) {
+      console.error("新規登録セッションが存在しない");
+      throw new HTTPException(401);
+    }
 
-  const signupSession = await auth.signupSession.validate();
-  if (!signupSession) {
-    console.error("新規登録セッションが存在しない");
-    throw new HTTPException(401);
-  }
+    const { username: name, profile } = req.valid("json");
+    const newUser = (
+      await db
+        .insert(users)
+        .values({ name, profile, googleId: signupSession.googleUserId })
+        .returning()
+    )[0];
 
-  const { username: name, profile } = req.valid("json");
-  const newUser = (
-    await db
-      .insert(users)
-      .values({ name, profile, googleId: signupSession.googleUserId })
-      .returning()
-  )[0];
+    await auth.loginSession.start(newUser.id);
+    await auth.signupSession.invalidate();
 
-  await auth.loginSession.create(newUser.id);
-  await auth.signupSession.invalidate(signupSession.id);
-
-  return json({ userId: newUser.id });
-});
+    return json({ userId: newUser.id });
+  },
+);

@@ -23,16 +23,14 @@ const sessionRoute = createRoute({
   },
 });
 
-export const session = route().openapi(sessionRoute, async (context) => {
-  const {
-    json,
-    var: { auth },
-  } = context;
+export const session = route().openapi(
+  sessionRoute,
+  async ({ json, var: { auth } }) => {
+    const { session, user } = await auth.loginSession.validate();
+    if (!session) {
+      return json(null);
+    }
 
-  const { session, user } = await auth.loginSession.validate();
-  if (!session) {
-    return json(null);
-  }
-
-  return json({ user: { id: user.id, name: user.name } });
-});
+    return json({ user: { id: user.id, name: user.name } });
+  },
+);

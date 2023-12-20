@@ -14,7 +14,7 @@ export class SignupSession {
     private env: Bindings,
   ) {}
 
-  public create = async (googleUserId: string) => {
+  public start = async (googleUserId: string) => {
     await this.db
       .delete(signupSessions)
       .where(eq(signupSessions.googleUserId, googleUserId));
@@ -57,10 +57,13 @@ export class SignupSession {
     return session;
   };
 
-  public invalidate = async (sessionId: string) => {
-    await this.db
-      .delete(signupSessions)
-      .where(eq(signupSessions.id, sessionId));
+  public invalidate = async () => {
+    const sessionId = getCookie(this.context, SIGNUP_SESSION_COOKIE);
+    if (sessionId) {
+      await this.db
+        .delete(signupSessions)
+        .where(eq(signupSessions.id, sessionId));
+    }
     deleteCookie(this.context, SIGNUP_SESSION_COOKIE);
   };
 

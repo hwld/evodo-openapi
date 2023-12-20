@@ -1,13 +1,20 @@
 import { Lucia } from "lucia";
 import { D1Adapter } from "@lucia-auth/adapter-sqlite";
 import { Bindings } from "../app";
-import { Google } from "arctic";
+import { Google, generateCodeVerifier, generateState } from "arctic";
 import { loginCallbackPath } from "../features/auth/path";
-import { LOGIN_SESSION_COOKIE } from "../features/auth/consts";
+import {
+  CODE_VERIFIER_COOKIE,
+  LOGIN_SESSION_COOKIE,
+  STATE_COOKIE,
+} from "../features/auth/consts";
 import { DB } from "../db";
-import { Context } from "hono";
+import { Context, HonoRequest } from "hono";
 import { LoginSession } from "./loginSession";
 import { SignupSession } from "./signupSession";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import { CookieOptions } from "hono/utils/cookie";
+import { HTTPException } from "hono/http-exception";
 
 export const luciaTableNames = {
   user: "users",
@@ -29,7 +36,6 @@ type SessionAttrs = {};
 type UserAttrs = { name: string; profile: string };
 export type AppLucia = Lucia<SessionAttrs, UserAttrs>;
 export class Auth {
-  // TODO: Sessionクラスのインターフェースを修正する
   public loginSession: LoginSession;
   public signupSession: SignupSession;
 
@@ -39,7 +45,7 @@ export class Auth {
   constructor(
     private context: Context,
     private db: DB,
-    env: Bindings,
+    private env: Bindings,
   ) {
     const { user, session } = luciaTableNames;
 
@@ -68,15 +74,44 @@ export class Auth {
     this.signupSession = new SignupSession(this.db, this.context, env);
   }
 
-  public createAuthUrl = async (
-    ...args: Parameters<typeof this.google.createAuthorizationURL>
-  ) => {
-    return this.google.createAuthorizationURL(...args);
+  public createAuthUrl = async () => {
+    const state = generateState();
+    const codeVerifier = generateCodeVerifier();
+
+    const cookieOptions: CookieOptions = {
+      httpOnly: true,
+      secure: this.env.ENVIRONMENT === "prod",
+      path: "/",
+      maxAge: 60 * 10,
+    };
+    setCookie(this.context, STATE_COOKIE, state, cookieOptions);
+    setCookie(this.context, CODE_VERIFIER_COOKIE, codeVerifier, cookieOptions);
+
+    return await this.google.createAuthorizationURL(state, codeVerifier);
   };
 
-  public validateAuthorizationCode = async (
-    ...args: Parameters<typeof this.google.validateAuthorizationCode>
-  ) => {
-    return this.google.validateAuthorizationCode(...args);
+  public validateAuthorizationCode = async (req: HonoRequest) => {
+    // codeは認可サーバー側で検証し、stateはここで検証する
+    const { code, state } = req.query();
+
+    const codeVerifierCookie = getCookie(this.context, CODE_VERIFIER_COOKIE);
+    deleteCookie(this.context, CODE_VERIFIER_COOKIE);
+    const stateCookie = getCookie(this.context, STATE_COOKIE);
+    deleteCookie(this.context, STATE_COOKIE);
+
+    if (
+      !codeVerifierCookie ||
+      !stateCookie ||
+      !code ||
+      !state ||
+      state !== stateCookie
+    ) {
+      console.error(
+        "必要なパラメータが不足しているか、stateの比較に失敗しました。",
+      );
+      throw new HTTPException(400, { message: "Bad request" });
+    }
+
+    return this.google.validateAuthorizationCode(code, codeVerifierCookie);
   };
 }

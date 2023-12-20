@@ -2,7 +2,6 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { route } from "../../../app";
 import { loginCallbackPath } from "../path";
 import { Features } from "../../features";
-import { deleteCookie } from "hono/cookie";
 import { STATE_COOKIE, CODE_VERIFIER_COOKIE } from "../consts";
 import { HTTPException } from "hono/http-exception";
 import { eq } from "drizzle-orm";
@@ -41,26 +40,9 @@ const authCallbackRoute = createRoute({
 
 export const loginCallback = route().openapi(
   authCallbackRoute,
-  async (context) => {
-    const {
-      req,
-      var: { auth, db },
-      env,
-    } = context;
-
-    const { state: stateCookie, code_verifier: codeCookie } =
-      req.valid("cookie");
-    const { code, state } = req.valid("query");
-    deleteCookie(context, STATE_COOKIE);
-    deleteCookie(context, CODE_VERIFIER_COOKIE);
-
-    if (stateCookie !== state) {
-      console.error("stateの比較に失敗");
-      throw new HTTPException(400, { message: "Bad request" });
-    }
-
+  async ({ redirect, req, var: { auth, db }, env }) => {
     try {
-      const tokens = await auth.validateAuthorizationCode(code, codeCookie);
+      const tokens = await auth.validateAuthorizationCode(req);
 
       // https://developers.google.com/identity/openid-connect/openid-connect?hl=ja#an-id-tokens-payload
       const { sub: googleId } = decodeIdToken<{ sub: string }>(tokens.idToken);
@@ -70,13 +52,13 @@ export const loginCallback = route().openapi(
 
       // 新規登録のユーザーは新規登録セッションを作成してsignupページにリダイレクトする
       if (!existingUser) {
-        await auth.signupSession.create(googleId);
-        return context.redirect(`${env.CLIENT_URL}/auth/signup`);
+        await auth.signupSession.start(googleId);
+        return redirect(`${env.CLIENT_URL}/auth/signup`);
       }
 
-      await auth.loginSession.create(existingUser.id);
+      await auth.loginSession.start(existingUser.id);
 
-      return context.redirect(env.CLIENT_URL);
+      return redirect(env.CLIENT_URL);
     } catch (e) {
       if (e instanceof OAuth2RequestError) {
         console.error("認可コードの検証エラー");

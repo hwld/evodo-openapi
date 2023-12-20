@@ -14,7 +14,7 @@ export class LoginSession {
   /**
    * セッションを作成して、cookieにセットする
    */
-  public create = async (userId: string) => {
+  public start = async (userId: string) => {
     const session = await this.lucia.createSession(userId, {});
     const sessionCookie = this.lucia.createSessionCookie(session.id);
 
@@ -41,8 +41,11 @@ export class LoginSession {
     return { session, user };
   };
 
-  public invalidate = async (sessionId: string) => {
-    await this.lucia.invalidateSession(sessionId);
+  public invalidate = async () => {
+    const sessionId = getCookie(this.context, this.lucia.sessionCookieName);
+    if (sessionId) {
+      await this.lucia.invalidateSession(sessionId);
+    }
     this.setCookie(this.lucia.createBlankSessionCookie());
   };
 

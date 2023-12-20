@@ -4,7 +4,6 @@ import { cancelSignupPath } from "../path";
 import { route } from "../../../app";
 import { SIGNUP_SESSION_COOKIE } from "../consts";
 import { errorResponse } from "../../../lib/openapi";
-import { authRoute } from "..";
 
 const cancelSignupRoute = createRoute({
   tags: [Features.auth],
@@ -29,17 +28,8 @@ const cancelSignupRoute = createRoute({
 
 export const cancelSignup = route().openapi(
   cancelSignupRoute,
-  async (context) => {
-    const {
-      json,
-      var: { auth },
-    } = context;
-
-    const session = await auth.signupSession.validate();
-    if (session) {
-      await auth.signupSession.invalidate(session.id);
-    }
-
+  async ({ json, var: { auth } }) => {
+    await auth.signupSession.invalidate();
     return json({});
   },
 );
