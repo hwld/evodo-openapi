@@ -15,15 +15,15 @@ export type Bindings = {
   GOOGLE_CLIENT_SECRET: string;
   DB: D1Database;
 };
-type Variables = {
+type RouteVariables = {
   auth: Auth;
   db: DB;
 };
 
-export type Env = {
+type AppEnv = {
   Bindings: Bindings;
-  Variables: Variables;
 };
+export type RouteEnv = { Bindings: Bindings; Variables: RouteVariables };
 
 /**
  * routerをつなげるトップレベルのHono
@@ -37,19 +37,11 @@ export type Env = {
  * export default app
  */
 export const createApp = () => {
-  const app = new OpenAPIHono<Env>();
+  const app = new OpenAPIHono<AppEnv>();
 
   app.use("", logger());
   app.use("*", (c, next) => {
     return cors({ origin: c.env.CLIENT_URL, credentials: true })(c, next);
-  });
-  app.use("*", async (c, next) => {
-    const db = drizzle(c.env.DB, { schema });
-    const auth = new Auth(c, db);
-
-    c.set("db", db);
-    c.set("auth", auth);
-    await next();
   });
 
   // OpenAPI
@@ -77,4 +69,16 @@ export const appRouter = () => new OpenAPIHono();
  * @example
  * export const route = route().openapi(...);
  */
-export const route = () => new OpenAPIHono<Env>();
+export const route = () => {
+  const route = new OpenAPIHono<RouteEnv>();
+  route.use("*", async (c, next) => {
+    const db = drizzle(c.env.DB, { schema });
+    const auth = new Auth(c, db);
+
+    c.set("db", db);
+    c.set("auth", auth);
+    await next();
+  });
+
+  return route;
+};

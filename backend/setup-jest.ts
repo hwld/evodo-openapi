@@ -22,11 +22,16 @@ beforeAll(async () => {
 
 afterEach(async () => {
   await testD1.exec("PRAGMA foreign_keys = false;");
+
   for (const key in schema) {
-    const table = (schema as any)[key] as SQLiteTable;
-    const tableName = getTableConfig(table).name;
+    const maybeTable = (schema as any)[key];
+    if (!(maybeTable instanceof SQLiteTable)) {
+      continue;
+    }
+    const tableName = getTableConfig(maybeTable).name;
     await testD1.exec(`DELETE FROM ${tableName}`);
   }
+
   await testD1.exec("PRAGMA foreign_keys = true;");
 });
 

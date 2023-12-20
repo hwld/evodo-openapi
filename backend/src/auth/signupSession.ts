@@ -5,12 +5,12 @@ import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { SIGNUP_SESSION_COOKIE } from "../features/auth/consts";
 import { signupSessions } from "../db/schema";
 import { alphabet, generateRandomString } from "oslo/random";
-import { Env } from "../app";
+import { RouteEnv } from "../app";
 
 export class SignupSession {
   constructor(
     private db: DB,
-    private context: Context<Env>,
+    private context: Context<RouteEnv>,
   ) {}
 
   public start = async (googleUserId: string) => {

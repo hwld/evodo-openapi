@@ -1,6 +1,6 @@
 import { Lucia } from "lucia";
 import { D1Adapter } from "@lucia-auth/adapter-sqlite";
-import { Env } from "../app";
+import { RouteEnv } from "../app";
 import { Google, generateCodeVerifier, generateState } from "arctic";
 import { loginCallbackPath } from "../features/auth/path";
 import {
@@ -43,7 +43,7 @@ export class Auth {
   private google: Google;
 
   constructor(
-    private context: Context<Env>,
+    private context: Context<RouteEnv>,
     private db: DB,
   ) {
     const { user, session } = luciaTableNames;
