@@ -24,13 +24,13 @@ const loginRoute = createRoute({
 export const login = route().openapi(loginRoute, async (context) => {
   const {
     env,
-    var: { googleAuth },
+    var: { auth },
     redirect,
   } = context;
 
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
-  const url = await googleAuth.createAuthorizationURL(state, codeVerifier);
+  const url = await auth.createAuthUrl(state, codeVerifier);
 
   const cookieOptions: CookieOptions = {
     httpOnly: true,

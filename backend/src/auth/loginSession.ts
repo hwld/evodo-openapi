@@ -3,7 +3,7 @@ import { getCookie, setCookie } from "hono/cookie";
 import { CookieOptions } from "hono/utils/cookie";
 import { SessionCookie } from "lucia";
 import { CookieAttributes } from "oslo/cookie";
-import { LuciaAuth } from "./lucia";
+import { Auth } from "./lucia";
 
 const convertCookieAttr = (attributes: CookieAttributes): CookieOptions => {
   const sameSite = attributes.sameSite;
@@ -35,10 +35,7 @@ export const setLoginSessionCookie = (
  * セッションが無効であればセッションを削除し、Cookieもリセットする。
  * セッションが更新されていればCookieを更新する。
  */
-export const validateLoginSession = async (
-  context: Context,
-  auth: LuciaAuth,
-) => {
+export const validateLoginSession = async (context: Context, auth: Auth) => {
   const id = getCookie(context, auth.sessionCookieName);
   if (!id) {
     return { session: null, user: null };
@@ -66,7 +63,7 @@ export const validateLoginSession = async (
  */
 export const invalidateLoginSession = async (
   context: Context,
-  auth: LuciaAuth,
+  auth: Auth,
   sessionId: string,
 ) => {
   await auth.invalidateSession(sessionId);

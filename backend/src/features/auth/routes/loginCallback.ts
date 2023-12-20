@@ -49,7 +49,7 @@ export const loginCallback = route().openapi(
   async (context) => {
     const {
       req,
-      var: { googleAuth, auth, db },
+      var: { auth, db },
       env,
     } = context;
 
@@ -65,10 +65,7 @@ export const loginCallback = route().openapi(
     }
 
     try {
-      const tokens = await googleAuth.validateAuthorizationCode(
-        code,
-        codeCookie,
-      );
+      const tokens = await auth.validateAuthorizationCode(code, codeCookie);
 
       // https://developers.google.com/identity/openid-connect/openid-connect?hl=ja#an-id-tokens-payload
       const { sub: googleId } = decodeIdToken<{ sub: string }>(tokens.idToken);

@@ -2,7 +2,7 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { drizzle } from "drizzle-orm/d1";
 import * as schema from "./db/schema";
 import { DB } from "./db";
-import { GoogleAuth, LuciaAuth } from "./auth/lucia";
+import { Auth } from "./auth/lucia";
 
 export type Bindings = {
   CLIENT_URL: string;
@@ -12,17 +12,14 @@ export type Bindings = {
   GOOGLE_CLIENT_SECRET: string;
   DB: D1Database;
 };
-type Variables = { auth: LuciaAuth; googleAuth: GoogleAuth };
+type Variables = {
+  auth: Auth;
+  db: DB;
+};
 
 type Env = {
   Bindings: Bindings;
   Variables: Variables;
-};
-
-type RouteEnv = Env & {
-  Variables: Variables & {
-    db: DB;
-  };
 };
 
 /**
@@ -53,12 +50,4 @@ export const appRouter = () => new OpenAPIHono();
  * @example
  * export const route = route().openapi(...);
  */
-export const route = () => {
-  const app = new OpenAPIHono<RouteEnv>();
-  app.use("*", async (c, next) => {
-    c.set("db", drizzle(c.env.DB, { schema }));
-    await next();
-  });
-
-  return app;
-};
+export const route = () => new OpenAPIHono<Env>();
