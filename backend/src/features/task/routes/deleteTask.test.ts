@@ -7,12 +7,10 @@ const client = () => testClient(deleteTask, { DB: testD1 });
 
 describe("タスクの削除", () => {
   it("タスクを削除でき、削除したタスクが返される", async () => {
-    const task = (
-      await testDb
-        .insert(tasks)
-        .values({ title: "title", description: "" })
-        .returning()
-    )[0];
+    const [task] = await testDb
+      .insert(tasks)
+      .values({ title: "title", description: "" })
+      .returning();
 
     const result = await client().tasks[":id"].$delete({
       param: { id: task.id },

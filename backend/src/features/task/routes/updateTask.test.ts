@@ -8,12 +8,10 @@ const client = () => testClient(updateTask, { DB: testD1 });
 
 describe("タスクの更新", () => {
   it("タスクを更新できる", async () => {
-    const created = (
-      await testDb
-        .insert(tasks)
-        .values({ title: "title", description: "description" })
-        .returning()
-    )[0];
+    const [created] = await testDb
+      .insert(tasks)
+      .values({ title: "title", description: "description" })
+      .returning();
     const newTitle = "newTitle";
     const newDescription = "newDescription";
 
@@ -30,12 +28,10 @@ describe("タスクの更新", () => {
   });
 
   it("タイトルを空文字に更新できない", async () => {
-    const created = (
-      await testDb
-        .insert(tasks)
-        .values({ title: "title", description: "description" })
-        .returning()
-    )[0];
+    const [created] = await testDb
+      .insert(tasks)
+      .values({ title: "title", description: "description" })
+      .returning();
 
     const result = await client().tasks[":id"].$put({
       param: { id: created.id },

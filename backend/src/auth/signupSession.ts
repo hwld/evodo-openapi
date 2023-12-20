@@ -6,6 +6,7 @@ import { SIGNUP_SESSION_COOKIE } from "../features/auth/consts";
 import { signupSessions } from "../db/schema";
 import { alphabet, generateRandomString } from "oslo/random";
 import { RouteEnv } from "../app";
+import { TimeSpan, createDate } from "oslo/.";
 
 export class SignupSession {
   constructor(
@@ -19,16 +20,16 @@ export class SignupSession {
       .where(eq(signupSessions.googleUserId, googleUserId));
 
     const id = generateRandomString(40, alphabet("a-z", "0-9"));
-    const session = await this.db
+    const [session] = await this.db
       .insert(signupSessions)
       .values({
         id: id,
         googleUserId,
-        expires: new Date().getTime() + 1000 * 60 * 30,
+        expires: Math.floor(createDate(new TimeSpan(10, "m")).getTime() / 1000),
       })
       .returning();
 
-    this.setCookie(session[0].id);
+    this.setCookie(session.id);
   };
 
   public validate = async () => {

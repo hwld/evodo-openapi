@@ -15,7 +15,7 @@ const sessionRoute = createRoute({
     200: {
       content: {
         "application/json": {
-          schema: z.object({ user: UserSchema }).nullable(),
+          schema: z.object({ user: UserSchema.nullable() }),
         },
       },
       description: "取得成功",
@@ -28,7 +28,7 @@ export const session = route().openapi(
   async ({ json, var: { auth } }) => {
     const { session, user } = await auth.loginSession.validate();
     if (!session) {
-      return json(null);
+      return json({ user: null });
     }
 
     return json({ user: { id: user.id, name: user.name } });

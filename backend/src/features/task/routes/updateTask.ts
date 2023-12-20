@@ -54,13 +54,12 @@ export const updateTask = route().openapi(
     const taskId = req.valid("param").id;
     const { title, description } = req.valid("json");
 
-    const result = await db
+    const [updated] = await db
       .update(tasks)
       .set({ title, description })
       .where(eq(tasks.id, taskId))
       .returning();
 
-    const updated = result[0];
     if (!updated) {
       throw new HTTPException(404, { message: "not found" });
     }

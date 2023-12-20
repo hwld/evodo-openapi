@@ -45,9 +45,10 @@ export const createTask = route().openapi(
   createTaskRoute,
   async ({ req, var: { db }, json }) => {
     const { title, description } = req.valid("json");
-    const created = (
-      await db.insert(tasks).values({ title, description }).returning()
-    )[0];
+    const [created] = await db
+      .insert(tasks)
+      .values({ title, description })
+      .returning();
 
     return json(created);
   },

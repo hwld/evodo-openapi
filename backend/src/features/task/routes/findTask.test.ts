@@ -9,13 +9,13 @@ describe("タスクの取得", () => {
   it("idを指定してタスクを取得できる。", async () => {
     const title = "title";
     const description = "description";
-    const created = await testDb
+    const [created] = await testDb
       .insert(tasks)
       .values({ title, description })
       .returning();
 
     const result = await client().tasks[":id"].$get({
-      param: { id: created[0].id },
+      param: { id: created.id },
     });
     const finded = await result.json();
 

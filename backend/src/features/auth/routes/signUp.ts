@@ -56,12 +56,10 @@ export const signup = route().openapi(
     }
 
     const { username: name, profile } = req.valid("json");
-    const newUser = (
-      await db
-        .insert(users)
-        .values({ name, profile, googleId: signupSession.googleUserId })
-        .returning()
-    )[0];
+    const [newUser] = await db
+      .insert(users)
+      .values({ name, profile, googleId: signupSession.googleUserId })
+      .returning();
 
     await auth.loginSession.start(newUser.id);
     await auth.signupSession.invalidate();

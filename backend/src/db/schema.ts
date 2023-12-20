@@ -22,6 +22,7 @@ export const sessions = sqliteTable(luciaTableNames.session, {
   userId: text("user_id")
     .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
+  /** 秒 */
   expiresAt: integer("expires_at").notNull(),
 });
 

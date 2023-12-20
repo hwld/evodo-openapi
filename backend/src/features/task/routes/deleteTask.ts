@@ -38,12 +38,10 @@ export const deleteTask = route().openapi(
   async ({ req, json, var: { db } }) => {
     const taskId = req.valid("param").id;
 
-    const result = await db
+    const [deleted] = await db
       .delete(tasks)
       .where(eq(tasks.id, taskId))
       .returning();
-
-    const deleted = result[0];
     if (!deleted) {
       throw new HTTPException(404, { message: "not found" });
     }
