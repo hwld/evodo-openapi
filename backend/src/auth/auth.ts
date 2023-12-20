@@ -1,6 +1,6 @@
 import { Lucia } from "lucia";
 import { D1Adapter } from "@lucia-auth/adapter-sqlite";
-import { Bindings } from "../app";
+import { Env } from "../app";
 import { Google, generateCodeVerifier, generateState } from "arctic";
 import { loginCallbackPath } from "../features/auth/path";
 import {
@@ -43,17 +43,16 @@ export class Auth {
   private google: Google;
 
   constructor(
-    private context: Context,
+    private context: Context<Env>,
     private db: DB,
-    private env: Bindings,
   ) {
     const { user, session } = luciaTableNames;
 
-    this.lucia = new Lucia(new D1Adapter(env.DB, { user, session }), {
+    this.lucia = new Lucia(new D1Adapter(context.env.DB, { user, session }), {
       sessionCookie: {
         name: LOGIN_SESSION_COOKIE,
         attributes: {
-          secure: env.ENVIRONMENT === "prod",
+          secure: context.env.ENVIRONMENT === "prod",
         },
       },
       getUserAttributes: (data) => {
@@ -65,13 +64,13 @@ export class Auth {
     });
 
     this.google = new Google(
-      env.GOOGLE_CLIENT_ID,
-      env.GOOGLE_CLIENT_SECRET,
-      `${env.BASE_URL}${loginCallbackPath}`,
+      context.env.GOOGLE_CLIENT_ID,
+      context.env.GOOGLE_CLIENT_SECRET,
+      `${context.env.BASE_URL}${loginCallbackPath}`,
     );
 
     this.loginSession = new LoginSession(this.lucia, this.context);
-    this.signupSession = new SignupSession(this.db, this.context, env);
+    this.signupSession = new SignupSession(this.db, this.context);
   }
 
   public createAuthUrl = async () => {
@@ -80,7 +79,7 @@ export class Auth {
 
     const cookieOptions: CookieOptions = {
       httpOnly: true,
-      secure: this.env.ENVIRONMENT === "prod",
+      secure: this.context.env.ENVIRONMENT === "prod",
       path: "/",
       maxAge: 60 * 10,
     };

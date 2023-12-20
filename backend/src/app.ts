@@ -3,6 +3,9 @@ import { drizzle } from "drizzle-orm/d1";
 import * as schema from "./db/schema";
 import { DB } from "./db";
 import { Auth } from "./auth/auth";
+import { logger } from "hono/logger";
+import { cors } from "hono/cors";
+import { swaggerUI } from "@hono/swagger-ui";
 
 export type Bindings = {
   CLIENT_URL: string;
@@ -17,7 +20,7 @@ type Variables = {
   db: DB;
 };
 
-type Env = {
+export type Env = {
   Bindings: Bindings;
   Variables: Variables;
 };
@@ -33,7 +36,31 @@ type Env = {
  * //...
  * export default app
  */
-export const createApp = () => new OpenAPIHono<Env>();
+export const createApp = () => {
+  const app = new OpenAPIHono<Env>();
+
+  app.use("", logger());
+  app.use("*", (c, next) => {
+    return cors({ origin: c.env.CLIENT_URL, credentials: true })(c, next);
+  });
+  app.use("*", async (c, next) => {
+    const db = drizzle(c.env.DB, { schema });
+    const auth = new Auth(c, db);
+
+    c.set("db", db);
+    c.set("auth", auth);
+    await next();
+  });
+
+  // OpenAPI
+  app.doc("/doc", {
+    openapi: "3.0.0",
+    info: { version: "1.0.0", title: "evodo-openapi API" },
+  });
+  app.get("/ui", swaggerUI({ url: "/doc" }));
+
+  return app;
+};
 
 // Routeをつなげるために使用する
 /**

@@ -5,13 +5,12 @@ import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { SIGNUP_SESSION_COOKIE } from "../features/auth/consts";
 import { signupSessions } from "../db/schema";
 import { alphabet, generateRandomString } from "oslo/random";
-import { Bindings } from "../app";
+import { Env } from "../app";
 
 export class SignupSession {
   constructor(
     private db: DB,
-    private context: Context,
-    private env: Bindings,
+    private context: Context<Env>,
   ) {}
 
   public start = async (googleUserId: string) => {
@@ -70,7 +69,7 @@ export class SignupSession {
   private setCookie = async (sessionId: string) => {
     setCookie(this.context, SIGNUP_SESSION_COOKIE, sessionId, {
       httpOnly: true,
-      secure: this.env.ENVIRONMENT === "prod",
+      secure: this.context.env.ENVIRONMENT === "prod",
     });
   };
 }
