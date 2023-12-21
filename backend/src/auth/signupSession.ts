@@ -25,7 +25,7 @@ export class SignupSession {
       .values({
         id: id,
         googleUserId,
-        expires: Math.floor(createDate(new TimeSpan(10, "m")).getTime() / 1000),
+        expires: createDate(new TimeSpan(10, "m")).getTime(),
       })
       .returning();
 

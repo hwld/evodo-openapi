@@ -36,6 +36,7 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
 export const signupSessions = sqliteTable("signup_sessions", {
   id: text("id").primaryKey(),
   googleUserId: text("google_user_id").unique().notNull(),
+  /** ミリ秒 */
   expires: integer("expires").notNull(),
 });
 

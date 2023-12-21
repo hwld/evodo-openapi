@@ -15,6 +15,7 @@ import { SignupSession } from "./signupSession";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { CookieOptions } from "hono/utils/cookie";
 import { HTTPException } from "hono/http-exception";
+import { AuthAdapter } from "./adapter";
 
 export const luciaTableNames = {
   user: "users",
@@ -28,7 +29,7 @@ declare module "lucia" {
   interface DatabaseUserAttributes {
     name: string;
     profile: string;
-    google_id: string;
+    googleId: string;
   }
 }
 
@@ -46,9 +47,7 @@ export class Auth {
     private context: Context<RouteEnv>,
     private db: DB,
   ) {
-    const { user, session } = luciaTableNames;
-
-    this.lucia = new Lucia(new D1Adapter(context.env.DB, { user, session }), {
+    this.lucia = new Lucia(new AuthAdapter(db, context.env.KV), {
       sessionCookie: {
         name: LOGIN_SESSION_COOKIE,
         attributes: {

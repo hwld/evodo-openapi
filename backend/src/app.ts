@@ -14,6 +14,7 @@ export type Bindings = {
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;
   DB: D1Database;
+  KV: KVNamespace;
 };
 type RouteVariables = {
   auth: Auth;
