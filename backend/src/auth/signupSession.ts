@@ -6,7 +6,7 @@ import { SIGNUP_SESSION_COOKIE } from "../features/auth/consts";
 import { signupSessions } from "../db/schema";
 import { alphabet, generateRandomString } from "oslo/random";
 import { RouteEnv } from "../app";
-import { TimeSpan, createDate } from "oslo/.";
+import { TimeSpan, createDate } from "oslo";
 
 export class SignupSession {
   constructor(
