@@ -41,7 +41,7 @@ const createTaskRoute = createRoute({
   },
 });
 
-export const createTask = route().openapi(
+export const createTask = route(createTaskRoute.path).openapi(
   createTaskRoute,
   async ({ req, var: { db }, json }) => {
     const { title, description } = req.valid("json");

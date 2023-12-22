@@ -26,7 +26,7 @@ const cancelSignupRoute = createRoute({
   },
 });
 
-export const cancelSignup = route().openapi(
+export const cancelSignup = route(cancelSignupRoute.path).openapi(
   cancelSignupRoute,
   async ({ json, var: { auth } }) => {
     await auth.signupSession.invalidate();

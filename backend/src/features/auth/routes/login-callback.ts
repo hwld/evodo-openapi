@@ -38,7 +38,7 @@ const authCallbackRoute = createRoute({
   },
 });
 
-export const loginCallback = route().openapi(
+export const loginCallback = route(authCallbackRoute.path).openapi(
   authCallbackRoute,
   async ({ redirect, req, var: { auth, db }, env }) => {
     try {

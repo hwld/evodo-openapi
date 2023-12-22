@@ -8,7 +8,7 @@ import { HTTPException } from "hono/http-exception";
 import { Features } from "../../features";
 import { errorResponse } from "../../../lib/openapi";
 
-const DeleteTaskRoute = createRoute({
+const deleteTaskRoute = createRoute({
   tags: [Features.task],
   method: "delete",
   path: taskPath,
@@ -33,8 +33,8 @@ const DeleteTaskRoute = createRoute({
   },
 });
 
-export const deleteTask = route().openapi(
-  DeleteTaskRoute,
+export const deleteTask = route(deleteTaskRoute.path).openapi(
+  deleteTaskRoute,
   async ({ req, json, var: { db } }) => {
     const taskId = req.valid("param").id;
 

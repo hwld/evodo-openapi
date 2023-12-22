@@ -17,8 +17,7 @@ const logoutRoute = createRoute({
     },
   },
 });
-
-export const logout = route().openapi(
+export const logout = route(logoutRoute.path).openapi(
   logoutRoute,
   async ({ json, var: { auth } }) => {
     await auth.loginSession.invalidate();

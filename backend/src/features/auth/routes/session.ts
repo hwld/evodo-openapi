@@ -23,7 +23,7 @@ const sessionRoute = createRoute({
   },
 });
 
-export const session = route().openapi(
+export const session = route(sessionRoute.path).openapi(
   sessionRoute,
   async ({ json, var: { auth } }) => {
     const { session, user } = await auth.loginSession.validate();

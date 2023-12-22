@@ -7,8 +7,8 @@ import { AppLucia } from "./auth";
 
 export class LoginSession {
   constructor(
-    private lucia: AppLucia,
     private context: Context,
+    private lucia: AppLucia,
   ) {}
 
   /**

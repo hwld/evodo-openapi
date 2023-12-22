@@ -6,8 +6,9 @@ import { Auth } from "./services/auth/auth";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
 import { swaggerUI } from "@hono/swagger-ui";
+import { HTTPException } from "hono/http-exception";
 
-export type Bindings = {
+export type AppBindings = {
   CLIENT_URL: string;
   ENVIRONMENT: "dev" | "prod";
   BASE_URL: string;
@@ -16,15 +17,10 @@ export type Bindings = {
   DB: D1Database;
   KV: KVNamespace;
 };
-type RouteVariables = {
-  auth: Auth;
-  db: DB;
-};
 
-type AppEnv = {
-  Bindings: Bindings;
+export type AppEnv = {
+  Bindings: AppBindings;
 };
-export type RouteEnv = { Bindings: Bindings; Variables: RouteVariables };
 
 /**
  * routerをつなげるトップレベルのHono
@@ -40,7 +36,7 @@ export type RouteEnv = { Bindings: Bindings; Variables: RouteVariables };
 export const createApp = () => {
   const app = new OpenAPIHono<AppEnv>();
 
-  app.use("", logger());
+  app.use("*", logger());
   app.use("*", (c, next) => {
     return cors({ origin: c.env.CLIENT_URL, credentials: true })(c, next);
   });
@@ -65,16 +61,20 @@ export const createApp = () => {
  */
 export const appRouter = () => new OpenAPIHono();
 
-/**
- * routeを作成する
- * @example
- * export const route = route().openapi(...);
- */
-export const route = () => {
-  const route = new OpenAPIHono<RouteEnv>();
-  route.use("*", async (c, next) => {
+type RouteVariables = {
+  auth: Auth;
+  db: DB;
+};
+export const route = <Variables extends RouteVariables = RouteVariables>(
+  path: string,
+) => {
+  const route = new OpenAPIHono<{
+    Bindings: AppBindings;
+    Variables: RouteVariables & Variables;
+  }>();
+  route.use(path, async (c, next) => {
     const db = drizzle(c.env.DB, { schema });
-    const auth = new Auth(c, db);
+    const auth = new Auth(c, c.env, db);
 
     c.set("db", db);
     c.set("auth", auth);
@@ -82,4 +82,20 @@ export const route = () => {
   });
 
   return route;
+};
+
+type RequireAuthVariables = RouteVariables & { loggedInUserId: string };
+export const requireAuthRoute = (path: string) => {
+  const requireAuthRoute = route<RequireAuthVariables>(path);
+  requireAuthRoute.use(path, async (c, next) => {
+    const { session } = await c.var.auth.loginSession.validate();
+    if (!session) {
+      throw new HTTPException(401);
+    }
+
+    c.set("loggedInUserId", session.userId);
+    await next();
+  });
+
+  return requireAuthRoute;
 };

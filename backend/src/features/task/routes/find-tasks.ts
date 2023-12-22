@@ -24,7 +24,7 @@ const getTasksRoute = createRoute({
   },
 });
 
-export const findTasks = route().openapi(
+export const findTasks = route(getTasksRoute.path).openapi(
   getTasksRoute,
   async ({ json, var: { db } }) => {
     const result = await db.select().from(tasks).all();

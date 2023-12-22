@@ -17,7 +17,7 @@ const loginRoute = createRoute({
   },
 });
 
-export const login = route().openapi(
+export const login = route(loginRoute.path).openapi(
   loginRoute,
   async ({ redirect, var: { auth } }) => {
     const url = await auth.createAuthUrl();

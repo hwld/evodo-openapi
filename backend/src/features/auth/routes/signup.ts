@@ -46,7 +46,7 @@ const signupRoute = createRoute({
   },
 });
 
-export const signup = route().openapi(
+export const signup = route(signupRoute.path).openapi(
   signupRoute,
   async ({ json, req, var: { auth, db } }) => {
     const signupSession = await auth.signupSession.validate();

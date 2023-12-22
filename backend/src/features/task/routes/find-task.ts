@@ -33,7 +33,7 @@ const getTaskRoute = createRoute({
   },
 });
 
-export const findTask = route().openapi(
+export const findTask = route(getTaskRoute.path).openapi(
   getTaskRoute,
   async ({ req, json, var: { db } }) => {
     const taskId = req.valid("param").id;

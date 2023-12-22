@@ -1,5 +1,5 @@
 import { Lucia } from "lucia";
-import { RouteEnv } from "../../app";
+import { AppBindings } from "../../app";
 import { Google, generateCodeVerifier, generateState } from "arctic";
 import { loginCallbackPath } from "../../features/auth/path";
 import {
@@ -39,14 +39,15 @@ export class Auth {
   private google: Google;
 
   constructor(
-    private context: Context<RouteEnv>,
+    private context: Context,
+    private env: AppBindings,
     private db: DB,
   ) {
-    this.lucia = new Lucia(new AuthAdapter(db, context.env.KV), {
+    this.lucia = new Lucia(new AuthAdapter(db, env.KV), {
       sessionCookie: {
         name: LOGIN_SESSION_COOKIE,
         attributes: {
-          secure: context.env.ENVIRONMENT === "prod",
+          secure: env.ENVIRONMENT === "prod",
         },
       },
       getUserAttributes: (data) => {
@@ -58,13 +59,13 @@ export class Auth {
     });
 
     this.google = new Google(
-      context.env.GOOGLE_CLIENT_ID,
-      context.env.GOOGLE_CLIENT_SECRET,
-      `${context.env.BASE_URL}${loginCallbackPath}`,
+      env.GOOGLE_CLIENT_ID,
+      env.GOOGLE_CLIENT_SECRET,
+      `${env.BASE_URL}${loginCallbackPath}`,
     );
 
-    this.loginSession = new LoginSession(this.lucia, this.context);
-    this.signupSession = new SignupSession(this.db, this.context);
+    this.loginSession = new LoginSession(this.context, this.lucia);
+    this.signupSession = new SignupSession(this.context, this.env, this.db);
   }
 
   public createAuthUrl = async () => {
@@ -73,7 +74,7 @@ export class Auth {
 
     const cookieOptions: CookieOptions = {
       httpOnly: true,
-      secure: this.context.env.ENVIRONMENT === "prod",
+      secure: this.env.ENVIRONMENT === "prod",
       path: "/",
       maxAge: 60 * 10,
     };

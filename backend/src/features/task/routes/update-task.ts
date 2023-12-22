@@ -16,7 +16,7 @@ const UpdasteTaskInput = z
   })
   .openapi("UpdateTaskInput");
 
-const UpdateTaskRoute = createRoute({
+const updateTaskRoute = createRoute({
   tags: [Features.task],
   method: "put",
   path: taskPath,
@@ -48,8 +48,8 @@ const UpdateTaskRoute = createRoute({
   },
 });
 
-export const updateTask = route().openapi(
-  UpdateTaskRoute,
+export const updateTask = route(updateTaskRoute.path).openapi(
+  updateTaskRoute,
   async ({ json, var: { db }, req }) => {
     const taskId = req.valid("param").id;
     const { title, description } = req.valid("json");
