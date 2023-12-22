@@ -78,9 +78,7 @@ export class AuthAdapter implements Adapter {
           metadata: { sessionId: session.id } satisfies UserSessionMetadata,
         },
       ),
-      this.kv.put(this.sessionKey(session.id), JSON.stringify(session), {
-        expiration: Math.floor(session.expiresAt.getTime() / 1000),
-      }),
+      this.kv.put(this.sessionKey(session.id), JSON.stringify(session)),
     ]);
   };
 
@@ -97,7 +95,6 @@ export class AuthAdapter implements Adapter {
     await this.kv.put(
       this.sessionKey(session.id),
       JSON.stringify(updatedSession),
-      { expiration: Math.floor(updatedSession.expiresAt.getTime() / 1000) },
     );
   };
 
