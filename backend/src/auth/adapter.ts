@@ -14,6 +14,9 @@ type UserSessionMetadata = { sessionId: string };
  * userのstoreにD1を使用して、sessionのstoreにKVを使用するAdsapter
  */
 export class AuthAdapter implements Adapter {
+  static sessionKeyPrefix = "session:" as const;
+  static userSessionKeyPrefix = "user_session:" as const;
+
   constructor(
     private db: DB,
     private kv: KVNamespace,
@@ -156,10 +159,10 @@ export class AuthAdapter implements Adapter {
   };
 
   private sessionKey = (sessionId: string) => {
-    return `session:${sessionId}`;
+    return `${AuthAdapter.sessionKeyPrefix}${sessionId}`;
   };
 
   private userSessionKey = (userId: string, sessionId: string) => {
-    return `user_session:${userId}:${sessionId}`;
+    return `${AuthAdapter.userSessionKeyPrefix}${userId}:${sessionId}`;
   };
 }

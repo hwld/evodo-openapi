@@ -1,12 +1,12 @@
 import { testClient } from "hono/testing";
 import { cancelSignup } from "./cancelSignup";
-import { testD1, testDb } from "../../../../setup-jest";
+import { testD1, testDb, testKv } from "../../../../setup-jest";
 import { signupSessions } from "../../../db/schema";
 import { TimeSpan, createDate } from "oslo/.";
 import { parseSetCookie } from "../../../lib/cookie";
 import { SIGNUP_SESSION_COOKIE } from "../consts";
 
-const client = () => testClient(cancelSignup, { DB: testD1 });
+const client = () => testClient(cancelSignup, { DB: testD1, KV: testKv });
 
 describe("新規登録のキャンセル", () => {
   it("新規登録をキャンセルすると新規登録セッションが削除される", async () => {

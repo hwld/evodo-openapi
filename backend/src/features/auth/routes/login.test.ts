@@ -1,10 +1,10 @@
 import { testClient } from "hono/testing";
 import { login } from "./login";
-import { testD1 } from "../../../../setup-jest";
+import { testD1, testKv } from "../../../../setup-jest";
 import { CODE_VERIFIER_COOKIE, STATE_COOKIE } from "../consts";
 import { parseSetCookie } from "../../../lib/cookie";
 
-const client = () => testClient(login, { DB: testD1 });
+const client = () => testClient(login, { DB: testD1, KV: testKv });
 
 describe("ログイン", () => {
   it("GoogleログインのためのリダイレクトURLが返される", async () => {

@@ -17,11 +17,6 @@ import { CookieOptions } from "hono/utils/cookie";
 import { HTTPException } from "hono/http-exception";
 import { AuthAdapter } from "./adapter";
 
-export const luciaTableNames = {
-  user: "users",
-  session: "user_sessions",
-} as const;
-
 declare module "lucia" {
   interface Register {
     Lucia: AppLucia;

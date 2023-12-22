@@ -1,16 +1,18 @@
 import { testClient } from "hono/testing";
 import { signup } from "./signUp";
-import { testD1, testDb } from "../../../../setup-jest";
-import { sessions, signupSessions, users } from "../../../db/schema";
+import { testD1, testDb, testKv } from "../../../../setup-jest";
+import { signupSessions, users } from "../../../db/schema";
 import { TimeSpan, createDate } from "oslo/.";
 import { eq } from "drizzle-orm";
 import { parseSetCookie } from "../../../lib/cookie";
 import { LOGIN_SESSION_COOKIE } from "../consts";
+import { AuthAdapter } from "../../../auth/adapter";
 
-const client = () => testClient(signup, { DB: testD1 });
+const client = () => testClient(signup, { DB: testD1, KV: testKv });
 
 describe("新規登録", () => {
   it("新規登録セッションがあるときには新規登録でき、ログインセッションが開始される。", async () => {
+    const authAdapter = new AuthAdapter(testDb, testKv);
     const username = "newUser";
     const profile = "newProfile";
     const [signupSession] = await testDb
@@ -35,10 +37,11 @@ describe("新規登録", () => {
     expect(user?.profile).toBe(profile);
 
     const cookie = parseSetCookie(result.headers.get("set-cookie") ?? "");
-    const loginSession = await testDb.query.sessions.findFirst({
-      where: eq(sessions.id, cookie[LOGIN_SESSION_COOKIE].value),
-    });
+    const [loginSession, loggedInUser] = await authAdapter.getSessionAndUser(
+      cookie[LOGIN_SESSION_COOKIE].value,
+    );
     expect(loginSession?.userId).toBe(user?.id);
+    expect(loggedInUser?.id).toBe(user?.id);
   });
 
   it("新規登録セッションがないと登録は失敗する", async () => {
@@ -52,7 +55,9 @@ describe("新規登録", () => {
     const allUsers = await testDb.query.users.findMany();
     expect(allUsers.length).toBe(0);
 
-    const allLoginSessions = await testDb.query.sessions.findMany();
-    expect(allLoginSessions.length).toBe(0);
+    const allLoginSessions = await testKv.list({
+      prefix: AuthAdapter.sessionKeyPrefix,
+    });
+    expect(allLoginSessions.keys.length).toBe(0);
   });
 });
