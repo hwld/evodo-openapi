@@ -1,6 +1,7 @@
 import { testClient } from "hono/testing";
 import { createTask } from "./create-task";
-import { testD1, testDb } from "../../../../setup-jest";
+import { testD1, testDb } from "../../../../setup-vitest";
+import { describe, it, expect } from "vitest";
 
 const client = () => testClient(createTask, { DB: testD1 });
 

@@ -1,8 +1,9 @@
 import { testClient } from "hono/testing";
 import { login } from "./login";
-import { testD1, testKv } from "../../../../setup-jest";
+import { testD1, testKv } from "../../../../setup-vitest";
 import { CODE_VERIFIER_COOKIE, STATE_COOKIE } from "../consts";
 import { parseSetCookie } from "../../../lib/cookie";
+import { describe, it, expect } from "vitest";
 
 const client = () => testClient(login, { DB: testD1, KV: testKv });
 

@@ -2,6 +2,7 @@ import { DrizzleD1Database, drizzle } from "drizzle-orm/d1";
 import { Miniflare } from "miniflare";
 import * as schema from "./src/services/db/schema";
 import { SQLiteTable, getTableConfig } from "drizzle-orm/sqlite-core";
+import { beforeAll, beforeEach, afterAll } from "vitest";
 
 export let testD1: D1Database;
 export let testKv: KVNamespace;

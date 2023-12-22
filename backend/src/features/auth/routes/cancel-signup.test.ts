@@ -1,10 +1,11 @@
 import { testClient } from "hono/testing";
 import { cancelSignup } from "./cancel-signup";
-import { testD1, testDb, testKv } from "../../../../setup-jest";
+import { testD1, testDb, testKv } from "../../../../setup-vitest";
 import { signupSessions } from "../../../services/db/schema";
-import { TimeSpan, createDate } from "oslo/.";
+import { TimeSpan, createDate } from "oslo";
 import { parseSetCookie } from "../../../lib/cookie";
 import { SIGNUP_SESSION_COOKIE } from "../consts";
+import { describe, expect, it } from "vitest";
 
 const client = () => testClient(cancelSignup, { DB: testD1, KV: testKv });
 

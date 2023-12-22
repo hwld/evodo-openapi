@@ -1,11 +1,12 @@
 import { testClient } from "hono/testing";
 import { logout } from "./logout";
-import { testD1, testDb, testKv } from "../../../../setup-jest";
+import { testD1, testDb, testKv } from "../../../../setup-vitest";
 import { users } from "../../../services/db/schema";
 import { parseSetCookie } from "../../../lib/cookie";
 import { LOGIN_SESSION_COOKIE } from "../consts";
-import { TimeSpan, createDate } from "oslo/.";
+import { TimeSpan, createDate } from "oslo";
 import { AuthAdapter } from "../../../services/auth/adapter";
+import { describe, it, expect } from "vitest";
 
 const client = () => testClient(logout, { DB: testD1, KV: testKv });
 

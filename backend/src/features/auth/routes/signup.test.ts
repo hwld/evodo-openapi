@@ -1,12 +1,13 @@
 import { testClient } from "hono/testing";
 import { signup } from "./signup";
-import { testD1, testDb, testKv } from "../../../../setup-jest";
+import { testD1, testDb, testKv } from "../../../../setup-vitest";
 import { signupSessions, users } from "../../../services/db/schema";
-import { TimeSpan, createDate } from "oslo/.";
+import { TimeSpan, createDate } from "oslo";
 import { eq } from "drizzle-orm";
 import { parseSetCookie } from "../../../lib/cookie";
 import { LOGIN_SESSION_COOKIE } from "../consts";
 import { AuthAdapter } from "../../../services/auth/adapter";
+import { describe, it, expect } from "vitest";
 
 const client = () => testClient(signup, { DB: testD1, KV: testKv });
 
