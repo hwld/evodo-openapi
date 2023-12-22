@@ -1,10 +1,10 @@
 import { appRouter } from "../../app";
-import { cancelSignup } from "./routes/cancelSignup";
+import { cancelSignup } from "./routes/cancel-signup";
 import { login } from "./routes/login";
-import { loginCallback } from "./routes/loginCallback";
+import { loginCallback } from "./routes/login-callback";
 import { logout } from "./routes/logout";
 import { session } from "./routes/session";
-import { signup } from "./routes/signUp";
+import { signup } from "./routes/signup";
 
 export const authRoute = appRouter()
   .route("/", login)

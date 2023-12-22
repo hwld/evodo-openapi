@@ -1,5 +1,5 @@
 import { testClient } from "hono/testing";
-import { findTasks } from "./findTasks";
+import { findTasks } from "./find-tasks";
 import { testD1, testDb } from "../../../../setup-jest";
 import { desc } from "drizzle-orm";
 import { tasks } from "../../../services/db/schema";

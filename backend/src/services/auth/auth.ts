@@ -9,8 +9,8 @@ import {
 } from "../../features/auth/consts";
 import { DB } from "../db";
 import { Context, HonoRequest } from "hono";
-import { LoginSession } from "./loginSession";
-import { SignupSession } from "./signupSession";
+import { LoginSession } from "./login-session";
+import { SignupSession } from "./signup-session";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { CookieOptions } from "hono/utils/cookie";
 import { HTTPException } from "hono/http-exception";

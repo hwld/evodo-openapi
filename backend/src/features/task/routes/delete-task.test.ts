@@ -1,7 +1,7 @@
 import { testClient } from "hono/testing";
 import { testD1, testDb } from "../../../../setup-jest";
 import { tasks } from "../../../services/db/schema";
-import { deleteTask } from "./deleteTask";
+import { deleteTask } from "./delete-task";
 
 const client = () => testClient(deleteTask, { DB: testD1 });
 

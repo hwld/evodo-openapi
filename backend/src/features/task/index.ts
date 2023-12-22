@@ -1,9 +1,9 @@
 import { appRouter } from "../../app";
-import { createTask } from "./routes/createTask";
-import { deleteTask } from "./routes/deleteTask";
-import { findTask } from "./routes/findTask";
-import { findTasks } from "./routes/findTasks";
-import { updateTask } from "./routes/updateTask";
+import { createTask } from "./routes/create-task";
+import { deleteTask } from "./routes/delete-task";
+import { findTask } from "./routes/find-task";
+import { findTasks } from "./routes/find-tasks";
+import { updateTask } from "./routes/update-task";
 
 export const taskRoute = appRouter()
   .route("/", findTasks)

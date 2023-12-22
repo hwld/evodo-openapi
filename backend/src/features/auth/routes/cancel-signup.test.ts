@@ -1,5 +1,5 @@
 import { testClient } from "hono/testing";
-import { cancelSignup } from "./cancelSignup";
+import { cancelSignup } from "./cancel-signup";
 import { testD1, testDb, testKv } from "../../../../setup-jest";
 import { signupSessions } from "../../../services/db/schema";
 import { TimeSpan, createDate } from "oslo/.";
