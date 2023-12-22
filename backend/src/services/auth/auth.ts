@@ -1,13 +1,12 @@
 import { Lucia } from "lucia";
-import { D1Adapter } from "@lucia-auth/adapter-sqlite";
-import { RouteEnv } from "../app";
+import { RouteEnv } from "../../app";
 import { Google, generateCodeVerifier, generateState } from "arctic";
-import { loginCallbackPath } from "../features/auth/path";
+import { loginCallbackPath } from "../../features/auth/path";
 import {
   CODE_VERIFIER_COOKIE,
   LOGIN_SESSION_COOKIE,
   STATE_COOKIE,
-} from "../features/auth/consts";
+} from "../../features/auth/consts";
 import { DB } from "../db";
 import { Context, HonoRequest } from "hono";
 import { LoginSession } from "./loginSession";
@@ -31,6 +30,7 @@ declare module "lucia" {
 type SessionAttrs = {};
 type UserAttrs = { name: string; profile: string };
 export type AppLucia = Lucia<SessionAttrs, UserAttrs>;
+
 export class Auth {
   public loginSession: LoginSession;
   public signupSession: SignupSession;

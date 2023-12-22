@@ -3,7 +3,7 @@ import { taskPath } from "../path";
 import { TaskSchema } from "../schema";
 import { route } from "../../../app";
 import { eq } from "drizzle-orm";
-import { tasks } from "../../../db/schema";
+import { tasks } from "../../../services/db/schema";
 import { HTTPException } from "hono/http-exception";
 import { Features } from "../../features";
 import { errorResponse } from "../../../lib/openapi";

@@ -1,7 +1,7 @@
 import { testClient } from "hono/testing";
 import { cancelSignup } from "./cancelSignup";
 import { testD1, testDb, testKv } from "../../../../setup-jest";
-import { signupSessions } from "../../../db/schema";
+import { signupSessions } from "../../../services/db/schema";
 import { TimeSpan, createDate } from "oslo/.";
 import { parseSetCookie } from "../../../lib/cookie";
 import { SIGNUP_SESSION_COOKIE } from "../consts";

@@ -2,7 +2,7 @@ import { testClient } from "hono/testing";
 import { findTasks } from "./findTasks";
 import { testD1, testDb } from "../../../../setup-jest";
 import { desc } from "drizzle-orm";
-import { tasks } from "../../../db/schema";
+import { tasks } from "../../../services/db/schema";
 
 const client = () => testClient(findTasks, { DB: testD1 });
 

@@ -1,8 +1,8 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { drizzle } from "drizzle-orm/d1";
-import * as schema from "./db/schema";
-import { DB } from "./db";
-import { Auth } from "./auth/auth";
+import * as schema from "./services/db/schema";
+import { DB } from "./services/db";
+import { Auth } from "./services/auth/auth";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
 import { swaggerUI } from "@hono/swagger-ui";

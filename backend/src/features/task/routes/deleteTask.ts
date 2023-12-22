@@ -2,7 +2,7 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { taskPath } from "../path";
 import { TaskSchema } from "../schema";
 import { route } from "../../../app";
-import { tasks } from "../../../db/schema";
+import { tasks } from "../../../services/db/schema";
 import { eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Features } from "../../features";

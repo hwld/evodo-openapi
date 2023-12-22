@@ -1,7 +1,7 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { TaskSchema } from "../schema";
 import { route } from "../../../app";
-import { tasks } from "../../../db/schema";
+import { tasks } from "../../../services/db/schema";
 import { tasksPath } from "../path";
 import { Features } from "../../features";
 import { errorResponse } from "../../../lib/openapi";

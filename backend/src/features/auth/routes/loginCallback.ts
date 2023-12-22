@@ -5,8 +5,8 @@ import { Features } from "../../features";
 import { STATE_COOKIE, CODE_VERIFIER_COOKIE } from "../consts";
 import { HTTPException } from "hono/http-exception";
 import { eq } from "drizzle-orm";
-import { decodeIdToken } from "../../../auth/utils";
-import { users } from "../../../db/schema";
+import { decodeIdToken } from "../../../services/auth/utils";
+import { users } from "../../../services/db/schema";
 import { OAuth2RequestError } from "arctic";
 import { errorResponse } from "../../../lib/openapi";
 

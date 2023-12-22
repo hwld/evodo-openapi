@@ -1,11 +1,11 @@
 import { testClient } from "hono/testing";
 import { session } from "./session";
 import { testD1, testDb, testKv } from "../../../../setup-jest";
-import { users } from "../../../db/schema";
+import { users } from "../../../services/db/schema";
 import { LOGIN_SESSION_COOKIE } from "../consts";
 import { TimeSpan, createDate } from "oslo/.";
 import { parseSetCookie } from "../../../lib/cookie";
-import { AuthAdapter } from "../../../auth/adapter";
+import { AuthAdapter } from "../../../services/auth/adapter";
 
 const client = () => testClient(session, { DB: testD1, KV: testKv });
 

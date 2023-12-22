@@ -2,10 +2,10 @@ import { Context } from "hono";
 import { DB } from "../db";
 import { eq } from "drizzle-orm";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
-import { SIGNUP_SESSION_COOKIE } from "../features/auth/consts";
+import { SIGNUP_SESSION_COOKIE } from "../../features/auth/consts";
 import { signupSessions } from "../db/schema";
 import { alphabet, generateRandomString } from "oslo/random";
-import { RouteEnv } from "../app";
+import { RouteEnv } from "../../app";
 import { TimeSpan, createDate } from "oslo";
 
 export class SignupSession {

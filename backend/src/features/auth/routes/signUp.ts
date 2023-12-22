@@ -4,7 +4,7 @@ import { signupPath } from "../path";
 import { route } from "../../../app";
 import { SIGNUP_SESSION_COOKIE } from "../consts";
 import { HTTPException } from "hono/http-exception";
-import { users } from "../../../db/schema";
+import { users } from "../../../services/db/schema";
 import { errorResponse } from "../../../lib/openapi";
 
 const SignupInput = z

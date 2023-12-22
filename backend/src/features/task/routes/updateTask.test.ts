@@ -1,7 +1,7 @@
 import { testClient } from "hono/testing";
 import { updateTask } from "./updateTask";
 import { testD1, testDb } from "../../../../setup-jest";
-import { tasks } from "../../../db/schema";
+import { tasks } from "../../../services/db/schema";
 import { eq } from "drizzle-orm";
 
 const client = () => testClient(updateTask, { DB: testD1 });
