@@ -1,10 +1,9 @@
 // テーブル以外をexportしない
-import { relations, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { text, sqliteTable, integer } from "drizzle-orm/sqlite-core";
 import { createId } from "@paralleldrive/cuid2";
-import { luciaTableNames } from "../auth/auth";
 
-export const users = sqliteTable(luciaTableNames.user, {
+export const users = sqliteTable("users", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => createId()),
@@ -12,26 +11,6 @@ export const users = sqliteTable(luciaTableNames.user, {
   name: text("name").notNull(),
   profile: text("profile").notNull(),
 });
-
-export const usersRelations = relations(users, ({ many }) => ({
-  sessions: many(sessions),
-}));
-
-export const sessions = sqliteTable(luciaTableNames.session, {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
-    .references(() => users.id, { onDelete: "cascade" })
-    .notNull(),
-  /** 秒 */
-  expiresAt: integer("expires_at").notNull(),
-});
-
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users, {
-    fields: [sessions.userId],
-    references: [users.id],
-  }),
-}));
 
 export const signupSessions = sqliteTable("signup_sessions", {
   id: text("id").primaryKey(),
