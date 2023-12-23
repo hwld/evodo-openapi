@@ -28,15 +28,15 @@ describe("セッションの取得", () => {
     const result = await client().session.$get(undefined, {
       headers: { cookie: `${LOGIN_SESSION_COOKIE}=${sessionId}` },
     });
-    const session = await result.json();
+    const { session } = await result.json();
 
-    expect(session.user.id).toBe(loggedInUser.id);
-    expect(session.user.name).toBe(loggedInUser.name);
+    expect(session?.user.id).toBe(loggedInUser.id);
+    expect(session?.user.name).toBe(loggedInUser.name);
   });
 
   it("ログインしていなければnullが返される", async () => {
     const result = await client().session.$get();
-    const session = await result.json();
+    const { session } = await result.json();
 
     expect(session).toBeNull();
   });
@@ -59,7 +59,7 @@ describe("セッションの取得", () => {
       headers: { cookie: `${LOGIN_SESSION_COOKIE}=${sessionId}` },
     });
 
-    const session = await result.json();
+    const { session } = await result.json();
     expect(session).toBeNull();
 
     const cookie = parseSetCookie(result.headers.get("set-cookie") ?? "");

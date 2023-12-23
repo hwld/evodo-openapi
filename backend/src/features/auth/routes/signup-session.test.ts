@@ -22,14 +22,14 @@ describe("新規登録セッションの取得", () => {
     const result = await client()["signup-session"].$get(undefined, {
       headers: { cookie: `${SIGNUP_SESSION_COOKIE}=${signupSession.id}` },
     });
-    const exists = await result.json();
+    const { exists } = await result.json();
 
     expect(exists).toBe(true);
   });
 
   it("新規登録セッションがないときはfalseを返す", async () => {
     const result = await client()["signup-session"].$get();
-    const exists = await result.json();
+    const { exists } = await result.json();
 
     expect(exists).toBe(false);
   });

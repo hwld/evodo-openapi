@@ -112,7 +112,9 @@ const endpoints = makeApi([
     method: "get",
     path: "/session",
     requestFormat: "json",
-    response: z.object({ user: User }).passthrough().nullable(),
+    response: z
+      .object({ session: z.object({ user: User }).passthrough().nullable() })
+      .passthrough(),
     errors: [
       {
         status: 500,
@@ -155,7 +157,7 @@ const endpoints = makeApi([
     method: "get",
     path: "/signup-session",
     requestFormat: "json",
-    response: z.boolean(),
+    response: z.object({ exists: z.boolean() }).passthrough(),
     errors: [
       {
         status: 500,

@@ -4,18 +4,24 @@ import { UserSchema } from "../../user/schema";
 import { route } from "../../../app";
 import { sessionPath } from "../path";
 import { errorResponse } from "../../../lib/openapi";
+import { LOGIN_SESSION_COOKIE } from "../consts";
 
 const sessionRoute = createRoute({
   tags: [Features.auth],
   method: "get",
   path: sessionPath,
   summary: "ログインしているユーザーを取得する",
+  request: {
+    cookies: z.object({ [LOGIN_SESSION_COOKIE]: z.string().optional() }),
+  },
   responses: {
     ...errorResponse(500),
     200: {
       content: {
         "application/json": {
-          schema: z.object({ user: UserSchema }).nullable(),
+          schema: z.object({
+            session: z.object({ user: UserSchema }).nullable(),
+          }),
         },
       },
       description: "取得成功",
@@ -28,9 +34,9 @@ export const session = route(sessionRoute.path).openapi(
   async ({ json, var: { auth } }) => {
     const { session, user } = await auth.loginSession.validate();
     if (!session) {
-      return json(null);
+      return json({ session: null });
     }
 
-    return json({ user: { id: user.id, name: user.name } });
+    return json({ session: { user: { id: user.id, name: user.name } } });
   },
 );
