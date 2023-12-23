@@ -34,4 +34,18 @@ describe("タスクの取得", () => {
     });
     expect(result.ok).toBe(false);
   });
+
+  it("他人のタスクを取得できない", async () => {
+    const otherUser = await Factories.user({});
+    const otherUserTask = await Factories.task({ authorId: otherUser.id });
+    const user = await Factories.user({});
+    const session = await Factories.loginSession({ userId: user.id });
+
+    const result = await client().tasks[":id"].$get({
+      cookie: { session: session.id },
+      param: { id: otherUserTask.id },
+    });
+
+    expect(result.ok).toBe(false);
+  });
 });

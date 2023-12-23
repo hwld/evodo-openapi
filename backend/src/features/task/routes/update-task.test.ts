@@ -40,4 +40,27 @@ describe("タスクの更新", () => {
     });
     expect(result.ok).toBe(false);
   });
+
+  it("他人のタスクを変更できない", async () => {
+    const otherUserTask = await Factories.task({
+      authorId: (await Factories.user({})).id,
+      title: "title",
+      description: "description",
+    });
+    const user = await Factories.user({});
+    const session = await Factories.loginSession({ userId: user.id });
+
+    const result = await client().tasks[":id"].$put({
+      cookie: { session: session.id },
+      param: { id: otherUserTask.id },
+      json: { title: "new", description: "new" },
+    });
+
+    expect(result.ok).toBe(false);
+    const task = await testDb.query.tasks.findFirst({
+      where: eq(tasks.id, otherUserTask.id),
+    });
+    expect(task?.title).toBe(otherUserTask.title);
+    expect(task?.description).toBe(otherUserTask.description);
+  });
 });

@@ -12,6 +12,9 @@ const client = () => testClient(session, { DB: testD1, KV: testKv });
 
 describe("セッションの取得", () => {
   it("ログインしているユーザーを取得できる", async () => {
+    await Factories.loginSession({
+      userId: (await Factories.user({})).id,
+    });
     const loggedInUser = await Factories.user({});
     const loginSession = await Factories.loginSession({
       userId: loggedInUser.id,

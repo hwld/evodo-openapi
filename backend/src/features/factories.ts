@@ -14,7 +14,7 @@ export const Factories = {
         id: crypto.randomUUID(),
         name: "user",
         profile: "profile",
-        googleId: "googleId",
+        googleId: crypto.randomUUID(),
         ...user,
       })
       .returning();
