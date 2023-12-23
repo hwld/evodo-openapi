@@ -1,16 +1,23 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { TaskSchema } from "../schema";
 import { tasks } from "../../../services/db/schema";
-import { route } from "../../../app";
+import { requireAuthRoute } from "../../../app";
 import { tasksPath } from "../path";
 import { Features } from "../../features";
 import { errorResponse } from "../../../lib/openapi";
+import { eq } from "drizzle-orm";
+import { LOGIN_SESSION_COOKIE } from "../../auth/consts";
 
 const getTasksRoute = createRoute({
   tags: [Features.task],
   method: "get",
   path: tasksPath,
   summary: "全てのタスクを取得する",
+  request: {
+    cookies: z.object({
+      [LOGIN_SESSION_COOKIE]: z.string(),
+    }),
+  },
   responses: {
     ...errorResponse(500),
     200: {
@@ -24,10 +31,12 @@ const getTasksRoute = createRoute({
   },
 });
 
-export const findTasks = route(getTasksRoute.path).openapi(
+export const findTasks = requireAuthRoute(getTasksRoute.path).openapi(
   getTasksRoute,
-  async ({ json, var: { db } }) => {
-    const result = await db.select().from(tasks).all();
+  async ({ json, var: { db, loggedInUserId } }) => {
+    const result = await db.query.tasks.findMany({
+      where: eq(tasks.authorId, loggedInUserId),
+    });
     return json(result);
   },
 );

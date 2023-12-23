@@ -1,32 +1,24 @@
 import { testClient } from "hono/testing";
 import { session } from "./session";
 import { testD1, testDb, testKv } from "../../../../setup-vitest";
-import { users } from "../../../services/db/schema";
 import { LOGIN_SESSION_COOKIE } from "../consts";
-import { TimeSpan, createDate } from "oslo";
 import { parseSetCookie } from "../../../lib/cookie";
 import { AuthAdapter } from "../../../services/auth/adapter";
 import { describe, it, expect } from "vitest";
+import { Factories } from "../../factories";
+import { TimeSpan, createDate } from "oslo";
 
 const client = () => testClient(session, { DB: testD1, KV: testKv });
 
 describe("セッションの取得", () => {
   it("ログインしているユーザーを取得できる", async () => {
-    const authAdapter = new AuthAdapter(testDb, testKv);
-    const [loggedInUser] = await testDb
-      .insert(users)
-      .values({ name: "username", profile: "profile", googleId: "" })
-      .returning();
-    const sessionId = "sessionId";
-    await authAdapter.setSession({
-      id: sessionId,
+    const loggedInUser = await Factories.user({});
+    const loginSession = await Factories.loginSession({
       userId: loggedInUser.id,
-      expiresAt: createDate(new TimeSpan(1, "w")),
-      attributes: {},
     });
 
     const result = await client().session.$get({
-      cookie: { session: sessionId },
+      cookie: { session: loginSession.id },
     });
     const { session } = await result.json();
 
@@ -42,21 +34,14 @@ describe("セッションの取得", () => {
   });
 
   it("セッションの期限が切れていればnullが返され、sessionが削除される", async () => {
-    const authAdapter = new AuthAdapter(testDb, testKv);
-    const [loggedInUser] = await testDb
-      .insert(users)
-      .values({ name: "name", profile: "profile", googleId: "googleId" })
-      .returning();
-    const sessionId = "sessionId";
-    await authAdapter.setSession({
-      id: sessionId,
+    const loggedInUser = await Factories.user({});
+    const loginSession = await Factories.loginSession({
       userId: loggedInUser.id,
       expiresAt: createDate(new TimeSpan(-1, "w")),
-      attributes: {},
     });
 
     const result = await client().session.$get({
-      cookie: { session: sessionId },
+      cookie: { session: loginSession.id },
     });
 
     const { session } = await result.json();
@@ -65,6 +50,7 @@ describe("セッションの取得", () => {
     const cookie = parseSetCookie(result.headers.get("set-cookie") ?? "");
     expect(cookie[LOGIN_SESSION_COOKIE].value).toBe("");
 
+    const authAdapter = new AuthAdapter(testDb, testKv);
     const allSessions = await authAdapter.getUserSessions(loggedInUser.id);
     expect(allSessions.length).toBe(0);
   });

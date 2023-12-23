@@ -1,22 +1,14 @@
 import { testClient } from "hono/testing";
 import { signupSession } from "./signup-session";
-import { testD1, testDb, testKv } from "../../../../setup-vitest";
+import { testD1, testKv } from "../../../../setup-vitest";
 import { describe, expect, it } from "vitest";
-import { signupSessions } from "../../../services/db/schema";
-import { TimeSpan, createDate } from "oslo";
+import { Factories } from "../../factories";
 
 const client = () => testClient(signupSession, { DB: testD1, KV: testKv });
 
 describe("新規登録セッションの取得", () => {
   it("新規登録セッションがあるときにはtrueを返す", async () => {
-    const [signupSession] = await testDb
-      .insert(signupSessions)
-      .values({
-        id: "sessionId",
-        googleUserId: "",
-        expires: createDate(new TimeSpan(10, "m")).getTime(),
-      })
-      .returning();
+    const signupSession = await Factories.signupSession({});
 
     const result = await client()["signup-session"].$get({
       cookie: { signup_session: signupSession.id },

@@ -1,29 +1,21 @@
 import { testClient } from "hono/testing";
 import { signup } from "./signup";
 import { testD1, testDb, testKv } from "../../../../setup-vitest";
-import { signupSessions, users } from "../../../services/db/schema";
-import { TimeSpan, createDate } from "oslo";
+import { users } from "../../../services/db/schema";
 import { eq } from "drizzle-orm";
 import { parseSetCookie } from "../../../lib/cookie";
 import { LOGIN_SESSION_COOKIE } from "../consts";
 import { AuthAdapter } from "../../../services/auth/adapter";
 import { describe, it, expect } from "vitest";
+import { Factories } from "../../factories";
 
 const client = () => testClient(signup, { DB: testD1, KV: testKv });
 
 describe("新規登録", () => {
   it("新規登録セッションがあるときには新規登録でき、ログインセッションが開始される。", async () => {
-    const authAdapter = new AuthAdapter(testDb, testKv);
     const username = "newUser";
     const profile = "newProfile";
-    const [signupSession] = await testDb
-      .insert(signupSessions)
-      .values({
-        id: "session",
-        googleUserId: "",
-        expires: createDate(new TimeSpan(10, "m")).getTime(),
-      })
-      .returning();
+    const signupSession = await Factories.signupSession({});
 
     const result = await client().signup.$post({
       cookie: { signup_session: signupSession.id },
@@ -38,6 +30,7 @@ describe("新規登録", () => {
     expect(user?.profile).toBe(profile);
 
     const cookie = parseSetCookie(result.headers.get("set-cookie") ?? "");
+    const authAdapter = new AuthAdapter(testDb, testKv);
     const [loginSession, loggedInUser] = await authAdapter.getSessionAndUser(
       cookie[LOGIN_SESSION_COOKIE].value,
     );

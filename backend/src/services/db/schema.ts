@@ -1,5 +1,5 @@
 // テーブル以外をexportしない
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { text, sqliteTable, integer } from "drizzle-orm/sqlite-core";
 import { createId } from "@paralleldrive/cuid2";
 
@@ -11,6 +11,10 @@ export const users = sqliteTable("users", {
   name: text("name").notNull(),
   profile: text("profile").notNull(),
 });
+
+export const usersRelations = relations(users, ({ many }) => ({
+  tasks: many(tasks),
+}));
 
 export const signupSessions = sqliteTable("signup_sessions", {
   id: text("id").primaryKey(),
@@ -25,6 +29,9 @@ export const tasks = sqliteTable("tasks", {
     .$defaultFn(() => createId()),
   title: text("title").notNull(),
   description: text("description").notNull(),
+  authorId: text("author_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
   createdAt: text("created_at")
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
@@ -32,3 +39,7 @@ export const tasks = sqliteTable("tasks", {
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
 });
+
+export const tasksRelations = relations(tasks, ({ one }) => ({
+  author: one(users, { fields: [tasks.authorId], references: [users.id] }),
+}));
