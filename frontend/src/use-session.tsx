@@ -5,7 +5,7 @@ export const useSession = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["session"],
     queryFn: async () => {
-      return await api.get("/session");
+      return (await api.get("/session")).session;
     },
   });
 

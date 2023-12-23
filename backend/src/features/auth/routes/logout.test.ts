@@ -25,8 +25,8 @@ describe("ログアウト", () => {
       attributes: {},
     });
 
-    const result = await client().logout.$post(undefined, {
-      headers: { Cookie: `${LOGIN_SESSION_COOKIE}=${sessionId}` },
+    const result = await client().logout.$post({
+      cookie: { session: sessionId },
     });
 
     const cookie = parseSetCookie(result.headers.get("set-cookie") ?? "");

@@ -25,8 +25,8 @@ describe("セッションの取得", () => {
       attributes: {},
     });
 
-    const result = await client().session.$get(undefined, {
-      headers: { cookie: `${LOGIN_SESSION_COOKIE}=${sessionId}` },
+    const result = await client().session.$get({
+      cookie: { session: sessionId },
     });
     const { session } = await result.json();
 
@@ -35,7 +35,7 @@ describe("セッションの取得", () => {
   });
 
   it("ログインしていなければnullが返される", async () => {
-    const result = await client().session.$get();
+    const result = await client().session.$get({ cookie: { session: "" } });
     const { session } = await result.json();
 
     expect(session).toBeNull();
@@ -55,8 +55,8 @@ describe("セッションの取得", () => {
       attributes: {},
     });
 
-    const result = await client().session.$get(undefined, {
-      headers: { cookie: `${LOGIN_SESSION_COOKIE}=${sessionId}` },
+    const result = await client().session.$get({
+      cookie: { session: sessionId },
     });
 
     const { session } = await result.json();
