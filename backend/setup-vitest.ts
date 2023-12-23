@@ -16,6 +16,7 @@ beforeAll(async () => {
     script: "",
     // wrangler.tomlのenv.testのdatabase_idに合わせる。
     d1Databases: { DB: "test" },
+    // wrangler.tomlのenv.testのkv_namespacesのidに合わせる
     kvNamespaces: { KV: "test" },
     d1Persist: "./.wrangler/state/v3/d1",
   });
