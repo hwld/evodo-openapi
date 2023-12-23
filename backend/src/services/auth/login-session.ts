@@ -4,6 +4,7 @@ import { CookieOptions } from "hono/utils/cookie";
 import { SessionCookie } from "lucia";
 import { CookieAttributes } from "oslo/cookie";
 import { AppLucia } from "./auth";
+import { log } from "../logger";
 
 export class LoginSession {
   constructor(
@@ -24,11 +25,13 @@ export class LoginSession {
   public validate = async () => {
     const id = getCookie(this.context, this.lucia.sessionCookieName);
     if (!id) {
+      log.debug("セッションCookieが存在しない");
       return { session: null, user: null };
     }
 
     const { session, user } = await this.lucia.validateSession(id);
     if (!session) {
+      log.debug("指定されたidのセッション情報が存在しない");
       this.setCookie(this.lucia.createBlankSessionCookie());
       return { session: null, user: null };
     }

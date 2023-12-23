@@ -7,6 +7,7 @@ import { signupSessions } from "../db/schema";
 import { alphabet, generateRandomString } from "oslo/random";
 import { TimeSpan, createDate } from "oslo";
 import { AppBindings } from "../../app";
+import { log } from "../logger";
 
 export class SignupSession {
   constructor(
@@ -36,6 +37,7 @@ export class SignupSession {
   public validate = async () => {
     const sessionId = getCookie(this.context, SIGNUP_SESSION_COOKIE);
     if (!sessionId) {
+      log.debug("セッションCookieが存在しない");
       return null;
     }
 
@@ -43,6 +45,7 @@ export class SignupSession {
       where: eq(signupSessions.id, sessionId),
     });
     if (!session) {
+      log.debug("指定されたidのセッション情報が存在しない");
       deleteCookie(this.context, SIGNUP_SESSION_COOKIE);
       return null;
     }

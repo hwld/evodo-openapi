@@ -6,7 +6,7 @@ import { Auth } from "./services/auth/auth";
 import { cors } from "hono/cors";
 import { swaggerUI } from "@hono/swagger-ui";
 import { HTTPException } from "hono/http-exception";
-import { loggingContext } from "./services/logger";
+import { log, loggingContext } from "./services/logger";
 
 export type AppBindings = {
   CLIENT_URL: string;
@@ -77,7 +77,14 @@ export const route = <Variables extends RouteVariables = RouteVariables>(
   const route = new OpenAPIHono<{
     Bindings: AppBindings;
     Variables: RouteVariables & Variables;
-  }>();
+  }>({
+    defaultHook: (result) => {
+      if (!result.success) {
+        log.error(`zod検証エラー: ${result.error.message}`);
+      }
+    },
+  });
+
   route.use(path, async (c, next) => {
     const db = drizzle(c.env.DB, { schema });
     const auth = new Auth(c, c.env, db);
@@ -96,6 +103,7 @@ export const requireAuthRoute = (path: string) => {
   requireAuthRoute.use(path, async (c, next) => {
     const { session } = await c.var.auth.loginSession.validate();
     if (!session) {
+      log.error("セッションが存在しません");
       throw new HTTPException(401);
     }
 
