@@ -15,6 +15,7 @@ import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { CookieOptions } from "hono/utils/cookie";
 import { HTTPException } from "hono/http-exception";
 import { AuthAdapter } from "./adapter";
+import { log } from "../logger";
 
 declare module "lucia" {
   interface Register {
@@ -100,7 +101,7 @@ export class Auth {
       !state ||
       state !== stateCookie
     ) {
-      console.error(
+      log.error(
         "必要なパラメータが不足しているか、stateの比較に失敗しました。",
       );
       throw new HTTPException(400, { message: "Bad request" });

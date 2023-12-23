@@ -3,10 +3,10 @@ import { drizzle } from "drizzle-orm/d1";
 import * as schema from "./services/db/schema";
 import { DB } from "./services/db";
 import { Auth } from "./services/auth/auth";
-import { logger } from "hono/logger";
 import { cors } from "hono/cors";
 import { swaggerUI } from "@hono/swagger-ui";
 import { HTTPException } from "hono/http-exception";
+import { loggingContext } from "./services/logger";
 
 export type AppBindings = {
   CLIENT_URL: string;
@@ -36,9 +36,15 @@ export type AppEnv = {
 export const createApp = () => {
   const app = new OpenAPIHono<AppEnv>();
 
-  app.use("*", logger());
   app.use("*", (c, next) => {
     return cors({ origin: c.env.CLIENT_URL, credentials: true })(c, next);
+  });
+
+  app.use("*", async (c, next) => {
+    return loggingContext.run(
+      { isProduction: c.env.ENVIRONMENT === "prod" },
+      next,
+    );
   });
 
   // OpenAPI

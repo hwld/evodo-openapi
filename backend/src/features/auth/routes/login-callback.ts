@@ -9,6 +9,7 @@ import { decodeIdToken } from "../../../services/auth/utils";
 import { users } from "../../../services/db/schema";
 import { OAuth2RequestError } from "arctic";
 import { errorResponse } from "../../../lib/openapi";
+import { log } from "../../../services/logger";
 
 const authCallbackRoute = createRoute({
   tags: [Features.auth],
@@ -61,7 +62,7 @@ export const loginCallback = route(authCallbackRoute.path).openapi(
       return redirect(env.CLIENT_URL);
     } catch (e) {
       if (e instanceof OAuth2RequestError) {
-        console.error("認可コードの検証エラー");
+        log.error("認可コードの検証に失敗しました");
         throw new HTTPException(401);
       }
       throw e;
