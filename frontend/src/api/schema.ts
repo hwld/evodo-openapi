@@ -47,7 +47,12 @@ const endpoints = makeApi([
     errors: [
       {
         status: 302,
-        description: `GoogleのログインURLにリダイレクト`,
+        description: `リダイレクト`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `内部エラー`,
         schema: z.void(),
       },
     ],
@@ -55,6 +60,9 @@ const endpoints = makeApi([
   {
     method: "get",
     path: "/login/google/callback",
+    description: `ユーザーが登録されていればログインセッションを作成し、ログイン後の画面にリダイレクトする。  
+    ユーザーが登録されていなければ新規登録セッションを作成し、新規登録画面にリダイレクトする。  
+    ※ユーザーからは呼び出さない。`,
     requestFormat: "json",
     parameters: [
       {
@@ -70,6 +78,21 @@ const endpoints = makeApi([
         description: `リダイレクト`,
         schema: z.void(),
       },
+      {
+        status: 400,
+        description: `不正なリクエスト`,
+        schema: z.void(),
+      },
+      {
+        status: 401,
+        description: `認証情報の不足`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
     ],
   },
   {
@@ -77,12 +100,26 @@ const endpoints = makeApi([
     path: "/logout",
     requestFormat: "json",
     response: z.object({}).partial().passthrough(),
+    errors: [
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
+    ],
   },
   {
     method: "get",
     path: "/session",
     requestFormat: "json",
     response: z.object({ user: User }).passthrough().nullable(),
+    errors: [
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
+    ],
   },
   {
     method: "post",
@@ -102,19 +139,49 @@ const endpoints = makeApi([
         description: `不正なリクエスト`,
         schema: z.void(),
       },
+      {
+        status: 401,
+        description: `認証情報の不足`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
     ],
   },
   {
     method: "post",
     path: "/signup/cancel",
+    description: `新規登録セッションを破棄して新規登録をキャンセルする`,
     requestFormat: "json",
     response: z.object({}).partial().passthrough(),
+    errors: [
+      {
+        status: 400,
+        description: `不正なリクエスト`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
+    ],
   },
   {
     method: "get",
     path: "/tasks",
     requestFormat: "json",
     response: z.array(Task),
+    errors: [
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
+    ],
   },
   {
     method: "post",
@@ -128,6 +195,18 @@ const endpoints = makeApi([
       },
     ],
     response: Task,
+    errors: [
+      {
+        status: 400,
+        description: `不正なリクエスト`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
+    ],
   },
   {
     method: "get",
@@ -141,6 +220,23 @@ const endpoints = makeApi([
       },
     ],
     response: Task,
+    errors: [
+      {
+        status: 400,
+        description: `不正なリクエスト`,
+        schema: z.void(),
+      },
+      {
+        status: 404,
+        description: `タスクが存在しない`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
+    ],
   },
   {
     method: "delete",
@@ -154,6 +250,23 @@ const endpoints = makeApi([
       },
     ],
     response: Task,
+    errors: [
+      {
+        status: 400,
+        description: `不正なリクエスト`,
+        schema: z.void(),
+      },
+      {
+        status: 404,
+        description: `タスクが存在しない`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
+    ],
   },
   {
     method: "put",
@@ -172,6 +285,23 @@ const endpoints = makeApi([
       },
     ],
     response: Task,
+    errors: [
+      {
+        status: 400,
+        description: `不正なリクエスト`,
+        schema: z.void(),
+      },
+      {
+        status: 404,
+        description: `タスクが存在しない`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
+    ],
   },
 ]);
 

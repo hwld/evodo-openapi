@@ -4,17 +4,12 @@ import { schemas } from "./api/schema";
 import { z } from "zod";
 import { api } from "./api";
 import { Link } from "@tanstack/react-router";
+import { useSession } from "./use-session";
 
-function App() {
+function TasksPage() {
   const client = useQueryClient();
   const [title, setTitle] = useState("");
-
-  const { data: session } = useQuery({
-    queryKey: ["session"],
-    queryFn: async () => {
-      return await api.get("/session");
-    },
-  });
+  const { session } = useSession();
 
   const {
     data: tasks,
@@ -77,7 +72,7 @@ function App() {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          await mutate({ title, description: "" });
+          mutate({ title, description: "" });
           setTitle("");
         }}
       >
@@ -98,4 +93,4 @@ function App() {
   );
 }
 
-export default App;
+export default TasksPage;

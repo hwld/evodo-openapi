@@ -1,29 +1,30 @@
-import { Outlet, RootRoute, Route, Router } from "@tanstack/react-router";
-import App from "./App";
+import { RootRoute, Route, Router } from "@tanstack/react-router";
 import { SignupPage } from "./signup";
+import { RootPage } from "./root";
+import TasksPage from "./tasks";
+import { LoginPage } from "./login";
+import { RequireAuthPage } from "./require-auth-page";
 
 const rootRoute = new RootRoute({
-  component: () => {
-    return (
-      <div className="h-[100dvh] bg-gray-200 text-gray-700 p-5">
-        <Outlet />
-      </div>
-    );
-  },
+  component: RootPage,
+});
+
+const requireAuthRoute = new Route({
+  id: "requireAuthRoute",
+  getParentRoute: () => rootRoute,
+  component: RequireAuthPage,
 });
 
 const indexRoute = new Route({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => requireAuthRoute,
   path: "/",
-  component: App,
+  component: TasksPage,
 });
 
 const loginRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/auth/login",
-  component: () => {
-    return <div>ログイン</div>;
-  },
+  component: LoginPage,
 });
 
 const signupRoute = new Route({
@@ -32,7 +33,11 @@ const signupRoute = new Route({
   component: SignupPage,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, loginRoute, signupRoute]);
+const routeTree = rootRoute.addChildren([
+  requireAuthRoute.addChildren([indexRoute]),
+  loginRoute,
+  signupRoute,
+]);
 
 export const router = new Router({ routeTree });
 
