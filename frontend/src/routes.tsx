@@ -1,9 +1,10 @@
-import { RootRoute, Route, Router } from "@tanstack/react-router";
+import { RootRoute, Route, Router, redirect } from "@tanstack/react-router";
 import { SignupPage } from "./signup";
 import { RootPage } from "./root";
 import TasksPage from "./tasks";
 import { LoginPage } from "./login";
 import { RequireAuthPage } from "./require-auth-page";
+import { api } from "./api";
 
 const rootRoute = new RootRoute({
   component: RootPage,
@@ -30,6 +31,12 @@ const loginRoute = new Route({
 const signupRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/auth/signup",
+  beforeLoad: async () => {
+    const sessionExists = await api.get("/signup-session");
+    if (!sessionExists) {
+      throw redirect({ to: "/", replace: true });
+    }
+  },
   component: SignupPage,
 });
 

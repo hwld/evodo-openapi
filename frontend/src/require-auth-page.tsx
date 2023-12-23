@@ -11,5 +11,5 @@ export const RequireAuthPage: React.FC = () => {
     return <div>error</div>;
   }
 
-  return session ? <Outlet /> : <Navigate to="/auth/login" replace />;
+  return session ? <Outlet /> : <Navigate to="/auth/login" replace={true} />;
 };

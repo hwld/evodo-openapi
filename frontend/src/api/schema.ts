@@ -152,6 +152,19 @@ const endpoints = makeApi([
     ],
   },
   {
+    method: "get",
+    path: "/signup-session",
+    requestFormat: "json",
+    response: z.boolean(),
+    errors: [
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
     method: "post",
     path: "/signup/cancel",
     description: `新規登録セッションを破棄して新規登録をキャンセルする`,
