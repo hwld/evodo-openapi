@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { api } from "./api";
 import { useNavigate } from "@tanstack/react-router";
+import { api } from "../../../api";
 
 export const SignupPage: React.FC = () => {
   const navigate = useNavigate();

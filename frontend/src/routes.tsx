@@ -1,19 +1,19 @@
 import { RootRoute, Route, Router, redirect } from "@tanstack/react-router";
-import { SignupPage } from "./signup";
-import { RootPage } from "./root";
-import TasksPage from "./tasks";
-import { LoginPage } from "./login";
-import { RequireAuthPage } from "./require-auth-page";
 import { api } from "./api";
+import { LoginPage } from "./app/_auth/login/page";
+import { SignupPage } from "./app/_auth/signup/page";
+import { RequireAuthLayout } from "./app/_main/layout";
+import { RootLayout } from "./app/layout";
+import TasksPage from "./app/_main/tasks/page";
 
 const rootRoute = new RootRoute({
-  component: RootPage,
+  component: RootLayout,
 });
 
 const requireAuthRoute = new Route({
   id: "requireAuthRoute",
   getParentRoute: () => rootRoute,
-  component: RequireAuthPage,
+  component: RequireAuthLayout,
 });
 
 const indexRoute = new Route({

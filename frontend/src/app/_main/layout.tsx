@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "@tanstack/react-router";
-import { useSession } from "./use-session";
+import { useSession } from "../_auth/use-session";
 
-export const RequireAuthPage: React.FC = () => {
+export const RequireAuthLayout: React.FC = () => {
   const { session, isLoading, isError } = useSession();
 
   if (isLoading) {

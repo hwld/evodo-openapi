@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { schemas } from "./api/schema";
 import { z } from "zod";
-import { api } from "./api";
 import { Link } from "@tanstack/react-router";
-import { useSession } from "./use-session";
+import { useSession } from "../../_auth/use-session";
+import { api } from "../../../api";
+import { schemas } from "../../../api/schema";
 
 function TasksPage() {
   const client = useQueryClient();
