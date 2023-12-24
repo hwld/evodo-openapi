@@ -5,7 +5,7 @@ export const RequireAuthLayout: React.FC = () => {
   const { session, isLoading, isError } = useSession();
 
   if (isLoading) {
-    return <div>loading...</div>;
+    return null;
   }
   if (isError) {
     return <div>error</div>;
