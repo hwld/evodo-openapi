@@ -5,6 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { useSession } from "../../_auth/use-session";
 import { api } from "../../../api";
 import { schemas } from "../../../api/schema";
+import { Button } from "@/components/ui/button";
 
 function TasksPage() {
   const client = useQueryClient();
@@ -53,12 +54,7 @@ function TasksPage() {
         {session ? (
           <>
             <p>{session.user.name}</p>
-            <a
-              onClick={handleLogout}
-              className="bg-gray-900 text-gray-200 py-1 px-3 rounded block w-fit"
-            >
-              ログアウト
-            </a>
+            <Button onClick={handleLogout}>ログアウト</Button>
           </>
         ) : (
           <a
