@@ -32,8 +32,8 @@ const signupRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/auth/signup",
   beforeLoad: async () => {
-    const sessionExists = await api.get("/signup-session");
-    if (!sessionExists) {
+    const { exists } = await api.get("/signup-session");
+    if (!exists) {
       throw redirect({ to: "/", replace: true });
     }
   },
