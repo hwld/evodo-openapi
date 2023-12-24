@@ -6,6 +6,7 @@
     "backend": "pnpm -F backend",
     "frontend": "pnpm -F frontend",
     "codegen": "pnpm frontend exec openapi-zod-client \"http://localhost:8787/doc\" -o \"./src/api/schema.ts\" --no-with-alias --api-client-name \"_api\"",
+    "shadcn": "pnpm frontend exec shadcn-ui",
     "lint:tsc": "pnpm -r exec tsc --noEmit",
     "migrations:generate": "pnpm backend exec drizzle-kit generate:sqlite",
     "migrations:apply": "pnpm backend exec wrangler d1 migrations apply evodo_openapi --local --env dev",
