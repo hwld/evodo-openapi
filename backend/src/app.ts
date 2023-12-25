@@ -8,6 +8,11 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { HTTPException } from "hono/http-exception";
 import { log, loggingContext } from "./services/logger";
 
+type Env<B, V> = {
+  Bindings: B;
+  Variables: V;
+};
+
 export type AppBindings = {
   CLIENT_URL: string;
   ENVIRONMENT: "dev" | "prod";
@@ -18,10 +23,7 @@ export type AppBindings = {
   KV: KVNamespace;
 };
 
-export type AppEnv = {
-  Bindings: AppBindings;
-};
-
+export type AppEnv = Env<AppBindings, {}>;
 /**
  * routerをつなげるトップレベルのHono
  * @example
@@ -67,17 +69,9 @@ export const createApp = () => {
  */
 export const appRouter = () => new OpenAPIHono();
 
-type RouteVariables = {
-  auth: Auth;
-  db: DB;
-};
-export const route = <Variables extends RouteVariables = RouteVariables>(
-  path: string,
-) => {
-  const route = new OpenAPIHono<{
-    Bindings: AppBindings;
-    Variables: RouteVariables & Variables;
-  }>({
+type RouteEnv = AppEnv & Env<{}, { auth: Auth; db: DB }>;
+export const route = <Env extends RouteEnv = RouteEnv>(path: string) => {
+  const route = new OpenAPIHono<Env>({
     defaultHook: (result) => {
       if (!result.success) {
         log.error(`zod検証エラー: ${result.error.message}`);
@@ -97,9 +91,10 @@ export const route = <Variables extends RouteVariables = RouteVariables>(
   return route;
 };
 
-type RequireAuthVariables = RouteVariables & { loggedInUserId: string };
+type RequireAuthRoute = RouteEnv & Env<{}, { loggedInUserId: string }>;
 export const requireAuthRoute = (path: string) => {
-  const requireAuthRoute = route<RequireAuthVariables>(path);
+  const requireAuthRoute = route<RequireAuthRoute>(path);
+
   requireAuthRoute.use(path, async (c, next) => {
     const { session } = await c.var.auth.loginSession.validate();
     if (!session) {
