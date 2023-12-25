@@ -102,6 +102,9 @@ importers:
       framer-motion:
         specifier: ^10.16.16
         version: 10.16.16(react-dom@18.2.0)(react@18.2.0)
+      i18next:
+        specifier: ^23.7.11
+        version: 23.7.11
       lucide-react:
         specifier: ^0.300.0
         version: 0.300.0(react@18.2.0)
@@ -123,6 +126,9 @@ importers:
       zod:
         specifier: ^3.22.4
         version: 3.22.4
+      zod-i18n-map:
+        specifier: ^2.23.0
+        version: 2.23.0(i18next@23.7.11)(zod@3.22.4)
     devDependencies:
       '@faker-js/faker':
         specifier: ^8.3.1
@@ -4102,6 +4108,12 @@ packages:
     engines: {node: '>=16.17.0'}
     dev: true
 
+  /i18next@23.7.11:
+    resolution: {integrity: sha512-A/vOkw8vY99YHU9A1Td3I1dcTiYaPnwBWzrpVzfXUXSYgogK3cmBcmop/0cnXPc6QpUWIyqaugKNxRUEZVk9Nw==}
+    dependencies:
+      '@babel/runtime': 7.23.6
+    dev: false
+
   /iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -6367,6 +6379,16 @@ packages:
       mustache: 4.2.0
       stacktracey: 2.1.8
     dev: true
+
+  /zod-i18n-map@2.23.0(i18next@23.7.11)(zod@3.22.4):
+    resolution: {integrity: sha512-I1SbeCnNPvx9tlbuiyas6KhiTDH27h5pTdJ3D9DDmzPMnJNONcEJ9utYjRhgLayL44PPpbWi+oH+KI7oBfYYzQ==}
+    peerDependencies:
+      i18next: '>=21.3.0'
+      zod: '>=3.17.0'
+    dependencies:
+      i18next: 23.7.11
+      zod: 3.22.4
+    dev: false
 
   /zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
