@@ -3,6 +3,12 @@
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "jest.autoRun": "off",
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "classNames",
+    "ngClass"
+  ],
   "tailwindCSS.experimental.classRegex": [
     [
       "cva\\(([^)]*)\\)",

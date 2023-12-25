@@ -6,17 +6,17 @@ import { motion } from "framer-motion";
 export const LoginPage: React.FC = () => {
   return (
     <div className="flex h-full justify-center items-center">
-      <div className="flex flex-col items-center gap-10">
-        <div className="flex flex-col items-center gap-3">
+      <div className="flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-5">
           <motion.div
             animate={{
               rotate: -360,
             }}
             transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
           >
-            <AppLogo size={150} />
+            <AppLogo size={300} />
           </motion.div>
-          <p className="text-lg text-neutral-500">Evodo OpenAPI</p>
+          <p className="text-lg text-muted">Evodo OpenAPI</p>
         </div>
         <Button asChild className="gap-2">
           <a href={`${import.meta.env.VITE_API_URL}/login/google`}>
