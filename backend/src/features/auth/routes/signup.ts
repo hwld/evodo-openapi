@@ -22,7 +22,7 @@ const signupRoute = createRoute({
   summary: "新規登録を行う",
   request: {
     cookies: z.object({
-      [SIGNUP_SESSION_COOKIE]: z.string(),
+      [SIGNUP_SESSION_COOKIE]: z.string().optional(),
     }),
     body: {
       content: {

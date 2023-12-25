@@ -21,7 +21,7 @@ const createTaskRoute = createRoute({
   summary: "タスクを作成する",
   request: {
     cookies: z.object({
-      [LOGIN_SESSION_COOKIE]: z.string(),
+      [LOGIN_SESSION_COOKIE]: z.string().optional(),
     }),
     body: {
       content: {

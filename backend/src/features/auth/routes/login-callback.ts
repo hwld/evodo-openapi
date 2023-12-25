@@ -21,8 +21,8 @@ const authCallbackRoute = createRoute({
     ※ユーザーからは呼び出さない。`,
   request: {
     cookies: z.object({
-      [STATE_COOKIE]: z.string(),
-      [CODE_VERIFIER_COOKIE]: z.string(),
+      [STATE_COOKIE]: z.string().optional(),
+      [CODE_VERIFIER_COOKIE]: z.string().optional(),
     }),
     query: z.object({
       code: z.string(),

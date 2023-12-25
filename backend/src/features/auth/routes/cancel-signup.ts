@@ -13,7 +13,7 @@ const cancelSignupRoute = createRoute({
   description: "新規登録セッションを破棄して新規登録をキャンセルする",
   request: {
     cookies: z.object({
-      [SIGNUP_SESSION_COOKIE]: z.string(),
+      [SIGNUP_SESSION_COOKIE]: z.string().optional(),
     }),
   },
   responses: {

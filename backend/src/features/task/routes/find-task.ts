@@ -16,7 +16,7 @@ const getTaskRoute = createRoute({
   summary: "タスクを取得する",
   request: {
     cookies: z.object({
-      [LOGIN_SESSION_COOKIE]: z.string(),
+      [LOGIN_SESSION_COOKIE]: z.string().optional(),
     }),
     params: z.object({
       id: z.string().openapi({ param: { name: "id", in: "path" } }),

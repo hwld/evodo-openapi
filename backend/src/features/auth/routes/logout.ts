@@ -11,7 +11,7 @@ const logoutRoute = createRoute({
   path: logoutPath,
   summary: "ログアウトする",
   request: {
-    cookies: z.object({ [LOGIN_SESSION_COOKIE]: z.string() }),
+    cookies: z.object({ [LOGIN_SESSION_COOKIE]: z.string().optional() }),
   },
   responses: {
     ...errorResponse(500),
