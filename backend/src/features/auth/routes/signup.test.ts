@@ -4,10 +4,11 @@ import { testD1, testDb, testKv } from "../../../../setup-vitest";
 import { users } from "../../../services/db/schema";
 import { eq } from "drizzle-orm";
 import { parseSetCookie } from "../../../lib/cookie";
-import { LOGIN_SESSION_COOKIE } from "../consts";
+import { LOGIN_SESSION_COOKIE, SIGNUP_SESSION_COOKIE } from "../consts";
 import { AuthAdapter } from "../../../services/auth/adapter";
 import { describe, it, expect } from "vitest";
 import { Factories } from "../../factories";
+import { TimeSpan, createDate } from "oslo";
 
 const client = () => testClient(signup, { DB: testD1, KV: testKv });
 
@@ -53,5 +54,21 @@ describe("新規登録", () => {
       prefix: AuthAdapter.sessionKeyPrefix,
     });
     expect(allLoginSessions.keys.length).toBe(0);
+  });
+
+  it("新規登録セッションが期限切れの場合は登録に失敗する", async () => {
+    const signupSession = await Factories.signupSession({
+      expires: createDate(new TimeSpan(-10, "m")).getTime(),
+    });
+
+    const result = await client().signup.$post({
+      cookie: { signup_session: signupSession.id },
+      json: { username: "", profile: "" },
+    });
+
+    expect(result.ok).toBe(false);
+
+    const users = await testDb.query.users.findMany();
+    expect(users.length).toBe(0);
   });
 });

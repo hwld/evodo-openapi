@@ -51,6 +51,7 @@ export class SignupSession {
     }
 
     if (Date.now() > session.expires) {
+      log.debug("指定されたidのセッションの期限が切れている");
       await this.db
         .delete(signupSessions)
         .where(eq(signupSessions.id, sessionId));

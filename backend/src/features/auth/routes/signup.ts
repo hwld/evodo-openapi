@@ -6,6 +6,7 @@ import { SIGNUP_SESSION_COOKIE } from "../consts";
 import { HTTPException } from "hono/http-exception";
 import { users } from "../../../services/db/schema";
 import { errorResponse } from "../../../lib/openapi";
+import { log } from "../../../services/logger";
 
 const SignupInput = z
   .object({
@@ -51,7 +52,7 @@ export const signup = route(signupRoute.path).openapi(
   async ({ json, req, var: { auth, db } }) => {
     const signupSession = await auth.signupSession.validate();
     if (!signupSession) {
-      console.error("新規登録セッションが存在しない");
+      log.error("新規登録セッションが存在しない");
       throw new HTTPException(401);
     }
 
