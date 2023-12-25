@@ -23,6 +23,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { motion } from "framer-motion";
 
 const signupFormSchema = schemas.SignupInput.strict();
 type SignupFormData = z.infer<typeof signupFormSchema>;
@@ -47,14 +48,20 @@ export const SignupPage: React.FC = () => {
   return (
     <div className="flex flex-col h-full justify-center items-center gap-8">
       <Card className="w-[500px] relative">
-        <AppLogo
-          size={75}
-          className="absolute bottom-[105%] left-0 right-0 m-auto"
-        />
+        <motion.div
+          className="absolute bottom-[105%] left-0 right-0 m-auto w-fit"
+          animate={{ scale: [1, 1.1, 1], rotate: [0, -10, 0] }}
+          transition={{ repeat: Infinity }}
+        >
+          <AppLogo size={75} />
+        </motion.div>
         <CardHeader>
-          <CardTitle>ユーザーの登録</CardTitle>
+          <CardTitle>ユーザーを作成する</CardTitle>
           <CardDescription>
-            必要な情報を記入して登録を行うと、そのユーザーとしてログインできるようになります。
+            はじめまして。evodoへようこそ。
+            <br />
+            必要な情報を記入して、タスクの管理を始めましょう。
+            <br />
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
