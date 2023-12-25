@@ -1,11 +1,9 @@
-import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { api } from "../../../api";
 import { Button } from "@/components/ui/button";
 import { AppLogo } from "@/components/ui/app-logo";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -13,16 +11,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { schemas } from "@/api/schema";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+const signupFormSchema = schemas.SignupInput.strict();
+type SignupFormData = z.infer<typeof signupFormSchema>;
 
 export const SignupPage: React.FC = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [profile, setProfile] = useState("");
+  const form = useForm<SignupFormData>({
+    defaultValues: { username: "", profile: "" },
+    resolver: zodResolver(schemas.SignupInput),
+  });
 
-  const handleSignup = async () => {
+  const handleSignup = form.handleSubmit(async ({ username, profile }) => {
     await api.post("/signup", { username, profile });
     await navigate({ to: "/" });
-  };
+  });
 
   const handleCancel = async () => {
     await api.post("/signup/cancel", undefined);
@@ -31,35 +46,64 @@ export const SignupPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full justify-center items-center gap-8">
-      <AppLogo size={75} />
-      <Card className="w-[500px]">
+      <Card className="w-[500px] relative">
+        <AppLogo
+          size={75}
+          className="absolute bottom-[105%] left-0 right-0 m-auto"
+        />
         <CardHeader>
           <CardTitle>ユーザーの登録</CardTitle>
           <CardDescription>
-            必要な情報を記入して登録を行うと、このユーザーとしてログインできるようになります。
+            必要な情報を記入して登録を行うと、そのユーザーとしてログインできるようになります。
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-8">
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-3">
-              <Label>ユーザー名</Label>
-              <Input
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="username..."
-              />
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>プロフィール</Label>
-              <Textarea
-                placeholder="profile..."
-                value={profile}
-                onChange={(e) => setProfile(e.target.value)}
-                className="resize-none"
-                rows={5}
-              />
-            </div>
-          </div>
+        <CardContent className="flex flex-col gap-6">
+          <Form {...form}>
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <div className="flex items-end justify-between h-5">
+                      <FormLabel>ユーザー名</FormLabel>
+                      <FormMessage />
+                    </div>
+                    <FormControl>
+                      <Input
+                        error={!!form.formState.errors.username}
+                        placeholder="username..."
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                );
+              }}
+            />
+            <FormField
+              control={form.control}
+              name="profile"
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <div className="flex items-end justify-between h-5">
+                      <FormLabel>プロフィール</FormLabel>
+                      <FormMessage />
+                    </div>
+                    <FormControl>
+                      <Textarea
+                        rows={5}
+                        placeholder="profile..."
+                        className="resize-none"
+                        error={!!form.formState.errors.profile}
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                );
+              }}
+            />
+          </Form>
           <div className="flex gap-3 justify-end">
             <Button variant="outline" onClick={handleCancel}>
               キャンセル
