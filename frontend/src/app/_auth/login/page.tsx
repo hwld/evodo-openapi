@@ -1,6 +1,7 @@
 import { AppLogo } from "@/components/ui/app-logo";
 import { Button } from "@/components/ui/button";
 import GoogleIcon from "@/components/ui/google-icon";
+import { LOGIN_URL } from "@/lib/login-url";
 import { motion } from "framer-motion";
 
 export const LoginPage: React.FC = () => {
@@ -18,8 +19,8 @@ export const LoginPage: React.FC = () => {
           </motion.div>
           <p className="text-lg text-muted-foreground">Evodo OpenAPI</p>
         </div>
-        <Button asChild className="gap-2">
-          <a href={`${import.meta.env.VITE_API_URL}/login/google`}>
+        <Button className="gap-2" asChild>
+          <a href={LOGIN_URL}>
             <GoogleIcon />
             Googleでログイン
           </a>

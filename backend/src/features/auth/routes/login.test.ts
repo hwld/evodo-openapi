@@ -11,7 +11,7 @@ describe("ログイン", () => {
   it("GoogleログインのためのリダイレクトURLが返される", async () => {
     const authorizationUrl = "https://accounts.google.com/o/oauth2/v2/auth";
 
-    const result = await client().login.google.$get();
+    const result = await client().login.google.$get({ query: {} });
 
     expect(result.status).toBe(302);
 

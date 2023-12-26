@@ -43,6 +43,32 @@ const endpoints = makeApi([
     method: "get",
     path: "/login/google",
     requestFormat: "json",
+    parameters: [
+      {
+        name: "after_login_redirect",
+        type: "Query",
+        schema: z
+          .string()
+          .regex(/^\/(?!\/).*$/)
+          .optional(),
+      },
+      {
+        name: "signup_redirect",
+        type: "Query",
+        schema: z
+          .string()
+          .regex(/^\/(?!\/).*$/)
+          .optional(),
+      },
+      {
+        name: "error_redirect",
+        type: "Query",
+        schema: z
+          .string()
+          .regex(/^\/(?!\/).*$/)
+          .optional(),
+      },
+    ],
     response: z.void(),
     errors: [
       {

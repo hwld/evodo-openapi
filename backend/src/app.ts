@@ -75,6 +75,7 @@ export const route = <Env extends RouteEnv = RouteEnv>(path: string) => {
     defaultHook: (result) => {
       if (!result.success) {
         log.error(`zod検証エラー: ${result.error.message}`);
+        throw new HTTPException(400);
       }
     },
   });
