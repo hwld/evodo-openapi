@@ -1,10 +1,10 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { Features } from "../../features";
-import { UserSchema } from "../../user/schema";
 import { route } from "../../../app";
 import { sessionPath } from "../path";
 import { errorResponse } from "../../../lib/openapi";
 import { LOGIN_SESSION_COOKIE } from "../consts";
+import { SessionSchema } from "../schema";
 
 const sessionRoute = createRoute({
   tags: [Features.auth],
@@ -20,7 +20,7 @@ const sessionRoute = createRoute({
       content: {
         "application/json": {
           schema: z.object({
-            session: z.object({ user: UserSchema }).nullable(),
+            session: SessionSchema.nullable(),
           }),
         },
       },

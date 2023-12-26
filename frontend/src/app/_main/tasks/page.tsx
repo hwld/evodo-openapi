@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
-import { Link } from "@tanstack/react-router";
-import { useSession } from "../../_auth/use-session";
 import { api } from "../../../api";
 import { schemas } from "../../../api/schema";
-import { Button } from "@/components/ui/button";
+import { Sidebar } from "../sidebar/sidebar";
+import { Card } from "@/components/ui/card";
+import { HomeIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useRouteContext } from "@tanstack/react-router";
 
 function TasksPage() {
+  const { session } = useRouteContext({ from: "/requireAuth/" as const });
+
   const client = useQueryClient();
   const [title, setTitle] = useState("");
-  const { session } = useSession();
 
   const {
     data: tasks,
@@ -35,11 +38,6 @@ function TasksPage() {
     },
   });
 
-  const handleLogout = async () => {
-    await api.post("/logout", undefined);
-    client.invalidateQueries();
-  };
-
   if (isError) {
     return <div>error</div>;
   }
@@ -48,43 +46,38 @@ function TasksPage() {
   }
 
   return (
-    <div>
-      <Link to="/auth/signup">新規登録</Link>
-      <div className="flex">
-        {session ? (
-          <>
-            <p>{session.user.name}</p>
-            <Button onClick={handleLogout}>ログアウト</Button>
-          </>
-        ) : (
-          <a
-            href={`${import.meta.env.VITE_API_URL}/login/google`}
-            className="bg-gray-900 text-gray-200 py-1 px-3 rounded block w-fit"
-          >
-            ログイン
-          </a>
-        )}
+    <div className="min-h-min flex">
+      <div className="sticky top-0 px-3 py-5 h-[100dvh]">
+        <Sidebar session={session} />
       </div>
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          mutate({ title, description: "" });
-          setTitle("");
-        }}
-      >
-        <input
-          placeholder="タスクを入力してください..."
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </form>
-      {tasks?.map((task) => {
-        return (
-          <div key={task.id} className="m-1">
-            <p>{task.title}</p>
-          </div>
-        );
-      })}
+      <main className="grow space-y-4 flex flex-col p-5">
+        <div className="flex gap-1 items-center">
+          <HomeIcon size={18} />
+          <p className="text-sm">今日のタスク</p>
+        </div>
+        <Card className="p-6 grow">
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              mutate({ title, description: "" });
+              setTitle("");
+            }}
+          >
+            <Input
+              placeholder="タスクを入力してください..."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </form>
+          {tasks?.map((task) => {
+            return (
+              <div key={task.id} className="m-1">
+                <p>{task.title}</p>
+              </div>
+            );
+          })}
+        </Card>
+      </main>
     </div>
   );
 }

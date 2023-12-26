@@ -8,6 +8,7 @@ const SignupInput = z
   })
   .passthrough();
 const User = z.object({ id: z.string(), name: z.string() }).passthrough();
+const Session = z.object({ user: User }).passthrough();
 const Task = z
   .object({
     id: z.string(),
@@ -33,6 +34,7 @@ const UpdateTaskInput = z
 export const schemas = {
   SignupInput,
   User,
+  Session,
   Task,
   CreateTaskInput,
   UpdateTaskInput,
@@ -138,9 +140,7 @@ const endpoints = makeApi([
     method: "get",
     path: "/session",
     requestFormat: "json",
-    response: z
-      .object({ session: z.object({ user: User }).passthrough().nullable() })
-      .passthrough(),
+    response: z.object({ session: Session.nullable() }).passthrough(),
     errors: [
       {
         status: 500,

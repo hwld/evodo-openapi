@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     react(),
     Unfonts({
-      google: { families: [{ name: "Noto Sans JP", styles: "wght@500;700" }] },
+      google: { families: [{ name: "Noto Sans JP", styles: "wght@400;700" }] },
     }),
   ],
   server: { port: 5173 },

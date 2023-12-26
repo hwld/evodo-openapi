@@ -1,20 +1,19 @@
 import {
   NotFoundRoute,
-  RootRoute,
   Route,
   Router,
   redirect,
+  rootRouteWithContext,
 } from "@tanstack/react-router";
 import { api } from "./api";
 import { LoginPage } from "./app/_auth/login/page";
 import { SignupPage } from "./app/_auth/signup/page";
-import { RequireAuthLayout } from "./app/_main/layout";
 import { RootLayout } from "./app/layout";
 import TasksPage from "./app/_main/tasks/page";
 import { NotFoundPage } from "./app/404";
 import { AuthErrorPage } from "./app/_auth/error";
 
-const rootRoute = new RootRoute({
+const rootRoute = rootRouteWithContext()({
   component: RootLayout,
 });
 
@@ -23,10 +22,16 @@ const notFoundRoute = new NotFoundRoute({
   component: NotFoundPage,
 });
 
-const requireAuthRoute = new Route({
-  id: "requireAuthRoute",
+export const requireAuthRoute = new Route({
+  id: "requireAuth",
   getParentRoute: () => rootRoute,
-  component: RequireAuthLayout,
+  beforeLoad: async () => {
+    const { session } = await api.get("/session");
+    if (!session) {
+      throw redirect({ to: "/auth/login", replace: true });
+    }
+    return { session };
+  },
 });
 
 const indexRoute = new Route({
@@ -66,7 +71,10 @@ const routeTree = rootRoute.addChildren([
   authErrorRoute,
 ]);
 
-export const router = new Router({ routeTree, notFoundRoute });
+export const router = new Router({
+  routeTree,
+  notFoundRoute,
+});
 
 declare module "@tanstack/react-router" {
   interface Register {
