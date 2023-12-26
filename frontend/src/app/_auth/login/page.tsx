@@ -16,7 +16,7 @@ export const LoginPage: React.FC = () => {
           >
             <AppLogo size={300} />
           </motion.div>
-          <p className="text-lg text-muted">Evodo OpenAPI</p>
+          <p className="text-lg text-muted-foreground">Evodo OpenAPI</p>
         </div>
         <Button asChild className="gap-2">
           <a href={`${import.meta.env.VITE_API_URL}/login/google`}>

@@ -63,9 +63,9 @@ export const loginCallback = route(authCallbackRoute.path).openapi(
     } catch (e) {
       if (e instanceof OAuth2RequestError) {
         log.error("認可コードの検証に失敗しました");
-        throw new HTTPException(401);
       }
-      throw e;
+      // エラーページに飛ばす
+      return redirect(`${env.CLIENT_URL}/auth/error`);
     }
   },
 );
