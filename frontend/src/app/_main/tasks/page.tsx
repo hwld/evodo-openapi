@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { api } from "../../../api";
 import { schemas } from "../../../api/schema";
@@ -8,23 +8,13 @@ import { Card } from "@/components/ui/card";
 import { HomeIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useRouteContext } from "@tanstack/react-router";
+import { TaskTable } from "./task-table/task-table";
 
 function TasksPage() {
   const { session } = useRouteContext({ from: "/requireAuth/" as const });
 
   const client = useQueryClient();
   const [title, setTitle] = useState("");
-
-  const {
-    data: tasks,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["tasks"],
-    queryFn: async () => {
-      return await api.get("/tasks");
-    },
-  });
 
   const { mutate } = useMutation({
     mutationFn: (newTask: z.infer<typeof schemas.CreateTaskInput>) => {
@@ -38,13 +28,6 @@ function TasksPage() {
     },
   });
 
-  if (isError) {
-    return <div>error</div>;
-  }
-  if (isLoading) {
-    return <div>loading</div>;
-  }
-
   return (
     <div className="min-h-min flex">
       <div className="sticky top-0 px-3 py-5 h-[100dvh]">
@@ -55,7 +38,7 @@ function TasksPage() {
           <HomeIcon size={18} />
           <p className="text-sm">今日のタスク</p>
         </div>
-        <Card className="p-6 grow">
+        <Card className="p-6 grow space-y-5">
           <form
             onSubmit={async (e) => {
               e.preventDefault();
@@ -69,13 +52,7 @@ function TasksPage() {
               onChange={(e) => setTitle(e.target.value)}
             />
           </form>
-          {tasks?.map((task) => {
-            return (
-              <div key={task.id} className="m-1">
-                <p>{task.title}</p>
-              </div>
-            );
-          })}
+          <TaskTable />
         </Card>
       </main>
     </div>

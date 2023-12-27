@@ -15,7 +15,7 @@ export const LoginPage: React.FC = () => {
             }}
             transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
           >
-            <AppLogo size={300} />
+            <AppLogo size={150} />
           </motion.div>
           <p className="text-lg text-muted-foreground">Evodo OpenAPI</p>
         </div>
