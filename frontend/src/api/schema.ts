@@ -1,35 +1,27 @@
 import { makeApi, Zodios, type ZodiosOptions } from "@zodios/core";
 import { z } from "zod";
 
-const SignupInput = z
-  .object({
-    username: z.string().min(1).max(100),
-    profile: z.string().max(1000),
-  })
-  .passthrough();
-const User = z.object({ id: z.string(), name: z.string() }).passthrough();
-const Session = z.object({ user: User }).passthrough();
-const Task = z
-  .object({
-    id: z.string(),
-    title: z.string(),
-    description: z.string(),
-    createdAt: z.string(),
-    updatedAt: z.string(),
-  })
-  .passthrough();
-const CreateTaskInput = z
-  .object({
-    title: z.string().min(1).max(200),
-    description: z.string().max(1000),
-  })
-  .passthrough();
-const UpdateTaskInput = z
-  .object({
-    title: z.string().min(1).max(200),
-    description: z.string().max(1000),
-  })
-  .passthrough();
+const SignupInput = z.object({
+  username: z.string().min(1).max(100),
+  profile: z.string().max(1000),
+});
+const User = z.object({ id: z.string(), name: z.string() });
+const Session = z.object({ user: User });
+const Task = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+const CreateTaskInput = z.object({
+  title: z.string().min(1).max(200),
+  description: z.string().max(1000),
+});
+const UpdateTaskInput = z.object({
+  title: z.string().min(1).max(200),
+  description: z.string().max(1000),
+});
 
 export const schemas = {
   SignupInput,
@@ -127,7 +119,7 @@ const endpoints = makeApi([
     method: "post",
     path: "/logout",
     requestFormat: "json",
-    response: z.object({}).partial().passthrough(),
+    response: z.object({}).partial(),
     errors: [
       {
         status: 500,
@@ -140,7 +132,7 @@ const endpoints = makeApi([
     method: "get",
     path: "/session",
     requestFormat: "json",
-    response: z.object({ session: Session.nullable() }).passthrough(),
+    response: z.object({ session: Session.nullable() }),
     errors: [
       {
         status: 500,
@@ -160,7 +152,7 @@ const endpoints = makeApi([
         schema: SignupInput,
       },
     ],
-    response: z.object({ userId: z.string() }).passthrough(),
+    response: z.object({ userId: z.string() }),
     errors: [
       {
         status: 400,
@@ -183,7 +175,7 @@ const endpoints = makeApi([
     method: "get",
     path: "/signup-session",
     requestFormat: "json",
-    response: z.object({ exists: z.boolean() }).passthrough(),
+    response: z.object({ exists: z.boolean() }),
     errors: [
       {
         status: 500,
@@ -197,7 +189,7 @@ const endpoints = makeApi([
     path: "/signup/cancel",
     description: `新規登録セッションを破棄して新規登録をキャンセルする`,
     requestFormat: "json",
-    response: z.object({}).partial().passthrough(),
+    response: z.object({}).partial(),
     errors: [
       {
         status: 400,
