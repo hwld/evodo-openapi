@@ -27,6 +27,7 @@ export const tasks = sqliteTable("tasks", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => createId()),
+  done: integer("done", { mode: "boolean" }).notNull().default(false),
   title: text("title").notNull(),
   description: text("description").notNull(),
   authorId: text("author_id")

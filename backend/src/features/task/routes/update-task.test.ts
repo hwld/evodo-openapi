@@ -10,7 +10,11 @@ const client = () => testClient(updateTask, { DB: testD1, KV: testKv });
 
 describe("タスクの更新", () => {
   it("タスクを更新できる", async () => {
-    const newUser = { title: "newTitle", description: "newDescription" };
+    const newUser = {
+      title: "newTitle",
+      description: "newDescription",
+      done: true,
+    };
     const user = await Factories.user({});
     const task = await Factories.task({ authorId: user.id });
     const session = await Factories.loginSession({ userId: user.id });
@@ -18,7 +22,11 @@ describe("タスクの更新", () => {
     await client().tasks[":id"].$put({
       cookie: { session: session.id },
       param: { id: task.id },
-      json: { title: newUser.title, description: newUser.description },
+      json: {
+        title: newUser.title,
+        description: newUser.description,
+        done: newUser.done,
+      },
     });
 
     const updated = await testDb.query.tasks.findFirst({
@@ -36,7 +44,7 @@ describe("タスクの更新", () => {
     const result = await client().tasks[":id"].$put({
       cookie: { session: session.id },
       param: { id: task.id },
-      json: { title: "", description: "" },
+      json: { title: "", description: "", done: false },
     });
     expect(result.ok).toBe(false);
   });
@@ -53,7 +61,7 @@ describe("タスクの更新", () => {
     const result = await client().tasks[":id"].$put({
       cookie: { session: session.id },
       param: { id: otherUserTask.id },
-      json: { title: "new", description: "new" },
+      json: { title: "new", description: "new", done: true },
     });
 
     expect(result.ok).toBe(false);

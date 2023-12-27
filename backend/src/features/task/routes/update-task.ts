@@ -13,6 +13,7 @@ import { LOGIN_SESSION_COOKIE } from "../../auth/consts";
 const UpdasteTaskInput = z
   .object({
     title: z.string().min(1).max(200),
+    done: z.boolean(),
     description: z.string().max(1000),
   })
   .openapi("UpdateTaskInput");
@@ -56,11 +57,11 @@ export const updateTask = requireAuthRoute(updateTaskRoute.path).openapi(
   updateTaskRoute,
   async ({ json, var: { db, loggedInUserId }, req }) => {
     const taskId = req.valid("param").id;
-    const { title, description } = req.valid("json");
+    const { title, description, done } = req.valid("json");
 
     const [updated] = await db
       .update(tasks)
-      .set({ title, description })
+      .set({ title, description, done })
       .where(and(eq(tasks.id, taskId), eq(tasks.authorId, loggedInUserId)))
       .returning();
 

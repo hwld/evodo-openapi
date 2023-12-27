@@ -9,11 +9,11 @@ import { toast } from "sonner";
 const columnHelper = createColumnHelper<Task>();
 
 export const columns = [
-  // todo
-  columnHelper.display({
-    id: "status",
-    cell: "undone",
+  columnHelper.accessor("done", {
     header: "Status",
+    cell: ({ getValue }) => {
+      return <div>{getValue() ? "done" : "undone"}</div>;
+    },
   }),
   columnHelper.accessor("title", {
     header: "Title",
