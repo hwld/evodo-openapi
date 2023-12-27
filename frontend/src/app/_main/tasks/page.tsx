@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { api } from "../../../api";
 import { schemas } from "../../../api/schema";
@@ -15,6 +15,13 @@ function TasksPage() {
 
   const client = useQueryClient();
   const [title, setTitle] = useState("");
+
+  const { data: tasks } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: async () => {
+      return await api.get("/tasks");
+    },
+  });
 
   const { mutate } = useMutation({
     mutationFn: (newTask: z.infer<typeof schemas.CreateTaskInput>) => {
@@ -38,7 +45,7 @@ function TasksPage() {
           <HomeIcon size={18} />
           <p className="text-sm">今日のタスク</p>
         </div>
-        <Card className="p-6 grow space-y-5">
+        <Card className="p-6 grow flex flex-col gap-3">
           <form
             onSubmit={async (e) => {
               e.preventDefault();
@@ -52,7 +59,12 @@ function TasksPage() {
               onChange={(e) => setTitle(e.target.value)}
             />
           </form>
-          <TaskTable />
+          {/* TODO */}
+          {tasks && (
+            <div className="grow">
+              <TaskTable tasks={tasks} />
+            </div>
+          )}
         </Card>
       </main>
     </div>

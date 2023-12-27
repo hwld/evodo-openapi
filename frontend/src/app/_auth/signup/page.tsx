@@ -27,7 +27,7 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 
-const signupFormSchema = schemas.SignupInput.strict();
+const signupFormSchema = schemas.SignupInput;
 type SignupFormData = z.infer<typeof signupFormSchema>;
 
 export const SignupPage: React.FC = () => {

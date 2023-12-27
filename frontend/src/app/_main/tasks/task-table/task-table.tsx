@@ -1,5 +1,4 @@
-import { api } from "@/api";
-import { Button } from "@/components/ui/button";
+import { Task } from "@/api/types";
 import {
   Table,
   TableBody,
@@ -8,50 +7,69 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { columns } from "./task-table-columns";
+import { useRef } from "react";
 
-export const TaskTable: React.FC = () => {
-  const { data: tasks } = useQuery({
-    queryKey: ["tasks"],
-    queryFn: async () => {
-      return await api.get("/tasks");
-    },
+type Props = { tasks: Task[] };
+export const TaskTable: React.FC<Props> = ({ tasks }) => {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const table = useReactTable({
+    data: tasks,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
   });
-
-  const client = useQueryClient();
-  const deleteMutation = useMutation({
-    mutationFn: async ({ taskId }: { taskId: string }) => {
-      return api.delete("/tasks/:id", undefined, {
-        params: { id: taskId },
-      });
-    },
-    onError: async () => {
-      toast.error("タスクを削除できませんでした。");
-    },
-    onSettled: async () => {
-      await client.invalidateQueries();
-    },
-  });
-
-  const handleDeleteTask = (id: string) => {
-    deleteMutation.mutate({ taskId: id });
-  };
 
   return (
-    <div className="rounded border">
-      <Table>
+    <div ref={wrapperRef} className="rounded border flex w-full overflow-auto">
+      <Table className="w-full">
         <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Created</TableHead>
-            <TableHead>Updated</TableHead>
-            <TableHead></TableHead>
-          </TableRow>
+          {table.getHeaderGroups().map((headerGroup) => {
+            return (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      key={header.id}
+                      className="relative"
+                      style={{ width: header.getSize() }}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
         </TableHeader>
         <TableBody>
-          {(tasks?.length ?? 0) === 0 && (
+          {table.getRowModel().rows.length ? (
+            table.getRowModel().rows.map((row) => {
+              return (
+                <TableRow key={row.id}>
+                  {row.getAllCells().map((cell) => {
+                    return (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })
+          ) : (
             <TableRow className="pointer-events-none select-none">
               <TableCell colSpan={5}>
                 <div className="flex flex-col justify-center items-center h-[300px]">
@@ -60,29 +78,6 @@ export const TaskTable: React.FC = () => {
               </TableCell>
             </TableRow>
           )}
-          {tasks?.map((task) => {
-            return (
-              <TableRow key={task.id}>
-                <TableCell>{task.title}</TableCell>
-                <TableCell>undone</TableCell>
-                <TableCell>{task.createdAt}</TableCell>
-                <TableCell>{task.updatedAt}</TableCell>
-                <TableCell>
-                  <div className="flex gap-1">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {
-                        handleDeleteTask(task.id);
-                      }}
-                    >
-                      削除
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            );
-          })}
         </TableBody>
       </Table>
     </div>

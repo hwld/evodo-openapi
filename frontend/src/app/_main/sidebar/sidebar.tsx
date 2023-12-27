@@ -10,10 +10,9 @@ import { SidebarItem } from "./sidebar-item";
 import { Button } from "@/components/ui/button";
 import { api } from "@/api";
 import { useRouter } from "@tanstack/react-router";
-import { z } from "zod";
-import { schemas } from "@/api/schema";
+import { Session } from "@/api/types";
 
-type Props = { session: z.infer<typeof schemas.Session> };
+type Props = { session: Session };
 export const Sidebar: React.FC<Props> = ({ session }) => {
   const route = useRouter();
 
