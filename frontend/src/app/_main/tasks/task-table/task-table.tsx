@@ -8,9 +8,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  ColumnFiltersState,
   SortingState,
   flexRender,
   getCoreRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -21,15 +24,23 @@ import { TaskTableToolbar } from "./toolbar";
 type Props = { tasks: Task[] };
 export const TaskTable: React.FC<Props> = ({ tasks }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
     data: tasks,
     columns: taskTableColumns,
     getCoreRowModel: getCoreRowModel(),
+
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+
     state: {
       sorting,
+      columnFilters,
     },
   });
 

@@ -100,6 +100,7 @@ export const SignupPage: React.FC = () => {
                         <Input
                           error={!!form.formState.errors.username}
                           placeholder="username..."
+                          autoComplete="off"
                           {...field}
                         />
                       </FormControl>

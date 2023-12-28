@@ -33,7 +33,6 @@ const badgeVariants = cva(
 export type BadgeProps = VariantProps<typeof badgeVariants> & {
   className?: string;
   onClick?: () => void;
-  button?: boolean;
   children: React.ReactNode;
 };
 

@@ -54,6 +54,7 @@ function TasksPage() {
             }}
           >
             <Input
+              size="sm"
               placeholder="タスクを入力してください..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}

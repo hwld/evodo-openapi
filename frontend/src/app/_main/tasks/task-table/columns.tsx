@@ -11,8 +11,16 @@ import { CircleDashedIcon, CircleDotIcon } from "lucide-react";
 
 const columnHelper = createColumnHelper<Task>();
 
+export const doneColumnOptions = [
+  { value: true, label: "完了", icon: CircleDotIcon },
+  { value: false, label: "未完了", icon: CircleDashedIcon },
+] as const;
+
 export const taskTableColumns = [
   columnHelper.accessor("done", {
+    filterFn: (row, id, value: unknown[]) => {
+      return value.includes(row.getValue(id));
+    },
     header: ({ column }) => {
       const sorted = column.getIsSorted();
 
@@ -51,19 +59,18 @@ export const taskTableColumns = [
         },
       });
 
+      const option = doneColumnOptions.filter((opt) => opt.value === done)[0];
+      const Icon = option.icon;
+      const label = option.label;
+
       return (
         <Badge
           size="sm"
-          button
           onClick={() => updateMutation.mutate()}
           variant={done ? "success" : "destructive"}
         >
-          {done ? (
-            <CircleDotIcon size={13} className="mr-1" />
-          ) : (
-            <CircleDashedIcon size={13} className="mr-1" />
-          )}
-          {done ? "完了" : "未完了"}
+          <Icon size={13} className="mr-1" />
+          {label}
         </Badge>
       );
     },
