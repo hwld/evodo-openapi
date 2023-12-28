@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 
 type SortedIconProps = { sorted: false | SortDirection };
-export const SortedIcon: React.FC<SortedIconProps> = ({ sorted }) => {
+export const TaskTableSortedIcon: React.FC<SortedIconProps> = ({ sorted }) => {
   const size = 15;
   if (!sorted) {
     return <ChevronsUpDownIcon size={size} />;

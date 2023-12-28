@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { toast } from "sonner";
-import { SortedIcon } from "./sorted-icon";
+import { TaskTableSortedIcon } from "./sorted-icon";
 
 const columnHelper = createColumnHelper<Task>();
 
-export const columns = [
+export const taskTableColumns = [
   columnHelper.accessor("done", {
     header: ({ column }) => {
       const sorted = column.getIsSorted();
@@ -25,7 +25,7 @@ export const columns = [
         >
           <div className="flex gap-1 items-center">
             状態
-            <SortedIcon sorted={sorted} />
+            <TaskTableSortedIcon sorted={sorted} />
           </div>
         </Button>
       );
@@ -52,6 +52,7 @@ export const columns = [
 
       return (
         <Badge
+          size="sm"
           button
           onClick={() => updateMutation.mutate()}
           variant={done ? "success" : "destructive"}
@@ -89,7 +90,7 @@ export const columns = [
         >
           <div className="flex items-center gap-1">
             作成日
-            <SortedIcon sorted={sorted} />
+            <TaskTableSortedIcon sorted={sorted} />
           </div>
         </Button>
       );
@@ -119,7 +120,7 @@ export const columns = [
         >
           <div className="flex items-center gap-1">
             更新日
-            <SortedIcon sorted={sorted} />
+            <TaskTableSortedIcon sorted={sorted} />
           </div>
         </Button>
       );

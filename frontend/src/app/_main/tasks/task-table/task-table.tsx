@@ -14,8 +14,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { columns } from "./columns";
+import { taskTableColumns } from "./columns";
 import { useState } from "react";
+import { TaskTableToolbar } from "./toolbar";
 
 type Props = { tasks: Task[] };
 export const TaskTable: React.FC<Props> = ({ tasks }) => {
@@ -23,7 +24,7 @@ export const TaskTable: React.FC<Props> = ({ tasks }) => {
 
   const table = useReactTable({
     data: tasks,
-    columns,
+    columns: taskTableColumns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -33,57 +34,60 @@ export const TaskTable: React.FC<Props> = ({ tasks }) => {
   });
 
   return (
-    <div className="rounded border flex w-full overflow-auto">
-      <Table className="w-full">
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => {
-            return (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} className="relative">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            );
-          })}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row) => {
+    <div className="flex flex-col gap-3">
+      <TaskTableToolbar table={table} />
+      <div className="rounded border flex w-full overflow-auto">
+        <Table className="w-full">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => {
               return (
-                <TableRow key={row.id}>
-                  {row.getAllCells().map((cell) => {
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
                     return (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
+                      <TableHead key={header.id} className="relative">
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </TableHead>
                     );
                   })}
                 </TableRow>
               );
-            })
-          ) : (
-            <TableRow className="pointer-events-none select-none">
-              <TableCell colSpan={5}>
-                <div className="flex flex-col justify-center items-center h-[300px]">
-                  <p className="text-sm text-muted">タスクが存在しません。</p>
-                </div>
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            })}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => {
+                return (
+                  <TableRow key={row.id}>
+                    {row.getAllCells().map((cell) => {
+                      return (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })
+            ) : (
+              <TableRow className="pointer-events-none select-none">
+                <TableCell colSpan={5}>
+                  <div className="flex flex-col justify-center items-center h-[300px]">
+                    <p className="text-sm text-muted">タスクが存在しません。</p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };

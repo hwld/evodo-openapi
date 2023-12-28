@@ -45,7 +45,7 @@ function TasksPage() {
           <HomeIcon size={18} />
           <p className="text-sm">今日のタスク</p>
         </div>
-        <Card className="p-6 grow flex flex-col gap-3">
+        <Card className="p-6 grow flex flex-col gap-6">
           <form
             onSubmit={async (e) => {
               e.preventDefault();
