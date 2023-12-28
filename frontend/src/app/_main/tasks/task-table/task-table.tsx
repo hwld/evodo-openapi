@@ -14,7 +14,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { columns } from "./task-table-columns";
+import { columns } from "./columns";
 import { useState } from "react";
 
 type Props = { tasks: Task[] };

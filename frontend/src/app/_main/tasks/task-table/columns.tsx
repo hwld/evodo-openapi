@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { toast } from "sonner";
-import { SortedIcon } from "./task-table-sorted-icon";
+import { SortedIcon } from "./sorted-icon";
 
 const columnHelper = createColumnHelper<Task>();
 
