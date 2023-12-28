@@ -25,10 +25,11 @@
     --accent: 0 0% 45%;
     --accent-foreground: 0 0% 90%;
 
-    --destructive: 0, 84%, 60%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 90%;
 
-    --success: 142, 69%, 58%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 9%;
 
     --border: 0 0% 25%;
     --input: 0 0% 32%;

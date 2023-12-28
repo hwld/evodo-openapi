@@ -4,7 +4,7 @@ import { taskPath } from "../path";
 import { TaskSchema } from "../schema";
 import { requireAuthRoute, route } from "../../../app";
 import { tasks } from "../../../services/db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Features } from "../../features";
 import { errorResponse } from "../../../lib/openapi";
@@ -61,7 +61,7 @@ export const updateTask = requireAuthRoute(updateTaskRoute.path).openapi(
 
     const [updated] = await db
       .update(tasks)
-      .set({ title, description, done })
+      .set({ title, description, done, updatedAt: sql`CURRENT_TIMESTAMP` })
       .where(and(eq(tasks.id, taskId), eq(tasks.authorId, loggedInUserId)))
       .returning();
 

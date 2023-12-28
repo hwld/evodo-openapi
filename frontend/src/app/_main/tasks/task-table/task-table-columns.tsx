@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { api } from "@/api";
 import { Task } from "@/api/types";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -10,22 +11,52 @@ const columnHelper = createColumnHelper<Task>();
 
 export const columns = [
   columnHelper.accessor("done", {
-    header: "Status",
-    cell: ({ getValue }) => {
-      return <div>{getValue() ? "done" : "undone"}</div>;
+    header: "状態",
+    cell: ({ getValue, row }) => {
+      const done = getValue();
+
+      const client = useQueryClient();
+      const updateMutation = useMutation({
+        mutationFn: async () => {
+          return api.put(
+            "/tasks/:id",
+            { ...row.original, done: !row.original.done },
+            { params: { id: row.original.id } },
+          );
+        },
+        onError: () => {
+          toast.error("タスクを更新できませんでした。");
+        },
+        onSettled: async () => {
+          await client.invalidateQueries();
+        },
+      });
+
+      return (
+        <Badge
+          button
+          onClick={() => updateMutation.mutate()}
+          variant={done ? "success" : "destructive"}
+        >
+          {done ? "完了" : "未完了"}
+        </Badge>
+      );
     },
   }),
   columnHelper.accessor("title", {
-    header: "Title",
+    header: "タスク",
+    cell: ({ getValue }) => {
+      return <p className="whitespace-nowrap">{getValue()}</p>;
+    },
   }),
   columnHelper.accessor("createdAt", {
-    header: "Created",
+    header: "作成日",
     cell: ({ getValue }) => {
       return <p className="whitespace-nowrap">{getValue()}</p>;
     },
   }),
   columnHelper.accessor("updatedAt", {
-    header: "Updated",
+    header: "更新日",
     cell: ({ getValue }) => {
       return <p className="whitespace-nowrap">{getValue()}</p>;
     },
@@ -54,7 +85,7 @@ export const columns = [
 
       return (
         <div className="flex">
-          <Button size="sm" variant="outline" onClick={handleDeleteTask}>
+          <Button size="xs" variant="outline" onClick={handleDeleteTask}>
             削除
           </Button>
         </div>
