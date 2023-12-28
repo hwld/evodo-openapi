@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { toast } from "sonner";
 import { TaskTableSortedIcon } from "./sorted-icon";
+import { CircleDashedIcon, CircleDotIcon } from "lucide-react";
 
 const columnHelper = createColumnHelper<Task>();
 
@@ -57,6 +58,11 @@ export const taskTableColumns = [
           onClick={() => updateMutation.mutate()}
           variant={done ? "success" : "destructive"}
         >
+          {done ? (
+            <CircleDotIcon size={13} className="mr-1" />
+          ) : (
+            <CircleDashedIcon size={13} className="mr-1" />
+          )}
           {done ? "完了" : "未完了"}
         </Badge>
       );

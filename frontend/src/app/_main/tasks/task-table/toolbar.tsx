@@ -3,14 +3,14 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Table } from "@tanstack/react-table";
 import { XIcon } from "lucide-react";
-import { TaskTableFilterButton } from "./filter-button";
+import { TaskTableFilter } from "./filter";
 import { Button } from "@/components/ui/button";
 
 type Props = { table: Table<Task> };
 export const TaskTableToolbar: React.FC<Props> = () => {
   return (
     <div className="flex items-center gap-5 h-7">
-      <TaskTableFilterButton />
+      <TaskTableFilter />
 
       <Separator orientation="vertical" />
 
