@@ -8,24 +8,32 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  SortingState,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { columns } from "./task-table-columns";
-import { useRef } from "react";
+import { useState } from "react";
 
 type Props = { tasks: Task[] };
 export const TaskTable: React.FC<Props> = ({ tasks }) => {
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [sorting, setSorting] = useState<SortingState>([]);
+
   const table = useReactTable({
     data: tasks,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
   });
 
   return (
-    <div ref={wrapperRef} className="rounded border flex w-full overflow-auto">
+    <div className="rounded border flex w-full overflow-auto">
       <Table className="w-full">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => {

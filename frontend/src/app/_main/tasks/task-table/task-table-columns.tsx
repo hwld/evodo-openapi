@@ -6,12 +6,30 @@ import { Button } from "@/components/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { toast } from "sonner";
+import { SortedIcon } from "./task-table-sorted-icon";
 
 const columnHelper = createColumnHelper<Task>();
 
 export const columns = [
   columnHelper.accessor("done", {
-    header: "状態",
+    header: ({ column }) => {
+      const sorted = column.getIsSorted();
+
+      return (
+        <Button
+          variant="ghost"
+          size="xs"
+          onClick={() => {
+            column.toggleSorting(sorted === "asc");
+          }}
+        >
+          <div className="flex gap-1 items-center">
+            状態
+            <SortedIcon sorted={sorted} />
+          </div>
+        </Button>
+      );
+    },
     cell: ({ getValue, row }) => {
       const done = getValue();
 
@@ -43,24 +61,74 @@ export const columns = [
       );
     },
   }),
+
   columnHelper.accessor("title", {
     header: "タスク",
     cell: ({ getValue }) => {
-      return <p className="whitespace-nowrap">{getValue()}</p>;
+      return <p>{getValue()}</p>;
     },
   }),
+
   columnHelper.accessor("createdAt", {
-    header: "作成日",
+    sortingFn: (a, b) => {
+      return (
+        new Date(b.original.createdAt).getTime() -
+        new Date(a.original.createdAt).getTime()
+      );
+    },
+    header: ({ column }) => {
+      const sorted = column.getIsSorted();
+
+      return (
+        <Button
+          size="xs"
+          variant="ghost"
+          onClick={() => {
+            column.toggleSorting(sorted === "asc");
+          }}
+        >
+          <div className="flex items-center gap-1">
+            作成日
+            <SortedIcon sorted={sorted} />
+          </div>
+        </Button>
+      );
+    },
     cell: ({ getValue }) => {
       return <p className="whitespace-nowrap">{getValue()}</p>;
     },
   }),
+
   columnHelper.accessor("updatedAt", {
-    header: "更新日",
+    sortingFn: (a, b) => {
+      return (
+        new Date(b.original.createdAt).getTime() -
+        new Date(a.original.createdAt).getTime()
+      );
+    },
+    header: ({ column }) => {
+      const sorted = column.getIsSorted();
+
+      return (
+        <Button
+          size="xs"
+          variant="ghost"
+          onClick={() => {
+            column.toggleSorting(sorted === "asc");
+          }}
+        >
+          <div className="flex items-center gap-1">
+            更新日
+            <SortedIcon sorted={sorted} />
+          </div>
+        </Button>
+      );
+    },
     cell: ({ getValue }) => {
       return <p className="whitespace-nowrap">{getValue()}</p>;
     },
   }),
+
   columnHelper.display({
     id: "action",
     cell: ({ row }) => {
