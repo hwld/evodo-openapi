@@ -13,8 +13,8 @@ describe("タスクの更新", () => {
     const newUser = {
       title: "newTitle",
       description: "newDescription",
-      done: true,
-    };
+      status: "done",
+    } as const;
     const user = await Factories.user({});
     const task = await Factories.task({ authorId: user.id });
     const session = await Factories.loginSession({ userId: user.id });
@@ -25,7 +25,7 @@ describe("タスクの更新", () => {
       json: {
         title: newUser.title,
         description: newUser.description,
-        done: newUser.done,
+        status: newUser.status,
       },
     });
 
@@ -44,7 +44,7 @@ describe("タスクの更新", () => {
     const result = await client().tasks[":id"].$put({
       cookie: { session: session.id },
       param: { id: task.id },
-      json: { title: "", description: "", done: false },
+      json: { title: "", description: "", status: "todo" },
     });
     expect(result.ok).toBe(false);
   });
@@ -61,7 +61,7 @@ describe("タスクの更新", () => {
     const result = await client().tasks[":id"].$put({
       cookie: { session: session.id },
       param: { id: otherUserTask.id },
-      json: { title: "new", description: "new", done: true },
+      json: { title: "new", description: "new", status: "done" },
     });
 
     expect(result.ok).toBe(false);

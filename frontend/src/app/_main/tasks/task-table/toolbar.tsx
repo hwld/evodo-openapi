@@ -9,9 +9,9 @@ import { doneColumnOptions } from "./columns";
 
 type Props = { table: Table<Task> };
 export const TaskTableToolbar: React.FC<Props> = ({ table }) => {
-  const statusColumn = table.getColumn("done" satisfies keyof Task);
+  const statusColumn = table.getColumn("status" satisfies keyof Task);
   const statusFilters =
-    (statusColumn?.getFilterValue() as Task["done"][]) ?? [];
+    (statusColumn?.getFilterValue() as Task["status"][]) ?? [];
 
   return (
     <div className="flex items-center gap-5 h-7">

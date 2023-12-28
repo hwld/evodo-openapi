@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "197ae711-a317-4753-ad1c-6e6d124d08c2",
+  "id": "5995cb74-3c68-4996-8ce5-f0938063d0d8",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "signup_sessions": {
@@ -52,13 +52,13 @@
           "notNull": true,
           "autoincrement": false
         },
-        "done": {
-          "name": "done",
-          "type": "integer",
+        "status": {
+          "name": "status",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": false
+          "default": "'todo'"
         },
         "title": {
           "name": "title",

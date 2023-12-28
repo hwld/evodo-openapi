@@ -1,7 +1,7 @@
 import { createRoute } from "@hono/zod-openapi";
 import { z } from "zod";
 import { taskPath } from "../path";
-import { TaskSchema } from "../schema";
+import { TaskSchema, UpdasteTaskInputSchema } from "../schema";
 import { requireAuthRoute, route } from "../../../app";
 import { tasks } from "../../../services/db/schema";
 import { and, eq, sql } from "drizzle-orm";
@@ -10,14 +10,6 @@ import { Features } from "../../features";
 import { errorResponse } from "../../../lib/openapi";
 import { LOGIN_SESSION_COOKIE } from "../../auth/consts";
 import { currentTime } from "../../../services/db/utils";
-
-const UpdasteTaskInput = z
-  .object({
-    title: z.string().min(1).max(200),
-    done: z.boolean(),
-    description: z.string().max(1000),
-  })
-  .openapi("UpdateTaskInput");
 
 const updateTaskRoute = createRoute({
   tags: [Features.task],
@@ -34,7 +26,7 @@ const updateTaskRoute = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: UpdasteTaskInput,
+          schema: UpdasteTaskInputSchema,
         },
       },
     },
@@ -58,14 +50,14 @@ export const updateTask = requireAuthRoute(updateTaskRoute.path).openapi(
   updateTaskRoute,
   async ({ json, var: { db, loggedInUserId }, req }) => {
     const taskId = req.valid("param").id;
-    const { title, description, done } = req.valid("json");
+    const { title, description, status } = req.valid("json");
 
     const [updated] = await db
       .update(tasks)
       .set({
         title,
         description,
-        done,
+        status,
         updatedAt: currentTime(),
       })
       .where(and(eq(tasks.id, taskId), eq(tasks.authorId, loggedInUserId)))

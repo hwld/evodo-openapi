@@ -19,9 +19,9 @@ import { doneColumnOptions } from "./columns";
 
 type Props = { table: Table<Task> };
 export const TaskTableStatusFilter: React.FC<Props> = ({ table }) => {
-  const statusColumn = table.getColumn("done" satisfies keyof Task);
+  const statusColumn = table.getColumn("status" satisfies keyof Task);
   const statusFilters =
-    (statusColumn?.getFilterValue() as Task["done"][]) ?? [];
+    (statusColumn?.getFilterValue() as Task["status"][]) ?? [];
 
   const options = doneColumnOptions;
 

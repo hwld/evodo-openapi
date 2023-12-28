@@ -6,7 +6,7 @@ CREATE TABLE `signup_sessions` (
 --> statement-breakpoint
 CREATE TABLE `tasks` (
 	`id` text PRIMARY KEY NOT NULL,
-	`done` integer DEFAULT false NOT NULL,
+	`status` text DEFAULT 'todo' NOT NULL,
 	`title` text NOT NULL,
 	`description` text NOT NULL,
 	`author_id` text NOT NULL,

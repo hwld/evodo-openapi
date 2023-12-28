@@ -12,12 +12,12 @@ import { CircleDashedIcon, CircleDotIcon } from "lucide-react";
 const columnHelper = createColumnHelper<Task>();
 
 export const doneColumnOptions = [
-  { value: true, label: "完了", icon: CircleDotIcon },
-  { value: false, label: "未完了", icon: CircleDashedIcon },
+  { value: "done", label: "完了", icon: CircleDotIcon },
+  { value: "todo", label: "未完了", icon: CircleDashedIcon },
 ] as const;
 
 export const taskTableColumns = [
-  columnHelper.accessor("done", {
+  columnHelper.accessor("status", {
     filterFn: (row, id, value: unknown[]) => {
       return value.includes(row.getValue(id));
     },
@@ -40,14 +40,17 @@ export const taskTableColumns = [
       );
     },
     cell: ({ getValue, row }) => {
-      const done = getValue();
+      const status = getValue();
 
       const client = useQueryClient();
       const updateMutation = useMutation({
         mutationFn: async () => {
           return api.put(
             "/tasks/:id",
-            { ...row.original, done: !row.original.done },
+            {
+              ...row.original,
+              status: row.original.status === "done" ? "todo" : "done",
+            },
             { params: { id: row.original.id } },
           );
         },
@@ -59,7 +62,7 @@ export const taskTableColumns = [
         },
       });
 
-      const option = doneColumnOptions.filter((opt) => opt.value === done)[0];
+      const option = doneColumnOptions.filter((opt) => opt.value === status)[0];
       const Icon = option.icon;
       const label = option.label;
 
@@ -67,7 +70,7 @@ export const taskTableColumns = [
         <Badge
           size="sm"
           onClick={() => updateMutation.mutate()}
-          variant={done ? "success" : "destructive"}
+          variant={status === "done" ? "success" : "destructive"}
         >
           <Icon size={13} className="mr-1" />
           {label}

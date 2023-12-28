@@ -10,7 +10,7 @@ const Session = z.object({ user: User });
 const Task = z.object({
   id: z.string(),
   title: z.string(),
-  done: z.boolean(),
+  status: z.union([z.literal("todo"), z.literal("done")]),
   description: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
@@ -21,8 +21,8 @@ const CreateTaskInput = z.object({
 });
 const UpdateTaskInput = z.object({
   title: z.string().min(1).max(200),
-  done: z.boolean(),
   description: z.string().max(1000),
+  status: z.union([z.literal("todo"), z.literal("done")]),
 });
 
 export const schemas = {

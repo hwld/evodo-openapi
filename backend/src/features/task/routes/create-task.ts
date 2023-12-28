@@ -1,18 +1,11 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { TaskSchema } from "../schema";
-import { requireAuthRoute, route } from "../../../app";
+import { CreateTaskInputSchema, TaskSchema } from "../schema";
+import { requireAuthRoute } from "../../../app";
 import { tasks } from "../../../services/db/schema";
 import { tasksPath } from "../path";
 import { Features } from "../../features";
 import { errorResponse } from "../../../lib/openapi";
 import { LOGIN_SESSION_COOKIE } from "../../auth/consts";
-
-const CreateTaskInput = z
-  .object({
-    title: z.string().min(1).max(200),
-    description: z.string().max(1000),
-  })
-  .openapi("CreateTaskInput");
 
 const createTaskRoute = createRoute({
   tags: [Features.task],
@@ -26,7 +19,7 @@ const createTaskRoute = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: CreateTaskInput,
+          schema: CreateTaskInputSchema,
         },
       },
     },
