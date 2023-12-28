@@ -10,8 +10,8 @@ CREATE TABLE `tasks` (
 	`title` text NOT NULL,
 	`description` text NOT NULL,
 	`author_id` text NOT NULL,
-	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`updated_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	`created_at` text DEFAULT (DATETIME('now', 'localtime')) NOT NULL,
+	`updated_at` text DEFAULT (DATETIME('now', 'localtime')) NOT NULL,
 	FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint

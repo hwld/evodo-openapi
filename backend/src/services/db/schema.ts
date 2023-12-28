@@ -2,6 +2,7 @@
 import { relations, sql } from "drizzle-orm";
 import { text, sqliteTable, integer } from "drizzle-orm/sqlite-core";
 import { createId } from "@paralleldrive/cuid2";
+import { currentTime } from "./utils";
 
 export const users = sqliteTable("users", {
   id: text("id")
@@ -35,10 +36,10 @@ export const tasks = sqliteTable("tasks", {
     .notNull(),
   createdAt: text("created_at")
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+    .default(sql`(${currentTime()})`),
   updatedAt: text("updated_at")
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+    .default(sql`(${currentTime()})`),
 });
 
 export const tasksRelations = relations(tasks, ({ one }) => ({

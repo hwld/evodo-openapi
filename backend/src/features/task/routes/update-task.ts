@@ -9,6 +9,7 @@ import { HTTPException } from "hono/http-exception";
 import { Features } from "../../features";
 import { errorResponse } from "../../../lib/openapi";
 import { LOGIN_SESSION_COOKIE } from "../../auth/consts";
+import { currentTime } from "../../../services/db/utils";
 
 const UpdasteTaskInput = z
   .object({
@@ -61,7 +62,12 @@ export const updateTask = requireAuthRoute(updateTaskRoute.path).openapi(
 
     const [updated] = await db
       .update(tasks)
-      .set({ title, description, done, updatedAt: sql`CURRENT_TIMESTAMP` })
+      .set({
+        title,
+        description,
+        done,
+        updatedAt: currentTime(),
+      })
       .where(and(eq(tasks.id, taskId), eq(tasks.authorId, loggedInUserId)))
       .returning();
 
