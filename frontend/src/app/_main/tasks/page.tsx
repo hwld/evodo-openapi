@@ -26,7 +26,9 @@ function TasksPage() {
     queryKey: ["tasks", { statusFilter: taskSearchParams.status_filter }],
     queryFn: async () => {
       return await api.get("/tasks", {
-        queries: { status_filter: taskSearchParams.status_filter },
+        queries: {
+          "status_filter[]": taskSearchParams.status_filter,
+        },
       });
     },
     placeholderData: keepPreviousData,

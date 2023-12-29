@@ -8,9 +8,6 @@ import { errorResponse } from "../../../lib/openapi";
 import { and, eq, inArray } from "drizzle-orm";
 import { LOGIN_SESSION_COOKIE } from "../../auth/consts";
 
-const statusFilter = "status_filter";
-const statusFilterSchema = z.array(TaskStatusSchema).optional().default([]);
-
 const getTasksRoute = createRoute({
   tags: [Features.task],
   method: "get",
@@ -20,9 +17,18 @@ const getTasksRoute = createRoute({
     cookies: z.object({
       [LOGIN_SESSION_COOKIE]: z.string().optional(),
     }),
-    // 実際にバリデーションには使用しないが、スキーマに残すために書く
+    // フロントで使ってるzodiosでは配列のquery paramに[]を付ける必要がある
     query: z.object({
-      [statusFilter]: statusFilterSchema,
+      ["status_filter[]"]: z
+        .array(TaskStatusSchema)
+        .or(TaskStatusSchema)
+        .transform((v) => {
+          if (typeof v === "string") {
+            return [v];
+          }
+          return v;
+        })
+        .optional(),
     }),
   },
   responses: {
@@ -41,13 +47,7 @@ const getTasksRoute = createRoute({
 export const findTasks = requireAuthRoute(getTasksRoute.path).openapi(
   getTasksRoute,
   async ({ json, var: { db, loggedInUserId }, req }) => {
-    // TODO:
-    // zodiosではqueryの配列は`field[]=a&field[]=b`のような形式で渡されちゃうので、
-    // req.queries("field[]")を使う
-    // そうするとテストが・・・
-    const statusFilters = statusFilterSchema.parse(
-      req.queries(`${statusFilter}[]`),
-    );
+    const statusFilters = req.valid("query")["status_filter[]"];
 
     const result = await db.query.tasks.findMany({
       where: and(
