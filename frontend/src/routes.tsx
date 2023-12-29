@@ -12,6 +12,8 @@ import { RootLayout } from "./app/layout";
 import TasksPage from "./app/_main/tasks/page";
 import { NotFoundPage } from "./app/404";
 import { AuthErrorPage } from "./app/_auth/error";
+import { z } from "zod";
+import { schemas } from "./api/schema";
 
 const rootRoute = rootRouteWithContext()({
   component: RootLayout,
@@ -34,10 +36,16 @@ export const requireAuthRoute = new Route({
   },
 });
 
+const taskSearchParamsSchema = z.object({
+  status_filter: schemas.status_filter.default([]).catch([]),
+});
+export type TaskSearchParams = z.infer<typeof taskSearchParamsSchema>;
+
 const indexRoute = new Route({
   getParentRoute: () => requireAuthRoute,
   path: "/",
   component: TasksPage,
+  validateSearch: taskSearchParamsSchema,
 });
 
 const loginRoute = new Route({

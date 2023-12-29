@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { z } from "zod";
 import { api } from "../../../api";
 import { schemas } from "../../../api/schema";
@@ -7,7 +12,7 @@ import { Sidebar } from "../sidebar/sidebar";
 import { Card } from "@/components/ui/card";
 import { HomeIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useRouteContext } from "@tanstack/react-router";
+import { useRouteContext, useSearch } from "@tanstack/react-router";
 import { TaskTable } from "./task-table/task-table";
 
 function TasksPage() {
@@ -16,11 +21,15 @@ function TasksPage() {
   const client = useQueryClient();
   const [title, setTitle] = useState("");
 
+  const taskSearchParams = useSearch({ from: "/requireAuth/" as const });
   const { data: tasks } = useQuery({
-    queryKey: ["tasks"],
+    queryKey: ["tasks", { statusFilter: taskSearchParams.status_filter }],
     queryFn: async () => {
-      return await api.get("/tasks");
+      return await api.get("/tasks", {
+        queries: { status_filter: taskSearchParams.status_filter },
+      });
     },
+    placeholderData: keepPreviousData,
   });
 
   const { mutate } = useMutation({
@@ -63,7 +72,7 @@ function TasksPage() {
           {/* TODO */}
           {tasks && (
             <div className="grow">
-              <TaskTable tasks={tasks} />
+              <TaskTable tasks={tasks} taskSearchParams={taskSearchParams} />
             </div>
           )}
         </Card>

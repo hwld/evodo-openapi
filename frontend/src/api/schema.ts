@@ -7,6 +7,10 @@ const SignupInput = z.object({
 });
 const User = z.object({ id: z.string(), name: z.string() });
 const Session = z.object({ user: User });
+const status_filter = z
+  .array(z.union([z.literal("todo"), z.literal("done")]))
+  .optional()
+  .default([]);
 const Task = z.object({
   id: z.string(),
   title: z.string(),
@@ -29,6 +33,7 @@ export const schemas = {
   SignupInput,
   User,
   Session,
+  status_filter,
   Task,
   CreateTaskInput,
   UpdateTaskInput,
@@ -209,6 +214,13 @@ const endpoints = makeApi([
     method: "get",
     path: "/tasks",
     requestFormat: "json",
+    parameters: [
+      {
+        name: "status_filter",
+        type: "Query",
+        schema: status_filter,
+      },
+    ],
     response: z.array(Task),
     errors: [
       {

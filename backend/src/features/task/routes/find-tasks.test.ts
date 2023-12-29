@@ -16,6 +16,7 @@ describe("タスクをすべて収録", () => {
 
     const result = await client().tasks.$get({
       cookie: { session: session.id },
+      query: { status_filter: [] },
     });
     const allTasks = await result.json();
 
@@ -28,6 +29,7 @@ describe("タスクをすべて収録", () => {
 
     const result = await client().tasks.$get({
       cookie: { session: session.id },
+      query: { status_filter: [] },
     });
     const allTasks = await result.json();
 

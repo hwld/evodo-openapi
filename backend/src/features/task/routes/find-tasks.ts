@@ -1,12 +1,15 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { TaskSchema } from "../schema";
+import { TaskSchema, TaskStatusSchema } from "../schema";
 import { tasks } from "../../../services/db/schema";
 import { requireAuthRoute } from "../../../app";
 import { tasksPath } from "../path";
 import { Features } from "../../features";
 import { errorResponse } from "../../../lib/openapi";
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { LOGIN_SESSION_COOKIE } from "../../auth/consts";
+
+const statusFilter = "status_filter";
+const statusFilterSchema = z.array(TaskStatusSchema).optional().default([]);
 
 const getTasksRoute = createRoute({
   tags: [Features.task],
@@ -16,6 +19,10 @@ const getTasksRoute = createRoute({
   request: {
     cookies: z.object({
       [LOGIN_SESSION_COOKIE]: z.string().optional(),
+    }),
+    // 実際にバリデーションには使用しないが、スキーマに残すために書く
+    query: z.object({
+      [statusFilter]: statusFilterSchema,
     }),
   },
   responses: {
@@ -33,9 +40,22 @@ const getTasksRoute = createRoute({
 
 export const findTasks = requireAuthRoute(getTasksRoute.path).openapi(
   getTasksRoute,
-  async ({ json, var: { db, loggedInUserId } }) => {
+  async ({ json, var: { db, loggedInUserId }, req }) => {
+    // TODO:
+    // zodiosではqueryの配列は`field[]=a&field[]=b`のような形式で渡されちゃうので、
+    // req.queries("field[]")を使う
+    // そうするとテストが・・・
+    const statusFilters = statusFilterSchema.parse(
+      req.queries(`${statusFilter}[]`),
+    );
+
     const result = await db.query.tasks.findMany({
-      where: eq(tasks.authorId, loggedInUserId),
+      where: and(
+        eq(tasks.authorId, loggedInUserId),
+        statusFilters?.length
+          ? inArray(tasks.status, statusFilters)
+          : undefined,
+      ),
     });
     return json(result);
   },

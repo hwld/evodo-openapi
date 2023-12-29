@@ -1,21 +1,21 @@
-import { Task } from "@/api/types";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Table } from "@tanstack/react-table";
 import { XIcon } from "lucide-react";
 import { TaskTableStatusFilter } from "./status-filter";
 import { Button } from "@/components/ui/button";
 import { doneColumnOptions } from "./columns";
+import { useNavigate } from "@tanstack/react-router";
+import { TaskSearchParams } from "@/routes";
 
-type Props = { table: Table<Task> };
-export const TaskTableToolbar: React.FC<Props> = ({ table }) => {
-  const statusColumn = table.getColumn("status" satisfies keyof Task);
-  const statusFilters =
-    (statusColumn?.getFilterValue() as Task["status"][]) ?? [];
+type Props = { taskSearchParams: TaskSearchParams };
+export const TaskTableToolbar: React.FC<Props> = ({ taskSearchParams }) => {
+  const navigate = useNavigate();
+
+  const statusFilters = taskSearchParams.status_filter;
 
   return (
     <div className="flex items-center gap-5 h-7">
-      <TaskTableStatusFilter table={table} />
+      <TaskTableStatusFilter taskSearchParams={taskSearchParams} />
       <Separator orientation="vertical" />
       <div className="flex items-center gap-2">
         {statusFilters.map((filter) => {
@@ -25,9 +25,11 @@ export const TaskTableToolbar: React.FC<Props> = ({ table }) => {
 
           const clearFilter = () => {
             const newFilters = statusFilters.filter((f) => f !== filter);
-            statusColumn?.setFilterValue(
-              newFilters.length ? newFilters : undefined,
-            );
+            navigate({
+              search: {
+                status_filter: newFilters.length ? newFilters : undefined,
+              },
+            });
           };
 
           return (

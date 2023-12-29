@@ -1,4 +1,3 @@
-import { Task } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -13,15 +12,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Table } from "@tanstack/react-table";
 import { CheckIcon, PlusCircleIcon } from "lucide-react";
 import { doneColumnOptions } from "./columns";
+import { useNavigate } from "@tanstack/react-router";
+import { TaskSearchParams } from "@/routes";
 
-type Props = { table: Table<Task> };
-export const TaskTableStatusFilter: React.FC<Props> = ({ table }) => {
-  const statusColumn = table.getColumn("status" satisfies keyof Task);
-  const statusFilters =
-    (statusColumn?.getFilterValue() as Task["status"][]) ?? [];
+type Props = { taskSearchParams: TaskSearchParams };
+export const TaskTableStatusFilter: React.FC<Props> = ({
+  taskSearchParams,
+}) => {
+  const navigate = useNavigate();
+  const statusFilters = taskSearchParams.status_filter;
 
   const options = doneColumnOptions;
 
@@ -50,11 +51,17 @@ export const TaskTableStatusFilter: React.FC<Props> = ({ table }) => {
                         const newSelected = statusFilters.filter(
                           (v) => v !== value,
                         );
-                        statusColumn?.setFilterValue(
-                          newSelected.length ? newSelected : undefined,
-                        );
+                        navigate({
+                          search: {
+                            status_filter: newSelected.length
+                              ? newSelected
+                              : undefined,
+                          },
+                        });
                       } else {
-                        statusColumn?.setFilterValue([...statusFilters, value]);
+                        navigate({
+                          search: { status_filter: [...statusFilters, value] },
+                        });
                       }
                     }}
                   >
@@ -79,7 +86,7 @@ export const TaskTableStatusFilter: React.FC<Props> = ({ table }) => {
             <CommandSeparator />
             <CommandGroup>
               <CommandItem
-                onSelect={() => statusColumn?.setFilterValue(undefined)}
+                onSelect={() => navigate({ search: { status_filter: [] } })}
               >
                 フィルターを解除する
               </CommandItem>

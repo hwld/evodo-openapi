@@ -20,12 +20,15 @@ import {
 import { taskTableColumns } from "./columns";
 import { useState } from "react";
 import { TaskTableToolbar } from "./toolbar";
+import { TaskSearchParams } from "@/routes";
 
-type Props = { tasks: Task[] };
-export const TaskTable: React.FC<Props> = ({ tasks }) => {
+type Props = {
+  tasks: Task[];
+  taskSearchParams: TaskSearchParams;
+};
+export const TaskTable: React.FC<Props> = ({ tasks, taskSearchParams }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
   const table = useReactTable({
     data: tasks,
     columns: taskTableColumns,
@@ -46,7 +49,7 @@ export const TaskTable: React.FC<Props> = ({ tasks }) => {
 
   return (
     <div className="flex flex-col gap-3">
-      <TaskTableToolbar table={table} />
+      <TaskTableToolbar taskSearchParams={taskSearchParams} />
       <div className="rounded border flex w-full overflow-auto">
         <Table className="w-full">
           <TableHeader>
