@@ -16,11 +16,34 @@ describe("タスクをすべて収録", () => {
 
     const result = await client().tasks.$get({
       cookie: { session: session.id },
-      query: { status_filter: [] },
+      query: { "status_filter[]": [] },
     });
     const allTasks = await result.json();
 
     expect(allTasks.length).toBe(3);
+  });
+
+  it("指定した状態のタスクだけを取得できる", async () => {
+    const user = await Factories.user({});
+    const doneTaskCount = 5;
+    await Promise.all([
+      ...[...new Array(doneTaskCount)].map(() =>
+        Factories.task({ authorId: user.id, status: "done" }),
+      ),
+      ...[...new Array(3)].map(() =>
+        Factories.task({ authorId: user.id, status: "todo" }),
+      ),
+    ]);
+    const session = await Factories.loginSession({ userId: user.id });
+
+    const result = await client().tasks.$get({
+      cookie: { session: session.id },
+      query: { "status_filter[]": ["done"] },
+    });
+    const doneTasks = await result.json();
+
+    expect(doneTasks.length).toBe(doneTaskCount);
+    expect(doneTasks.every((task) => task.status === "done")).toBe(true);
   });
 
   it("タスクがない場合は空の配列が帰ってくる", async () => {
@@ -29,7 +52,7 @@ describe("タスクをすべて収録", () => {
 
     const result = await client().tasks.$get({
       cookie: { session: session.id },
-      query: { status_filter: [] },
+      query: { "status_filter[]": [] },
     });
     const allTasks = await result.json();
 
