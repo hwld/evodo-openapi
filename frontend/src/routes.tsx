@@ -37,7 +37,15 @@ export const requireAuthRoute = new Route({
 });
 
 const taskSearchParamsSchema = z.object({
-  status_filter: schemas["status_filter_"].default([]).catch([]),
+  status_filter: schemas["status_filter_"]
+    .transform((v) => {
+      if (typeof v === "string") {
+        return [v];
+      }
+      return v;
+    })
+    .default([])
+    .catch([]),
   sort: schemas.sort.catch("createdAt"),
   order: schemas.order.catch("desc"),
 });
