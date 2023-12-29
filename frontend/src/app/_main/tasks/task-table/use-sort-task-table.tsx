@@ -5,7 +5,7 @@ import { z } from "zod";
 
 export type SortStatus = false | "asc" | "desc";
 
-export const useSortTaskTable = (column: z.infer<typeof schemas.sort>) => {
+export const useSortTaskTable = (column: z.infer<typeof schemas.TaskSort>) => {
   const navigate = useNavigate();
   const search = useSearch({ from: "/requireAuth/" as const });
   const sorted = search.sort === column;

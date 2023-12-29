@@ -28,7 +28,8 @@ const getTasksRoute = createRoute({
           }
           return v;
         })
-        .optional(),
+        .optional()
+        .openapi("TaskStatusFilters"),
       sort: z
         .union([
           z.literal("title"),
@@ -36,8 +37,12 @@ const getTasksRoute = createRoute({
           z.literal("createdAt"),
           z.literal("updatedAt"),
         ])
-        .default("createdAt"),
-      order: z.union([z.literal("asc"), z.literal("desc")]).default("desc"),
+        .default("createdAt")
+        .openapi("TaskSort"),
+      order: z
+        .union([z.literal("asc"), z.literal("desc")])
+        .default("desc")
+        .openapi("TaskSortOrder"),
     }),
   },
   responses: {

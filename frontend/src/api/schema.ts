@@ -40,6 +40,18 @@ const UpdateTaskInput = z.object({
   description: z.string().max(1000),
   status: z.union([z.literal("todo"), z.literal("done")]),
 });
+const TaskStatusFilters = z.union([
+  z.array(z.union([z.literal("todo"), z.literal("done")])),
+  z.literal("todo"),
+  z.literal("done"),
+]);
+const TaskSort = z.union([
+  z.literal("title"),
+  z.literal("status"),
+  z.literal("createdAt"),
+  z.literal("updatedAt"),
+]);
+const TaskSortOrder = z.union([z.literal("asc"), z.literal("desc")]);
 
 export const schemas = {
   SignupInput,
@@ -51,6 +63,9 @@ export const schemas = {
   Task,
   CreateTaskInput,
   UpdateTaskInput,
+  TaskStatusFilters,
+  TaskSort,
+  TaskSortOrder,
 };
 
 const endpoints = makeApi([
