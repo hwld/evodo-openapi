@@ -8,9 +8,21 @@ const SignupInput = z.object({
 const User = z.object({ id: z.string(), name: z.string() });
 const Session = z.object({ user: User });
 const status_filter_ = z
-  .array(z.union([z.literal("todo"), z.literal("done")]))
-  .optional()
-  .default([]);
+  .union([
+    z.array(z.union([z.literal("todo"), z.literal("done")])),
+    z.literal("todo"),
+    z.literal("done"),
+  ])
+  .optional();
+const sort = z
+  .union([
+    z.literal("title"),
+    z.literal("status"),
+    z.literal("createdAt"),
+    z.literal("updatedAt"),
+  ])
+  .default("createdAt");
+const order = z.union([z.literal("asc"), z.literal("desc")]).default("desc");
 const Task = z.object({
   id: z.string(),
   title: z.string(),
@@ -34,6 +46,8 @@ export const schemas = {
   User,
   Session,
   status_filter_,
+  sort,
+  order,
   Task,
   CreateTaskInput,
   UpdateTaskInput,
@@ -219,6 +233,16 @@ const endpoints = makeApi([
         name: "status_filter[]",
         type: "Query",
         schema: status_filter_,
+      },
+      {
+        name: "sort",
+        type: "Query",
+        schema: sort,
+      },
+      {
+        name: "order",
+        type: "Query",
+        schema: order,
       },
     ],
     response: z.array(Task),

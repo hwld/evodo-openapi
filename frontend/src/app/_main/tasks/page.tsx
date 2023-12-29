@@ -23,11 +23,13 @@ function TasksPage() {
 
   const taskSearchParams = useSearch({ from: "/requireAuth/" as const });
   const { data: tasks } = useQuery({
-    queryKey: ["tasks", { statusFilter: taskSearchParams.status_filter }],
+    queryKey: ["tasks", { taskSearchParams }],
     queryFn: async () => {
       return await api.get("/tasks", {
         queries: {
           "status_filter[]": taskSearchParams.status_filter,
+          sort: taskSearchParams.sort,
+          order: taskSearchParams.order,
         },
       });
     },

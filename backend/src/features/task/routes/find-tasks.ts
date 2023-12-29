@@ -5,7 +5,7 @@ import { requireAuthRoute } from "../../../app";
 import { tasksPath } from "../path";
 import { Features } from "../../features";
 import { errorResponse } from "../../../lib/openapi";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray } from "drizzle-orm";
 import { LOGIN_SESSION_COOKIE } from "../../auth/consts";
 
 const getTasksRoute = createRoute({
@@ -29,6 +29,15 @@ const getTasksRoute = createRoute({
           return v;
         })
         .optional(),
+      sort: z
+        .union([
+          z.literal("title"),
+          z.literal("status"),
+          z.literal("createdAt"),
+          z.literal("updatedAt"),
+        ])
+        .default("createdAt"),
+      order: z.union([z.literal("asc"), z.literal("desc")]).default("desc"),
     }),
   },
   responses: {
@@ -48,6 +57,18 @@ export const findTasks = requireAuthRoute(getTasksRoute.path).openapi(
   getTasksRoute,
   async ({ json, var: { db, loggedInUserId }, req }) => {
     const statusFilters = req.valid("query")["status_filter[]"];
+    const { sort, order } = req.valid("query");
+
+    const sortMap = {
+      title: tasks.title,
+      status: tasks.status,
+      createdAt: tasks.createdAt,
+      updatedAt: tasks.updatedAt,
+    };
+    const orderFnMap = {
+      asc: asc,
+      desc: desc,
+    };
 
     const result = await db.query.tasks.findMany({
       where: and(
@@ -56,6 +77,7 @@ export const findTasks = requireAuthRoute(getTasksRoute.path).openapi(
           ? inArray(tasks.status, statusFilters)
           : undefined,
       ),
+      orderBy: [orderFnMap[order](sortMap[sort])],
     });
     return json(result);
   },

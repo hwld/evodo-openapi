@@ -1,20 +1,22 @@
-import { SortDirection } from "@tanstack/react-table";
 import {
   ChevronDownIcon,
   ChevronUpIcon,
   ChevronsUpDownIcon,
 } from "lucide-react";
+import { SortStatus } from "./use-sort-task-table";
 
-type SortedIconProps = { sorted: false | SortDirection };
-export const TaskTableSortedIcon: React.FC<SortedIconProps> = ({ sorted }) => {
+type SortedIconProps = { sortStatus: SortStatus };
+export const TaskTableSortedIcon: React.FC<SortedIconProps> = ({
+  sortStatus,
+}) => {
   const size = 15;
-  if (!sorted) {
+  if (!sortStatus) {
     return <ChevronsUpDownIcon size={size} />;
   }
-  if (sorted === "asc") {
+  if (sortStatus === "desc") {
     return <ChevronDownIcon size={size} />;
   }
-  if (sorted === "desc") {
+  if (sortStatus === "asc") {
     return <ChevronUpIcon size={size} />;
   }
 };

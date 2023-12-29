@@ -8,6 +8,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { toast } from "sonner";
 import { TaskTableSortedIcon } from "./sorted-icon";
 import { CircleDashedIcon, CircleDotIcon } from "lucide-react";
+import { useSortTaskTable } from "./use-sort-task-table";
 
 const columnHelper = createColumnHelper<Task>();
 
@@ -21,20 +22,20 @@ export const taskTableColumns = [
     filterFn: (row, id, value: unknown[]) => {
       return value.includes(row.getValue(id));
     },
-    header: ({ column }) => {
-      const sorted = column.getIsSorted();
+    header: () => {
+      const { sortStatus, toggleSorting } = useSortTaskTable("status");
 
       return (
         <Button
           variant="ghost"
           size="xs"
           onClick={() => {
-            column.toggleSorting(sorted === "asc");
+            toggleSorting();
           }}
         >
           <div className="flex gap-1 items-center">
             状態
-            <TaskTableSortedIcon sorted={sorted} />
+            <TaskTableSortedIcon sortStatus={sortStatus} />
           </div>
         </Button>
       );
@@ -93,20 +94,20 @@ export const taskTableColumns = [
         new Date(a.original.createdAt).getTime()
       );
     },
-    header: ({ column }) => {
-      const sorted = column.getIsSorted();
+    header: () => {
+      const { sortStatus, toggleSorting } = useSortTaskTable("createdAt");
 
       return (
         <Button
           size="xs"
           variant="ghost"
           onClick={() => {
-            column.toggleSorting(sorted === "asc");
+            toggleSorting();
           }}
         >
           <div className="flex items-center gap-1">
             作成日
-            <TaskTableSortedIcon sorted={sorted} />
+            <TaskTableSortedIcon sortStatus={sortStatus} />
           </div>
         </Button>
       );
@@ -123,20 +124,20 @@ export const taskTableColumns = [
         new Date(a.original.createdAt).getTime()
       );
     },
-    header: ({ column }) => {
-      const sorted = column.getIsSorted();
+    header: () => {
+      const { sortStatus, toggleSorting } = useSortTaskTable("updatedAt");
 
       return (
         <Button
           size="xs"
           variant="ghost"
           onClick={() => {
-            column.toggleSorting(sorted === "asc");
+            toggleSorting();
           }}
         >
           <div className="flex items-center gap-1">
             更新日
-            <TaskTableSortedIcon sorted={sorted} />
+            <TaskTableSortedIcon sortStatus={sortStatus} />
           </div>
         </Button>
       );
