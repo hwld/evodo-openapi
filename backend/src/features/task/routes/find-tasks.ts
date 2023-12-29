@@ -82,7 +82,7 @@ export const findTasks = requireAuthRoute(getTasksRoute.path).openapi(
           ? inArray(tasks.status, statusFilters)
           : undefined,
       ),
-      orderBy: [orderFnMap[order](sortMap[sort])],
+      orderBy: [orderFnMap[order](sortMap[sort]), desc(tasks.id)],
     });
     return json(result);
   },
