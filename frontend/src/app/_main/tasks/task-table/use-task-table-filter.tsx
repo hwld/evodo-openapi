@@ -14,14 +14,14 @@ export const useTaskTableFilter = <T extends keyof TaskSearchParams>({
   const changeFilter = useCallback(
     (newFilter: TaskSearchParams[T]) => {
       navigate({
-        search: { ...search, [filterName]: newFilter },
+        search: { ...search, page: 1, [filterName]: newFilter },
       });
     },
     [filterName, navigate, search],
   );
 
   const clearFilter = useCallback(() => {
-    navigate({ search: { ...search, [filterName]: undefined } });
+    navigate({ search: { ...search, page: 1, [filterName]: undefined } });
   }, [filterName, navigate, search]);
 
   return { filters: search[filterName], changeFilter, clearFilter };

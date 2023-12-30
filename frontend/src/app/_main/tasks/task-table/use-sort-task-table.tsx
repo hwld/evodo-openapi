@@ -12,7 +12,7 @@ export const useSortTaskTable = (column: z.infer<typeof schemas.TaskSort>) => {
 
   const toggleSorting = useCallback(() => {
     const order = sorted ? (search.order === "asc" ? "desc" : "asc") : "desc";
-    navigate({ search: { ...search, sort: column, order } });
+    navigate({ search: { ...search, page: 1, sort: column, order } });
   }, [column, navigate, search, sorted]);
 
   const sortStatus: SortStatus = useMemo(() => {
