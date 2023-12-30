@@ -12,12 +12,7 @@ import { Sidebar } from "../sidebar/sidebar";
 import { Card } from "@/components/ui/card";
 import { HomeIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import {
-  Outlet,
-  Route,
-  useRouteContext,
-  useSearch,
-} from "@tanstack/react-router";
+import { Outlet, Route } from "@tanstack/react-router";
 import { TaskTable } from "./task-table/task-table";
 import { requireAuthRoute } from "../page";
 
@@ -51,12 +46,12 @@ export const tasksRoute = new Route({
 });
 
 export function TasksPage() {
-  const { session } = useRouteContext({ from: "/requireAuth/tasks" as const });
+  const { session } = tasksRoute.useRouteContext();
 
   const client = useQueryClient();
   const [title, setTitle] = useState("");
 
-  const taskSearchParams = useSearch({ from: "/requireAuth/tasks" as const });
+  const taskSearchParams = tasksRoute.useSearch();
   const { data: taskPageEntry } = useQuery({
     queryKey: ["tasks", { taskSearchParams }],
     queryFn: async () => {

@@ -1,11 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import {
-  Route,
-  useNavigate,
-  useParams,
-  useSearch,
-} from "@tanstack/react-router";
+import { Route, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { tasksRoute } from "../page";
 
@@ -16,8 +11,8 @@ export const taskDetailRoute = new Route({
 });
 
 export function TaskDetailPage() {
-  const search = useSearch({ from: "/requireAuth/tasks/$taskId" as const });
-  const { taskId } = useParams({ from: "/requireAuth/tasks/$taskId" as const });
+  const search = taskDetailRoute.useSearch();
+  const { taskId } = taskDetailRoute.useParams();
   console.log(taskId);
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);

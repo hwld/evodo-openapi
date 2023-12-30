@@ -1,13 +1,14 @@
 import { schemas } from "@/api/schema";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useMemo } from "react";
 import { z } from "zod";
+import { tasksRoute } from "../page";
 
 export type SortStatus = false | "asc" | "desc";
 
 export const useSortTaskTable = (column: z.infer<typeof schemas.TaskSort>) => {
   const navigate = useNavigate();
-  const search = useSearch({ from: "/requireAuth/tasks" as const });
+  const search = tasksRoute.useSearch();
   const sorted = search.sort === column;
 
   const toggleSorting = useCallback(() => {

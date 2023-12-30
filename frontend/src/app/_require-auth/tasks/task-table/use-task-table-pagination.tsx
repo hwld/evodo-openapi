@@ -1,9 +1,10 @@
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useCallback } from "react";
+import { tasksRoute } from "../page";
 
 export const useTaskTablePagination = () => {
   const navigate = useNavigate();
-  const search = useSearch({ from: "/requireAuth/tasks" as const });
+  const search = tasksRoute.useSearch();
 
   const changePage = useCallback(
     (page: number) => {

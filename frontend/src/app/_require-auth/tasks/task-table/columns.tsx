@@ -9,7 +9,8 @@ import { toast } from "sonner";
 import { TaskTableSortedIcon } from "./sorted-icon";
 import { CircleDashedIcon, CircleDotIcon } from "lucide-react";
 import { useSortTaskTable } from "./use-sort-task-table";
-import { Link, useSearch } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import { tasksRoute } from "../page";
 
 const columnHelper = createColumnHelper<Task>();
 
@@ -151,7 +152,7 @@ export const taskTableColumns = [
   columnHelper.display({
     id: "action",
     cell: ({ row }) => {
-      const search = useSearch({ from: "/requireAuth/tasks" as const });
+      const search = tasksRoute.useSearch();
       const client = useQueryClient();
       const deleteMutation = useMutation({
         mutationFn: async () => {

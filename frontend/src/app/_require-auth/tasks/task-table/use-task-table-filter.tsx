@@ -1,6 +1,6 @@
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useCallback } from "react";
-import { TaskSearchParams } from "../page";
+import { TaskSearchParams, tasksRoute } from "../page";
 
 type UseTaskTableFilterArgs<T extends keyof TaskSearchParams> = {
   filterName: T;
@@ -9,7 +9,7 @@ export const useTaskTableFilter = <T extends keyof TaskSearchParams>({
   filterName,
 }: UseTaskTableFilterArgs<T>) => {
   const navigate = useNavigate();
-  const search = useSearch({ from: "/requireAuth/tasks" as const });
+  const search = tasksRoute.useSearch();
 
   const changeFilter = useCallback(
     (newFilter: TaskSearchParams[T]) => {
