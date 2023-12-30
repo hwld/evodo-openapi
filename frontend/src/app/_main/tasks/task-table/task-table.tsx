@@ -1,4 +1,3 @@
-import { Task } from "@/api/types";
 import {
   Table,
   TableBody,
@@ -16,22 +15,31 @@ import {
 import { taskTableColumns } from "./columns";
 import { TaskTableToolbar } from "./toolbar";
 import { TaskSearchParams } from "@/routes";
-import { useState } from "react";
 import { Pagination } from "@/components/ui/pagination";
+import { z } from "zod";
+import { schemas } from "@/api/schema";
+import { useNavigate } from "@tanstack/react-router";
 
 type Props = {
-  tasks: Task[];
+  taskPageEntry: z.infer<typeof schemas.TaskPageEntry>;
   taskSearchParams: TaskSearchParams;
 };
-export const TaskTable: React.FC<Props> = ({ tasks, taskSearchParams }) => {
+export const TaskTable: React.FC<Props> = ({
+  taskPageEntry,
+  taskSearchParams,
+}) => {
   const table = useReactTable({
-    data: tasks,
+    data: taskPageEntry.tasks,
     columns: taskTableColumns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const [currentPage, setCurrentPage] = useState(5);
-  const totalPages = 20;
+  const navigate = useNavigate();
+
+  const currentPage = taskSearchParams.page;
+  const handleChangePage = (page: number) => {
+    navigate({ search: { ...taskSearchParams, page } });
+  };
 
   return (
     <div className="flex flex-col gap-3">
@@ -91,12 +99,12 @@ export const TaskTable: React.FC<Props> = ({ tasks, taskSearchParams }) => {
               <TableCell colSpan={5} className="p-4">
                 <div className="flex items-center justify-between">
                   <p className="text-sm">
-                    {currentPage} of {totalPages}
+                    {currentPage} of {taskPageEntry.totalPages}
                   </p>
                   <Pagination
                     currentPage={currentPage}
-                    onChangePage={setCurrentPage}
-                    totalPages={totalPages}
+                    onChangePage={handleChangePage}
+                    totalPages={taskPageEntry.totalPages}
                   />
                 </div>
               </TableCell>

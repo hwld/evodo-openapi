@@ -31,6 +31,10 @@ const Task = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
 });
+const TaskPageEntry = z.object({
+  tasks: z.array(Task),
+  totalPages: z.number(),
+});
 const CreateTaskInput = z.object({
   title: z.string().min(1).max(200),
   description: z.string().max(1000),
@@ -61,6 +65,7 @@ export const schemas = {
   sort,
   order,
   Task,
+  TaskPageEntry,
   CreateTaskInput,
   UpdateTaskInput,
   TaskStatusFilters,
@@ -259,8 +264,13 @@ const endpoints = makeApi([
         type: "Query",
         schema: order,
       },
+      {
+        name: "page",
+        type: "Query",
+        schema: z.string().default("1"),
+      },
     ],
-    response: z.array(Task),
+    response: TaskPageEntry,
     errors: [
       {
         status: 500,

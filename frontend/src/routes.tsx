@@ -46,8 +46,9 @@ const taskSearchParamsSchema = z.object({
     })
     .default([])
     .catch([]),
-  sort: schemas.sort.catch("createdAt"),
-  order: schemas.order.catch("desc"),
+  sort: schemas.TaskSort.catch("createdAt"),
+  order: schemas.TaskSortOrder.catch("desc"),
+  page: z.coerce.number().catch(1),
 });
 export type TaskSearchParams = z.infer<typeof taskSearchParamsSchema>;
 

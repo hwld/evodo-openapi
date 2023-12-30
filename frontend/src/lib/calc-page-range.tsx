@@ -23,6 +23,13 @@ export const calcPageRange = ({
     end = currentPage + halfDisplay;
   }
 
+  if (start < 1) {
+    start = 1;
+  }
+  if (end > totalPages) {
+    end = totalPages;
+  }
+
   const pageRange = [...new Array(end - start + 1)].map((_, i) => start + i);
   const before = start > 1;
   const after = end < totalPages;

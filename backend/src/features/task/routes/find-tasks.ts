@@ -43,6 +43,16 @@ const getTasksRoute = createRoute({
         .union([z.literal("asc"), z.literal("desc")])
         .default("desc")
         .openapi("TaskSortOrder"),
+      page: z
+        .string()
+        .transform((v) => {
+          const n = Number(v);
+          if (isNaN(n)) {
+            return 1;
+          }
+          return n;
+        })
+        .default("1"),
     }),
   },
   responses: {
@@ -50,7 +60,12 @@ const getTasksRoute = createRoute({
     200: {
       content: {
         "application/json": {
-          schema: z.array(TaskSchema),
+          schema: z
+            .object({
+              tasks: z.array(TaskSchema),
+              totalPages: z.number(),
+            })
+            .openapi("TaskPageEntry"),
         },
       },
       description: "取得成功",
@@ -62,7 +77,8 @@ export const findTasks = requireAuthRoute(getTasksRoute.path).openapi(
   getTasksRoute,
   async ({ json, var: { db, loggedInUserId }, req }) => {
     const statusFilters = req.valid("query")["status_filter[]"];
-    const { sort, order } = req.valid("query");
+    const { sort, order, page } = req.valid("query");
+    const limit = 20;
 
     const sortMap = {
       title: tasks.title,
@@ -75,15 +91,21 @@ export const findTasks = requireAuthRoute(getTasksRoute.path).openapi(
       desc: desc,
     };
 
-    const result = await db.query.tasks.findMany({
-      where: and(
-        eq(tasks.authorId, loggedInUserId),
-        statusFilters?.length
-          ? inArray(tasks.status, statusFilters)
-          : undefined,
-      ),
+    const where = and(
+      eq(tasks.authorId, loggedInUserId),
+      statusFilters?.length ? inArray(tasks.status, statusFilters) : undefined,
+    );
+
+    const allTasks = (await db.query.tasks.findMany({ where })).length;
+    const totalPages = Math.ceil(allTasks / limit);
+
+    const taskPage = await db.query.tasks.findMany({
+      where,
+      limit,
+      offset: (page - 1) * limit,
       orderBy: [orderFnMap[order](sortMap[sort]), desc(tasks.id)],
     });
-    return json(result);
+
+    return json({ tasks: taskPage, totalPages });
   },
 );

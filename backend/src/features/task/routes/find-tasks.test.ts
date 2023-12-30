@@ -19,7 +19,7 @@ describe("タスクをすべて収録", () => {
       cookie: { session: session.id },
       query: { "status_filter[]": [] },
     });
-    const allTasks = await result.json();
+    const { tasks: allTasks } = await result.json();
 
     expect(allTasks.length).toBe(3);
   });
@@ -41,7 +41,7 @@ describe("タスクをすべて収録", () => {
       cookie: { session: session.id },
       query: { "status_filter[]": ["done"] },
     });
-    const doneTasks = await result.json();
+    const { tasks: doneTasks } = await result.json();
 
     expect(doneTasks.length).toBe(doneTaskCount);
     expect(doneTasks.every((task) => task.status === "done")).toBe(true);
@@ -72,7 +72,7 @@ describe("タスクをすべて収録", () => {
       cookie: { session: session.id },
       query: { sort: "createdAt", order: "asc" },
     });
-    const tasks = await result.json();
+    const { tasks } = await result.json();
 
     expect(tasks.length).toBe(3);
     expect(tasks[0].id).toBe("1");
@@ -88,7 +88,7 @@ describe("タスクをすべて収録", () => {
       cookie: { session: session.id },
       query: { "status_filter[]": [] },
     });
-    const allTasks = await result.json();
+    const { tasks: allTasks } = await result.json();
 
     expect(allTasks.length).toBe(0);
   });

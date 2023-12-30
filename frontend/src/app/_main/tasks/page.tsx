@@ -22,7 +22,7 @@ function TasksPage() {
   const [title, setTitle] = useState("");
 
   const taskSearchParams = useSearch({ from: "/requireAuth/" as const });
-  const { data: tasks } = useQuery({
+  const { data: taskPageEntry } = useQuery({
     queryKey: ["tasks", { taskSearchParams }],
     queryFn: async () => {
       return await api.get("/tasks", {
@@ -30,6 +30,7 @@ function TasksPage() {
           "status_filter[]": taskSearchParams.status_filter,
           sort: taskSearchParams.sort,
           order: taskSearchParams.order,
+          page: taskSearchParams.page.toString(),
         },
       });
     },
@@ -74,9 +75,12 @@ function TasksPage() {
             />
           </form>
           {/* TODO */}
-          {tasks && (
+          {taskPageEntry && (
             <div className="grow">
-              <TaskTable tasks={tasks} taskSearchParams={taskSearchParams} />
+              <TaskTable
+                taskPageEntry={taskPageEntry}
+                taskSearchParams={taskSearchParams}
+              />
             </div>
           )}
         </Card>
