@@ -1,10 +1,18 @@
+import { rootRoute } from "@/app/layout";
 import { AppLogo } from "@/components/ui/app-logo";
 import { Button } from "@/components/ui/button";
 import GoogleIcon from "@/components/ui/google-icon";
 import { LOGIN_URL } from "@/lib/login-url";
+import { Route } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 
-export const LoginPage: React.FC = () => {
+export const loginRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/auth/login",
+  component: LoginPage,
+});
+
+export function LoginPage() {
   return (
     <div className="flex h-full justify-center items-center">
       <div className="flex flex-col items-center gap-8">
@@ -28,4 +36,4 @@ export const LoginPage: React.FC = () => {
       </div>
     </div>
   );
-};
+}

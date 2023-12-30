@@ -1,10 +1,17 @@
 import { AppLogo } from "@/components/ui/app-logo";
 import { Button } from "@/components/ui/button";
-import { defaultTaskSearchParams } from "@/routes";
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { NotFoundRoute as NotFoundRouteClass } from "@tanstack/react-router";
+import { rootRoute } from "./layout";
+import { defaultTaskSearchParams } from "./_require-auth/tasks/page";
 
-export const NotFoundPage: React.FC = () => {
+export const notFoundRoute = new NotFoundRouteClass({
+  getParentRoute: () => rootRoute,
+  component: NotFoundPage,
+});
+
+export function NotFoundPage() {
   return (
     <div className="h-full flex flex-col justify-center items-center relative">
       <div className="flex flex-col items-center gap-5">
@@ -26,4 +33,4 @@ export const NotFoundPage: React.FC = () => {
       </div>
     </div>
   );
-};
+}

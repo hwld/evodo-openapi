@@ -12,10 +12,45 @@ import { Sidebar } from "../sidebar/sidebar";
 import { Card } from "@/components/ui/card";
 import { HomeIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Outlet, useRouteContext, useSearch } from "@tanstack/react-router";
+import {
+  Outlet,
+  Route,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
 import { TaskTable } from "./task-table/task-table";
+import { requireAuthRoute } from "../page";
 
-function TasksPage() {
+const taskSearchParamsSchema = z.object({
+  status_filter: schemas["status_filter_"]
+    .transform((v) => {
+      if (typeof v === "string") {
+        return [v];
+      }
+      return v;
+    })
+    .default([])
+    .catch([]),
+  sort: schemas.TaskSort.catch("createdAt"),
+  order: schemas.TaskSortOrder.catch("desc"),
+  page: z.coerce.number().catch(1),
+});
+export type TaskSearchParams = z.infer<typeof taskSearchParamsSchema>;
+export const defaultTaskSearchParams: TaskSearchParams = {
+  status_filter: [],
+  sort: "createdAt",
+  order: "desc",
+  page: 1,
+};
+
+export const tasksRoute = new Route({
+  getParentRoute: () => requireAuthRoute,
+  path: "tasks",
+  component: TasksPage,
+  validateSearch: taskSearchParamsSchema,
+});
+
+export function TasksPage() {
   const { session } = useRouteContext({ from: "/requireAuth/tasks" as const });
 
   const client = useQueryClient();
@@ -86,5 +121,3 @@ function TasksPage() {
     </div>
   );
 }
-
-export default TasksPage;

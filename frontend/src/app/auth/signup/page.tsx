@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { Route, redirect, useNavigate } from "@tanstack/react-router";
 import { api } from "../../../api";
 import { Button } from "@/components/ui/button";
 import { AppLogo } from "@/components/ui/app-logo";
@@ -26,11 +26,24 @@ import {
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
+import { rootRoute } from "@/app/layout";
+
+export const signupRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/auth/signup",
+  beforeLoad: async () => {
+    const { exists } = await api.get("/signup-session");
+    if (!exists) {
+      throw redirect({ to: "/", replace: true });
+    }
+  },
+  component: SignupPage,
+});
 
 const signupFormSchema = schemas.SignupInput;
 type SignupFormData = z.infer<typeof signupFormSchema>;
 
-export const SignupPage: React.FC = () => {
+export function SignupPage() {
   const navigate = useNavigate();
   const { mutate } = useMutation({
     mutationFn: (data: SignupFormData) => {
@@ -147,4 +160,4 @@ export const SignupPage: React.FC = () => {
       </div>
     </div>
   );
-};
+}

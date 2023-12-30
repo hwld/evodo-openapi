@@ -1,9 +1,21 @@
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
+import {
+  Route,
+  useNavigate,
+  useParams,
+  useSearch,
+} from "@tanstack/react-router";
 import { useState } from "react";
+import { tasksRoute } from "../page";
 
-export const TaskDetailPage: React.FC = () => {
+export const taskDetailRoute = new Route({
+  getParentRoute: () => tasksRoute,
+  path: "$taskId",
+  component: TaskDetailPage,
+});
+
+export function TaskDetailPage() {
   const search = useSearch({ from: "/requireAuth/tasks/$taskId" as const });
   const { taskId } = useParams({ from: "/requireAuth/tasks/$taskId" as const });
   console.log(taskId);
@@ -40,4 +52,4 @@ export const TaskDetailPage: React.FC = () => {
       </SheetContent>
     </Sheet>
   );
-};
+}

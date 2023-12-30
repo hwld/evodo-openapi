@@ -1,7 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "@tanstack/react-router";
+import { Link, Route } from "@tanstack/react-router";
+import { rootRoute } from "../layout";
 
-export const AuthErrorPage: React.FC = () => {
+export const authErrorRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/auth/error",
+  component: AuthErrorPage,
+});
+
+export function AuthErrorPage() {
   return (
     <div className="flex h-full justify-center items-center">
       <div className="flex flex-col items-center gap-5">
@@ -16,4 +23,4 @@ export const AuthErrorPage: React.FC = () => {
       </div>
     </div>
   );
-};
+}

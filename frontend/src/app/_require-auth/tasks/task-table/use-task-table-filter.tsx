@@ -1,6 +1,6 @@
-import { TaskSearchParams } from "@/routes";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useCallback } from "react";
+import { TaskSearchParams } from "../page";
 
 type UseTaskTableFilterArgs<T extends keyof TaskSearchParams> = {
   filterName: T;

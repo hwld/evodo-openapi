@@ -1,7 +1,15 @@
 import { Toaster } from "@/components/ui/sonner";
-import { Outlet, ScrollRestoration } from "@tanstack/react-router";
+import {
+  Outlet,
+  ScrollRestoration,
+  rootRouteWithContext,
+} from "@tanstack/react-router";
 
-export const RootLayout: React.FC = () => {
+export const rootRoute = rootRouteWithContext()({
+  component: RootLayout,
+});
+
+export function RootLayout() {
   return (
     <div className="h-[100dvh]">
       <ScrollRestoration />
@@ -9,4 +17,4 @@ export const RootLayout: React.FC = () => {
       <Toaster />
     </div>
   );
-};
+}
