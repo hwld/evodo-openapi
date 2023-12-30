@@ -3,6 +3,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -15,6 +16,8 @@ import {
 import { taskTableColumns } from "./columns";
 import { TaskTableToolbar } from "./toolbar";
 import { TaskSearchParams } from "@/routes";
+import { useState } from "react";
+import { Pagination } from "@/components/ui/pagination";
 
 type Props = {
   tasks: Task[];
@@ -26,6 +29,9 @@ export const TaskTable: React.FC<Props> = ({ tasks, taskSearchParams }) => {
     columns: taskTableColumns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const [currentPage, setCurrentPage] = useState(5);
+  const totalPages = 20;
 
   return (
     <div className="flex flex-col gap-3">
@@ -80,6 +86,22 @@ export const TaskTable: React.FC<Props> = ({ tasks, taskSearchParams }) => {
               </TableRow>
             )}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={5} className="p-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm">
+                    {currentPage} of {totalPages}
+                  </p>
+                  <Pagination
+                    currentPage={currentPage}
+                    onChangePage={setCurrentPage}
+                    totalPages={totalPages}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       </div>
     </div>
