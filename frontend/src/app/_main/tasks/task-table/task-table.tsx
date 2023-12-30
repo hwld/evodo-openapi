@@ -14,36 +14,26 @@ import {
 } from "@tanstack/react-table";
 import { taskTableColumns } from "./columns";
 import { TaskTableToolbar } from "./toolbar";
-import { TaskSearchParams } from "@/routes";
 import { Pagination } from "@/components/ui/pagination";
 import { z } from "zod";
 import { schemas } from "@/api/schema";
-import { useNavigate } from "@tanstack/react-router";
+import { useTaskTablePagination } from "./use-task-table-pagination";
 
 type Props = {
   taskPageEntry: z.infer<typeof schemas.TaskPageEntry>;
-  taskSearchParams: TaskSearchParams;
 };
-export const TaskTable: React.FC<Props> = ({
-  taskPageEntry,
-  taskSearchParams,
-}) => {
+export const TaskTable: React.FC<Props> = ({ taskPageEntry }) => {
   const table = useReactTable({
     data: taskPageEntry.tasks,
     columns: taskTableColumns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const navigate = useNavigate();
-
-  const currentPage = taskSearchParams.page;
-  const handleChangePage = (page: number) => {
-    navigate({ search: { ...taskSearchParams, page } });
-  };
+  const { changePage, currentPage } = useTaskTablePagination();
 
   return (
     <div className="flex flex-col gap-3">
-      <TaskTableToolbar taskSearchParams={taskSearchParams} />
+      <TaskTableToolbar />
       <div className="rounded border flex w-full overflow-auto">
         <Table className="w-full">
           <TableHeader>
@@ -103,7 +93,7 @@ export const TaskTable: React.FC<Props> = ({
                   </p>
                   <Pagination
                     currentPage={currentPage}
-                    onChangePage={handleChangePage}
+                    onChangePage={changePage}
                     totalPages={taskPageEntry.totalPages}
                   />
                 </div>

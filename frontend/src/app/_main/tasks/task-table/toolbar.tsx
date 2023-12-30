@@ -4,18 +4,16 @@ import { XIcon } from "lucide-react";
 import { TaskTableStatusFilter } from "./status-filter";
 import { Button } from "@/components/ui/button";
 import { doneColumnOptions } from "./columns";
-import { useNavigate } from "@tanstack/react-router";
-import { TaskSearchParams } from "@/routes";
+import { useTaskTableFilter } from "./use-task-table-filter";
 
-type Props = { taskSearchParams: TaskSearchParams };
-export const TaskTableToolbar: React.FC<Props> = ({ taskSearchParams }) => {
-  const navigate = useNavigate();
-
-  const statusFilters = taskSearchParams.status_filter;
+export const TaskTableToolbar = () => {
+  const { changeFilter, filters: statusFilters } = useTaskTableFilter({
+    filterName: "status_filter",
+  });
 
   return (
     <div className="flex items-center gap-5 h-7">
-      <TaskTableStatusFilter taskSearchParams={taskSearchParams} />
+      <TaskTableStatusFilter />
       <Separator orientation="vertical" />
       <div className="flex items-center gap-2">
         {statusFilters.map((filter) => {
@@ -23,19 +21,14 @@ export const TaskTableToolbar: React.FC<Props> = ({ taskSearchParams }) => {
             ({ value }) => value === filter,
           )[0];
 
-          const clearFilter = () => {
-            const newFilters = statusFilters.filter((f) => f !== filter);
-            navigate({
-              search: {
-                status_filter: newFilters.length ? newFilters : undefined,
-              },
-            });
+          const removeFilter = () => {
+            changeFilter(statusFilters.filter((f) => f !== filter));
           };
 
           return (
             <Badge variant="secondary" size="sm" key={String(filter)}>
               {option.label}
-              <Button size="iconXs" variant="ghost" onClick={clearFilter}>
+              <Button size="iconXs" variant="ghost" onClick={removeFilter}>
                 <XIcon size={15} />
               </Button>
             </Badge>

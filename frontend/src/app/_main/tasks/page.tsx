@@ -77,10 +77,7 @@ function TasksPage() {
           {/* TODO */}
           {taskPageEntry && (
             <div className="grow">
-              <TaskTable
-                taskPageEntry={taskPageEntry}
-                taskSearchParams={taskSearchParams}
-              />
+              <TaskTable taskPageEntry={taskPageEntry} />
             </div>
           )}
         </Card>

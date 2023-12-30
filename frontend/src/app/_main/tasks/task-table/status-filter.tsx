@@ -14,17 +14,16 @@ import {
 import { cn } from "@/lib/utils";
 import { CheckIcon, PlusCircleIcon } from "lucide-react";
 import { doneColumnOptions } from "./columns";
-import { useNavigate } from "@tanstack/react-router";
-import { TaskSearchParams } from "@/routes";
+import { useTaskTableFilter } from "./use-task-table-filter";
 
-type Props = { taskSearchParams: TaskSearchParams };
-export const TaskTableStatusFilter: React.FC<Props> = ({
-  taskSearchParams,
-}) => {
-  const navigate = useNavigate();
-  const statusFilters = taskSearchParams.status_filter;
-
-  const options = doneColumnOptions;
+export const TaskTableStatusFilter: React.FC = () => {
+  const {
+    changeFilter,
+    clearFilter,
+    filters: statusFilters,
+  } = useTaskTableFilter({
+    filterName: "status_filter",
+  });
 
   return (
     <Popover>
@@ -40,7 +39,7 @@ export const TaskTableStatusFilter: React.FC<Props> = ({
         <Command>
           <CommandList>
             <CommandGroup>
-              {options.map(({ icon: Icon, label, value }, i) => {
+              {doneColumnOptions.map(({ icon: Icon, label, value }, i) => {
                 const isSelected = statusFilters.includes(value);
 
                 return (
@@ -48,20 +47,11 @@ export const TaskTableStatusFilter: React.FC<Props> = ({
                     key={i}
                     onSelect={() => {
                       if (isSelected) {
-                        const newSelected = statusFilters.filter(
-                          (v) => v !== value,
+                        changeFilter(
+                          statusFilters.filter((filter) => filter !== value),
                         );
-                        navigate({
-                          search: {
-                            status_filter: newSelected.length
-                              ? newSelected
-                              : undefined,
-                          },
-                        });
                       } else {
-                        navigate({
-                          search: { status_filter: [...statusFilters, value] },
-                        });
+                        changeFilter([...statusFilters, value]);
                       }
                     }}
                   >
@@ -85,9 +75,7 @@ export const TaskTableStatusFilter: React.FC<Props> = ({
             </CommandGroup>
             <CommandSeparator />
             <CommandGroup>
-              <CommandItem
-                onSelect={() => navigate({ search: { status_filter: [] } })}
-              >
+              <CommandItem onSelect={clearFilter}>
                 フィルターを解除する
               </CommandItem>
             </CommandGroup>
