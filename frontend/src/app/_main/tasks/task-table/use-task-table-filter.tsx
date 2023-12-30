@@ -9,7 +9,7 @@ export const useTaskTableFilter = <T extends keyof TaskSearchParams>({
   filterName,
 }: UseTaskTableFilterArgs<T>) => {
   const navigate = useNavigate();
-  const search = useSearch({ from: "/requireAuth/" as const });
+  const search = useSearch({ from: "/requireAuth/tasks" as const });
 
   const changeFilter = useCallback(
     (newFilter: TaskSearchParams[T]) => {

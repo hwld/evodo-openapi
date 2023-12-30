@@ -1,10 +1,12 @@
+import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Separator } from "@radix-ui/react-separator";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 
 export const TaskDetailPage: React.FC = () => {
-  const search = useSearch({ from: "/requireAuth/tasks/detail" as const });
+  const search = useSearch({ from: "/requireAuth/tasks/$taskId" as const });
+  const { taskId } = useParams({ from: "/requireAuth/tasks/$taskId" as const });
+  console.log(taskId);
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
 

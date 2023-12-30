@@ -1,5 +1,6 @@
 import { AppLogo } from "@/components/ui/app-logo";
 import { Button } from "@/components/ui/button";
+import { defaultTaskSearchParams } from "@/routes";
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 
@@ -18,7 +19,9 @@ export const NotFoundPage: React.FC = () => {
           <p className="text-muted-foreground">ページが存在しません</p>
         </div>
         <Button asChild>
-          <Link to="/">ホームへ戻る</Link>
+          <Link search={defaultTaskSearchParams} to="/tasks">
+            ホームへ戻る
+          </Link>
         </Button>
       </div>
     </div>

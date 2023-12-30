@@ -3,7 +3,7 @@ import { useCallback } from "react";
 
 export const useTaskTablePagination = () => {
   const navigate = useNavigate();
-  const search = useSearch({ from: "/requireAuth/" as const });
+  const search = useSearch({ from: "/requireAuth/tasks" as const });
 
   const changePage = useCallback(
     (page: number) => {

@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { TaskTableSortedIcon } from "./sorted-icon";
 import { CircleDashedIcon, CircleDotIcon } from "lucide-react";
 import { useSortTaskTable } from "./use-sort-task-table";
+import { Link, useSearch } from "@tanstack/react-router";
 
 const columnHelper = createColumnHelper<Task>();
 
@@ -150,6 +151,7 @@ export const taskTableColumns = [
   columnHelper.display({
     id: "action",
     cell: ({ row }) => {
+      const search = useSearch({ from: "/requireAuth/tasks" as const });
       const client = useQueryClient();
       const deleteMutation = useMutation({
         mutationFn: async () => {
@@ -170,7 +172,14 @@ export const taskTableColumns = [
       };
 
       return (
-        <div className="flex">
+        <div className="flex gap-2 items-center">
+          <Link
+            search={search}
+            to="/tasks/$taskId"
+            params={{ taskId: "dummy-task-id" }}
+          >
+            詳細
+          </Link>
           <Button size="xs" variant="outline" onClick={handleDeleteTask}>
             削除
           </Button>

@@ -14,9 +14,22 @@ import { NotFoundPage } from "./app/404";
 import { AuthErrorPage } from "./app/_auth/error";
 import { z } from "zod";
 import { schemas } from "./api/schema";
+import { TaskDetailPage } from "./app/_main/tasks/$taskId/page";
 
 const rootRoute = rootRouteWithContext()({
   component: RootLayout,
+});
+
+const indexRoute = new Route({
+  path: "/",
+  getParentRoute: () => rootRoute,
+  beforeLoad: (): void => {
+    throw redirect({
+      to: "/tasks",
+      search: defaultTaskSearchParams,
+      replace: true,
+    });
+  },
 });
 
 const notFoundRoute = new NotFoundRoute({
@@ -51,12 +64,24 @@ const taskSearchParamsSchema = z.object({
   page: z.coerce.number().catch(1),
 });
 export type TaskSearchParams = z.infer<typeof taskSearchParamsSchema>;
+export const defaultTaskSearchParams: TaskSearchParams = {
+  status_filter: [],
+  sort: "createdAt",
+  order: "desc",
+  page: 1,
+};
 
-const indexRoute = new Route({
+const tasksRoute = new Route({
   getParentRoute: () => requireAuthRoute,
-  path: "/",
+  path: "tasks",
   component: TasksPage,
   validateSearch: taskSearchParamsSchema,
+});
+
+const taskDetailRoute = new Route({
+  getParentRoute: () => tasksRoute,
+  path: "$taskId",
+  component: TaskDetailPage,
 });
 
 const loginRoute = new Route({
@@ -84,7 +109,8 @@ const authErrorRoute = new Route({
 });
 
 const routeTree = rootRoute.addChildren([
-  requireAuthRoute.addChildren([indexRoute]),
+  indexRoute,
+  requireAuthRoute.addChildren([tasksRoute.addChildren([taskDetailRoute])]),
   loginRoute,
   signupRoute,
   authErrorRoute,
