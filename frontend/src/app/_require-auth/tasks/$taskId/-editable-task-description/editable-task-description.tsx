@@ -4,6 +4,7 @@ import {
   TaskDescriptionForm,
   taskDescriptionTextareaClass,
 } from "./task-description-form";
+import { cn } from "@/lib/utils";
 
 type Props = { task: Task };
 export const EditableTaskDescription: React.FC<Props> = ({ task }) => {
@@ -34,7 +35,7 @@ export const EditableTaskDescription: React.FC<Props> = ({ task }) => {
   ) : (
     <div
       ref={textRef}
-      className={taskDescriptionTextareaClass}
+      className={cn(taskDescriptionTextareaClass, "cursor-pointer")}
       onClick={handleEnableEditing}
     >
       {task.description ? (
