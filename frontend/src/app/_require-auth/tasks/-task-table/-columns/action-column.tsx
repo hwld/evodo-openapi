@@ -5,6 +5,17 @@ import { Link } from "@tanstack/react-router";
 import { tasksRoute } from "../../page";
 import { createTaskColumn } from ".";
 import { useDeleteTask } from "../../-hooks/use-delete-task";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export const TaskActionColumn = createTaskColumn.display({
   id: "action",
@@ -29,11 +40,33 @@ export const TaskActionColumn = createTaskColumn.display({
             </Link>
           </Button>
         </Tooltip>
-        <Tooltip label="タスクを削除する">
-          <Button size="icon" variant="outline" onClick={handleDeleteTask}>
-            <TrashIcon size={16} />
-          </Button>
-        </Tooltip>
+        <AlertDialog>
+          <Tooltip label="タスクを削除する">
+            <AlertDialogTrigger asChild>
+              <Button size="icon" variant="outline">
+                <TrashIcon size={16} />
+              </Button>
+            </AlertDialogTrigger>
+          </Tooltip>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>タスクの削除</AlertDialogTitle>
+              <AlertDialogDescription>
+                タスク: `
+                <span className="text-primary">{row.original.title}</span>`
+                を削除しますか？
+                <br />
+                タスクを削除すると、元に戻すことはできません。
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>キャンセル</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteTask}>
+                削除する
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     );
   },

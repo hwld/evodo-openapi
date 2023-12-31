@@ -97,7 +97,9 @@ export const TaskTable: React.FC<Props> = ({ taskPageEntry }) => {
               <TableCell colSpan={5} className="p-4">
                 <div className="flex items-center justify-between">
                   <p className="text-sm">
-                    {currentPage} of {taskPageEntry.totalPages}
+                    <span className="text-muted">Showing</span>
+                    <span className="mx-2">{taskPageEntry.tasks.length}</span>
+                    <span className="text-muted">items</span>
                   </p>
                   <Pagination
                     currentPage={currentPage}
