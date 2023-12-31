@@ -3,7 +3,7 @@ import { schemas } from "@/api/schema";
 import { Task } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { useMergedRef } from "@/lib/use-merged-ref";
-import { stopPropagation } from "@/lib/utils";
+import { cn, stopPropagation } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { forwardRef, useLayoutEffect, useRef } from "react";
@@ -20,11 +20,12 @@ type TaskDescriptionForm = z.infer<typeof taskDescriptionSchema>;
 
 type Props = {
   task: Task;
-  onSuccess?: () => void;
   defualtHeight: number;
+  onAfterSuccess?: () => void;
+  onAfterCancel?: () => void;
 };
 export const TaskDescriptionForm = forwardRef<HTMLTextAreaElement, Props>(
-  function ({ task, onSuccess, defualtHeight }, ref) {
+  function ({ task, onAfterSuccess, defualtHeight, onAfterCancel }, ref) {
     const client = useQueryClient();
     const { mutate } = useMutation({
       mutationFn: ({ description }: TaskDescriptionForm) => {
@@ -35,7 +36,7 @@ export const TaskDescriptionForm = forwardRef<HTMLTextAreaElement, Props>(
         );
       },
       onSuccess: () => {
-        onSuccess?.();
+        onAfterSuccess?.();
       },
       onSettled: () => {
         client.invalidateQueries();
@@ -77,17 +78,25 @@ export const TaskDescriptionForm = forwardRef<HTMLTextAreaElement, Props>(
       <div>
         <textarea
           onKeyDown={stopPropagation}
-          className={taskDescriptionTextareaClass}
+          className={cn(
+            taskDescriptionTextareaClass,
+            errors.description && "focus-visible:ring-destructive",
+          )}
           ref={textArearef}
           onChange={handleChange}
           {...otherRegister}
         />
-        <div>
-          <div>
-            <p>{errors.description?.message}</p>
-          </div>
-          <div>
-            <Button onClick={handleSubmit}>更新</Button>
+        <div className="mt-1 flex justify-between">
+          <p className="text-destructive text-sm">
+            {errors.description?.message}
+          </p>
+          <div className="flex gap-1 items-center">
+            <Button size="xs" variant="outline" onClick={onAfterCancel}>
+              キャンセル
+            </Button>
+            <Button size="xs" onClick={handleSubmit}>
+              更新
+            </Button>
           </div>
         </div>
       </div>

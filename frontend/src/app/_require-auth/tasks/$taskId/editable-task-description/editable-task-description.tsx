@@ -26,7 +26,8 @@ export const EditableTaskDescription: React.FC<Props> = ({ task }) => {
     <TaskDescriptionForm
       ref={textareaRef}
       task={task}
-      onSuccess={handleDisableEditing}
+      onAfterSuccess={handleDisableEditing}
+      onAfterCancel={handleDisableEditing}
       // refの値をpropsに渡しているが、読み取り専用なので問題ないはず・・・
       defualtHeight={textRef.current?.clientHeight ?? 0}
     />
