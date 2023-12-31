@@ -7,10 +7,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { toast } from "sonner";
 import { TaskTableSortedIcon } from "./sorted-icon";
-import { CircleDashedIcon, CircleDotIcon } from "lucide-react";
+import {
+  CircleDashedIcon,
+  CircleDotIcon,
+  PanelLeftIcon,
+  TrashIcon,
+} from "lucide-react";
 import { useSortTaskTable } from "./use-sort-task-table";
 import { Link } from "@tanstack/react-router";
 import { tasksRoute } from "../page";
+import { Tooltip } from "@/components/ui/tooltip";
 
 const columnHelper = createColumnHelper<Task>();
 
@@ -174,16 +180,22 @@ export const taskTableColumns = [
 
       return (
         <div className="flex gap-2 items-center">
-          <Link
-            search={search}
-            to="/tasks/$taskId"
-            params={{ taskId: row.original.id }}
-          >
-            詳細
-          </Link>
-          <Button size="xs" variant="outline" onClick={handleDeleteTask}>
-            削除
-          </Button>
+          <Tooltip label="タスクの詳細を表示する">
+            <Button size="icon" variant="outline" asChild>
+              <Link
+                search={search}
+                to="/tasks/$taskId"
+                params={{ taskId: row.original.id }}
+              >
+                <PanelLeftIcon size={16} />
+              </Link>
+            </Button>
+          </Tooltip>
+          <Tooltip label="タスクを削除する">
+            <Button size="icon" variant="outline" onClick={handleDeleteTask}>
+              <TrashIcon size={16} />
+            </Button>
+          </Tooltip>
         </div>
       );
     },

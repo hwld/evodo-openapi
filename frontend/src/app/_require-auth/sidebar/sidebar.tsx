@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/api";
 import { useRouter } from "@tanstack/react-router";
 import { Session } from "@/api/types";
+import { Tooltip } from "@/components/ui/tooltip";
 
 type Props = { session: Session };
 export const Sidebar: React.FC<Props> = ({ session }) => {
@@ -41,9 +42,11 @@ export const Sidebar: React.FC<Props> = ({ session }) => {
           <UserIcon className="bg-background/20 h-[25px] w-[25px] rounded-full border border-foreground" />
           <div className="text-sm">{session.user.name}</div>
         </div>
-        <Button size="icon" variant="ghost" onClick={handleLogout}>
-          <LogOutIcon size={18} />
-        </Button>
+        <Tooltip label="ログアウトする">
+          <Button size="icon" variant="ghost" onClick={handleLogout}>
+            <LogOutIcon size={18} />
+          </Button>
+        </Tooltip>
       </div>
     </div>
   );
