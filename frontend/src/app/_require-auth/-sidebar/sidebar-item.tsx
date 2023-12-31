@@ -15,7 +15,7 @@ export const SidebarItem: React.FC<Props> = ({
         "py-2 px-3 rounded flex gap-1 transition-colors select-none cursor-pointer items-center",
         active
           ? "bg-foreground/20 pointer-events-none"
-          : "text-muted hover:bg-foreground/5 hover:text-foreground",
+          : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground",
       )}
     >
       <Icon size={18} />

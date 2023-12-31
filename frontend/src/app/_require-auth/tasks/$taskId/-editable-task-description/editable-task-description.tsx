@@ -41,7 +41,7 @@ export const EditableTaskDescription: React.FC<Props> = ({ task }) => {
       {task.description ? (
         <p className="whitespace-pre-wrap">{task.description}</p>
       ) : (
-        <p className="text-muted select-none">
+        <p className="text-muted-foreground select-none">
           クリックしてタスクの説明を入力してください...
         </p>
       )}

@@ -38,7 +38,7 @@ export function TaskDetailPage() {
       }}
     >
       <SheetContent>
-        <p className="text-muted text-xs">TASK DETAIL</p>
+        <p className="text-muted-foreground text-xs">TASK DETAIL</p>
         {/* TODO */}
         {task && (
           <>
@@ -46,7 +46,7 @@ export function TaskDetailPage() {
             <div className="flex flex-col py-8 gap-6">
               <EditableTaskDescription task={task} />
               <div className="space-y-2">
-                <p className="text-muted text-sm">コメント</p>
+                <p className="text-muted-foreground text-sm">コメント</p>
                 <Separator />
               </div>
             </div>

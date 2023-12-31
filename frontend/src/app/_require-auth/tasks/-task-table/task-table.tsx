@@ -86,7 +86,9 @@ export const TaskTable: React.FC<Props> = ({ taskPageEntry }) => {
               <TableRow className="pointer-events-none select-none">
                 <TableCell colSpan={5}>
                   <div className="flex flex-col justify-center items-center h-[300px]">
-                    <p className="text-sm text-muted">タスクが存在しません。</p>
+                    <p className="text-sm text-muted-foreground">
+                      タスクが存在しません。
+                    </p>
                   </div>
                 </TableCell>
               </TableRow>
@@ -97,9 +99,9 @@ export const TaskTable: React.FC<Props> = ({ taskPageEntry }) => {
               <TableCell colSpan={5} className="p-4">
                 <div className="flex items-center justify-between">
                   <p className="text-sm">
-                    <span className="text-muted">Showing</span>
+                    <span className="text-muted-foreground">Showing</span>
                     <span className="mx-2">{taskPageEntry.tasks.length}</span>
-                    <span className="text-muted">items</span>
+                    <span className="text-muted-foreground">items</span>
                   </p>
                   <Pagination
                     currentPage={currentPage}
