@@ -1,15 +1,13 @@
-import { SyntheticEvent, useState } from "react";
 import { z } from "zod";
 import { schemas } from "../../../api/schema";
 import { Sidebar } from "../-sidebar/sidebar";
 import { Card } from "@/components/ui/card";
 import { HomeIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Outlet, Route } from "@tanstack/react-router";
 import { TaskTable } from "./-task-table/task-table";
 import { requireAuthRoute } from "../page";
-import { useCreateTask } from "./-hooks/use-create-task";
 import { useTaskPage } from "./-hooks/use-task-page";
+import { TaskForm } from "./task-form";
 
 const taskSearchParamsSchema = z.object({
   status_filter: schemas["status_filter_"]
@@ -42,16 +40,7 @@ export const tasksRoute = new Route({
 
 export function TasksPage() {
   const { session } = tasksRoute.useRouteContext();
-
   const { taskPageEntry } = useTaskPage();
-
-  const [title, setTitle] = useState("");
-  const createTaskMutation = useCreateTask();
-  const handleCreateTask = (e: SyntheticEvent) => {
-    e.preventDefault();
-    createTaskMutation.mutate({ title, description: "" });
-    setTitle("");
-  };
 
   return (
     <div className="min-h-min flex">
@@ -64,14 +53,7 @@ export function TasksPage() {
           <p className="text-sm">今日のタスク</p>
         </div>
         <Card className="p-6 grow flex flex-col gap-6">
-          <form onSubmit={handleCreateTask}>
-            <Input
-              size="sm"
-              placeholder="タスクを入力してください..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </form>
+          <TaskForm />
           {/* TODO */}
           {taskPageEntry && (
             <div className="grow">

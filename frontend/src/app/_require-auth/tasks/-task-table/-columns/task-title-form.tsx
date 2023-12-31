@@ -64,7 +64,7 @@ export const TaskTitleForm: React.FC<Props> = ({
         )}
       />
       {errors.title && (
-        <div className="absolute top-[120%] px-3 py-1 text-destructive bg-background text-xs shadow-2xl rounded border border-border">
+        <div className="absolute top-[120%] px-3 py-1 text-destructive bg-background text-xs shadow-2xl rounded border border-border animate-in slide-in-from-top-1">
           {errors.title.message}
         </div>
       )}

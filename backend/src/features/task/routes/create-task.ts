@@ -41,10 +41,10 @@ const createTaskRoute = createRoute({
 export const createTask = requireAuthRoute(createTaskRoute.path).openapi(
   createTaskRoute,
   async ({ req, var: { db, loggedInUserId }, json }) => {
-    const { title, description } = req.valid("json");
+    const { title } = req.valid("json");
     const [created] = await db
       .insert(tasks)
-      .values({ title, description, authorId: loggedInUserId })
+      .values({ title, description: "", authorId: loggedInUserId })
       .returning();
 
     return json(created);

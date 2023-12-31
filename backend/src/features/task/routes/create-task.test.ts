@@ -10,13 +10,12 @@ const client = () => testClient(createTask, { DB: testD1, KV: testKv });
 describe("タスクの作成", () => {
   it("タイトルと説明を指定してタスクを作成でき、作成したタスクが返される", async () => {
     const title = "newtask";
-    const description = "description";
     const user = await Factories.user({});
     const session = await Factories.loginSession({ userId: user.id });
 
     const result = await client().tasks.$post({
       cookie: { session: session.id },
-      json: { title, description },
+      json: { title },
     });
     const created = await result.json();
 
@@ -24,7 +23,6 @@ describe("タスクの作成", () => {
     expect(finded.length).toBe(1);
     expect(finded[0].id).toBe(created.id);
     expect(finded[0].title).toBe(title);
-    expect(finded[0].description).toBe(description);
   });
 
   it("タイトルが空文字だとタスクが作成できない", async () => {
@@ -33,7 +31,7 @@ describe("タスクの作成", () => {
 
     const result = await client().tasks.$post({
       cookie: { session: session.id },
-      json: { title: "", description: "" },
+      json: { title: "" },
     });
     expect(result.ok).toBe(false);
   });
@@ -47,7 +45,7 @@ describe("タスクの作成", () => {
 
     const result = await client().tasks.$post({
       cookie: { session: session.id },
-      json: { title: "task", description: "task" },
+      json: { title: "task" },
     });
 
     expect(result.ok).toBe(false);

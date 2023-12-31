@@ -35,10 +35,7 @@ const TaskPageEntry = z.object({
   tasks: z.array(Task),
   totalPages: z.number(),
 });
-const CreateTaskInput = z.object({
-  title: z.string().min(1).max(200),
-  description: z.string().max(1000),
-});
+const CreateTaskInput = z.object({ title: z.string().min(1).max(200) });
 const UpdateTaskInput = z.object({
   title: z.string().min(1).max(200),
   description: z.string().max(1000),
@@ -287,7 +284,7 @@ const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: CreateTaskInput,
+        schema: z.object({ title: z.string().min(1).max(200) }),
       },
     ],
     response: Task,

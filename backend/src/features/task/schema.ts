@@ -15,7 +15,6 @@ export const TaskSchema = z
 export const CreateTaskInputSchema = z
   .object({
     title: z.string().min(1).max(200),
-    description: z.string().max(1000),
   })
   .openapi("CreateTaskInput");
 
