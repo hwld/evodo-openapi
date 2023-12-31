@@ -6,7 +6,7 @@ import { useMergedRef } from "@/lib/use-merged-ref";
 import { stopPropagation } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { forwardRef, useRef } from "react";
+import { forwardRef, useLayoutEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -21,9 +21,10 @@ type TaskDescriptionForm = z.infer<typeof taskDescriptionSchema>;
 type Props = {
   task: Task;
   onSuccess?: () => void;
+  defualtHeight: number;
 };
 export const TaskDescriptionForm = forwardRef<HTMLTextAreaElement, Props>(
-  function ({ task, onSuccess }, ref) {
+  function ({ task, onSuccess, defualtHeight }, ref) {
     const client = useQueryClient();
     const { mutate } = useMutation({
       mutationFn: ({ description }: TaskDescriptionForm) => {
@@ -64,6 +65,13 @@ export const TaskDescriptionForm = forwardRef<HTMLTextAreaElement, Props>(
       e.target.style.height = `${e.target.scrollHeight}px`;
       onChange(e);
     };
+
+    useLayoutEffect(() => {
+      if (_textArearef.current) {
+        _textArearef.current.style.height = `${defualtHeight}px`;
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
       <div>
