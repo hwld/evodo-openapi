@@ -3,8 +3,8 @@ import { Separator } from "@/components/ui/separator";
 import { XIcon } from "lucide-react";
 import { TaskTableStatusFilter } from "./status-filter";
 import { Button } from "@/components/ui/button";
-import { doneColumnOptions } from "./columns";
 import { useTaskTableFilter } from "./use-task-table-filter";
+import { doneColumnOptions } from "./-columns/status-column";
 
 export const TaskTableToolbar = () => {
   const { changeFilter, filters: statusFilters } = useTaskTableFilter({

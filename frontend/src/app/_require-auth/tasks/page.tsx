@@ -1,20 +1,15 @@
-import { useState } from "react";
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { SyntheticEvent, useState } from "react";
 import { z } from "zod";
-import { api } from "../../../api";
 import { schemas } from "../../../api/schema";
-import { Sidebar } from "../sidebar/sidebar";
+import { Sidebar } from "../-sidebar/sidebar";
 import { Card } from "@/components/ui/card";
 import { HomeIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Outlet, Route } from "@tanstack/react-router";
-import { TaskTable } from "./task-table/task-table";
+import { TaskTable } from "./-task-table/task-table";
 import { requireAuthRoute } from "../page";
+import { useCreateTask } from "./-hooks/use-create-task";
+import { useTaskPage } from "./-hooks/use-task-page";
 
 const taskSearchParamsSchema = z.object({
   status_filter: schemas["status_filter_"]
@@ -48,36 +43,15 @@ export const tasksRoute = new Route({
 export function TasksPage() {
   const { session } = tasksRoute.useRouteContext();
 
-  const client = useQueryClient();
+  const { taskPageEntry } = useTaskPage();
+
   const [title, setTitle] = useState("");
-
-  const taskSearchParams = tasksRoute.useSearch();
-  const { data: taskPageEntry } = useQuery({
-    queryKey: ["tasks", { taskSearchParams }],
-    queryFn: async () => {
-      return await api.get("/tasks", {
-        queries: {
-          "status_filter[]": taskSearchParams.status_filter,
-          sort: taskSearchParams.sort,
-          order: taskSearchParams.order,
-          page: taskSearchParams.page.toString(),
-        },
-      });
-    },
-    placeholderData: keepPreviousData,
-  });
-
-  const { mutate } = useMutation({
-    mutationFn: (newTask: z.infer<typeof schemas.CreateTaskInput>) => {
-      return api.post("/tasks", newTask);
-    },
-    onSuccess: () => {
-      client.invalidateQueries();
-    },
-    onError: () => {
-      window.alert("error");
-    },
-  });
+  const createTaskMutation = useCreateTask();
+  const handleCreateTask = (e: SyntheticEvent) => {
+    e.preventDefault();
+    createTaskMutation.mutate({ title, description: "" });
+    setTitle("");
+  };
 
   return (
     <div className="min-h-min flex">
@@ -90,13 +64,7 @@ export function TasksPage() {
           <p className="text-sm">今日のタスク</p>
         </div>
         <Card className="p-6 grow flex flex-col gap-6">
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              mutate({ title, description: "" });
-              setTitle("");
-            }}
-          >
+          <form onSubmit={handleCreateTask}>
             <Input
               size="sm"
               placeholder="タスクを入力してください..."

@@ -1,14 +1,13 @@
-import { api } from "@/api";
 import { schemas } from "@/api/schema";
 import { Task } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { useMergedRef } from "@/lib/use-merged-ref";
 import { cn, stopPropagation } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { forwardRef, useLayoutEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useUpdateTask } from "../../-hooks/use-update-task";
 
 export const taskDescriptionTextareaClass =
   "w-full border border-border rounded p-3 text-sm bg-transparent min-h-[200px] focus-visible:outline-none focus-visible:ring-1  resize-none overflow-hidden focus-visible:ring-ring";
@@ -26,22 +25,7 @@ type Props = {
 };
 export const TaskDescriptionForm = forwardRef<HTMLTextAreaElement, Props>(
   function ({ task, onAfterSuccess, defualtHeight, onAfterCancel }, ref) {
-    const client = useQueryClient();
-    const { mutate } = useMutation({
-      mutationFn: ({ description }: TaskDescriptionForm) => {
-        return api.put(
-          "/tasks/:id",
-          { ...task, description },
-          { params: { id: task.id } },
-        );
-      },
-      onSuccess: () => {
-        onAfterSuccess?.();
-      },
-      onSettled: () => {
-        client.invalidateQueries();
-      },
-    });
+    const taskUpdateMutation = useUpdateTask();
 
     const {
       register,
@@ -57,7 +41,14 @@ export const TaskDescriptionForm = forwardRef<HTMLTextAreaElement, Props>(
     const textArearef = useMergedRef(_ref, ref, _textArearef);
 
     const handleSubmit = createHandleSubmit(({ description }) => {
-      mutate({ description });
+      taskUpdateMutation.mutate(
+        { ...task, taskId: task.id, description },
+        {
+          onSuccess: () => {
+            onAfterSuccess?.();
+          },
+        },
+      );
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

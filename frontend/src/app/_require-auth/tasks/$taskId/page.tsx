@@ -3,9 +3,8 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Route, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { tasksRoute } from "../page";
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/api";
-import { EditableTaskDescription } from "./editable-task-description/editable-task-description";
+import { EditableTaskDescription } from "./-editable-task-description/editable-task-description";
+import { useTask } from "../-hooks/use-task";
 
 export const taskDetailRoute = new Route({
   getParentRoute: () => tasksRoute,
@@ -15,12 +14,7 @@ export const taskDetailRoute = new Route({
 
 export function TaskDetailPage() {
   const { taskId } = taskDetailRoute.useParams();
-  const { data: task } = useQuery({
-    queryKey: ["tasks", taskId],
-    queryFn: async () => {
-      return await api.get("/tasks/:id", { params: { id: taskId } });
-    },
-  });
+  const { task } = useTask({ taskId });
 
   const search = taskDetailRoute.useSearch();
   const navigate = useNavigate();

@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { CheckIcon, PlusCircleIcon } from "lucide-react";
-import { doneColumnOptions } from "./columns";
 import { useTaskTableFilter } from "./use-task-table-filter";
+import { doneColumnOptions } from "./-columns/status-column";
 
 export const TaskTableStatusFilter: React.FC = () => {
   const {

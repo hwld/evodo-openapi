@@ -24,9 +24,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
 import { rootRoute } from "@/app/layout";
+import { useSignup } from "../-hooks/use-signup";
 
 export const signupRoute = new Route({
   getParentRoute: () => rootRoute,
@@ -45,28 +44,22 @@ type SignupFormData = z.infer<typeof signupFormSchema>;
 
 export function SignupPage() {
   const navigate = useNavigate();
-  const { mutate } = useMutation({
-    mutationFn: (data: SignupFormData) => {
-      return api.post("/signup", {
-        username: data.username,
-        profile: data.profile,
-      });
-    },
-    onSuccess: async () => {
-      await navigate({ to: "/" });
-    },
-    onError: async () => {
-      toast.error("ユーザーを作成できませんでした。");
-      await navigate({ to: "/" });
-    },
-  });
+  const signupMutation = useSignup();
+
   const form = useForm<SignupFormData>({
     defaultValues: { username: "", profile: "" },
     resolver: zodResolver(schemas.SignupInput),
   });
 
   const handleSignup = form.handleSubmit(async ({ username, profile }) => {
-    mutate({ username, profile });
+    signupMutation.mutate(
+      { username, profile },
+      {
+        onSettled: async () => {
+          await navigate({ to: "/" });
+        },
+      },
+    );
   });
 
   const handleCancel = async () => {

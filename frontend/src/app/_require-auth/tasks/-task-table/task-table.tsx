@@ -12,12 +12,23 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { taskTableColumns } from "./columns";
 import { TaskTableToolbar } from "./toolbar";
 import { Pagination } from "@/components/ui/pagination";
 import { z } from "zod";
 import { schemas } from "@/api/schema";
 import { useTaskTablePagination } from "./use-task-table-pagination";
+import { taskStatusColumn } from "./-columns/status-column";
+import { taskTitleColumn } from "./-columns/title-column";
+import { createTaskDateColumn } from "./-columns/date-column";
+import { TaskActionColumn } from "./-columns/action-column";
+
+const taskColumns = [
+  taskStatusColumn,
+  taskTitleColumn,
+  createTaskDateColumn("createdAt"),
+  createTaskDateColumn("updatedAt"),
+  TaskActionColumn,
+];
 
 type Props = {
   taskPageEntry: z.infer<typeof schemas.TaskPageEntry>;
@@ -25,9 +36,12 @@ type Props = {
 export const TaskTable: React.FC<Props> = ({ taskPageEntry }) => {
   const table = useReactTable({
     data: taskPageEntry.tasks,
-    columns: taskTableColumns,
+    columns: taskColumns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const headers = table.getFlatHeaders();
+  const rows = table.getRowModel().rows;
 
   const { changePage, currentPage } = useTaskTablePagination();
 
@@ -37,28 +51,22 @@ export const TaskTable: React.FC<Props> = ({ taskPageEntry }) => {
       <div className="rounded border flex w-full overflow-auto">
         <Table className="w-full">
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => {
-              return (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id} className="relative">
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
+            <TableRow>
+              {headers.map((header) => {
+                return (
+                  <TableHead key={header.id} className="relative">
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => {
+            {rows.length ? (
+              rows.map((row) => {
                 return (
                   <TableRow key={row.id}>
                     {row.getAllCells().map((cell) => {
