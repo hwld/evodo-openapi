@@ -177,7 +177,7 @@ export const taskTableColumns = [
           <Link
             search={search}
             to="/tasks/$taskId"
-            params={{ taskId: "dummy-task-id" }}
+            params={{ taskId: row.original.id }}
           >
             詳細
           </Link>

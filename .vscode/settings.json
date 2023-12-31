@@ -4,6 +4,7 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "jest.autoRun": "off",
   "tailwindCSS.classAttributes": [
+    ".*Class",
     "class",
     "className",
     "classNames",

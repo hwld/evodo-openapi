@@ -39,7 +39,7 @@ const SheetContent = React.forwardRef<
     <SheetPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-300 rounded-lg border inset-y-3 right-3 w-3/4  data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:w-[600px]",
+        "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-300 rounded-lg border inset-y-3 right-3 w-3/4  data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:w-[600px] focus-visible:outline-none focus-visible:ring-1 ring-ring overflow-auto",
         className,
       )}
       {...props}

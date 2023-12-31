@@ -3,6 +3,9 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Route, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { tasksRoute } from "../page";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/api";
+import { EditableTaskDescription } from "./editable-task-description/editable-task-description";
 
 export const taskDetailRoute = new Route({
   getParentRoute: () => tasksRoute,
@@ -11,9 +14,15 @@ export const taskDetailRoute = new Route({
 });
 
 export function TaskDetailPage() {
-  const search = taskDetailRoute.useSearch();
   const { taskId } = taskDetailRoute.useParams();
-  console.log(taskId);
+  const { data: task } = useQuery({
+    queryKey: ["tasks", taskId],
+    queryFn: async () => {
+      return await api.get("/tasks/:id", { params: { id: taskId } });
+    },
+  });
+
+  const search = taskDetailRoute.useSearch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
 
@@ -36,14 +45,19 @@ export function TaskDetailPage() {
     >
       <SheetContent>
         <p className="text-muted text-xs">TASK DETAIL</p>
-        <p className="font-bold text-xl mt-1">タスクの詳細画面を実装する</p>
-        <div className="flex flex-col py-8 gap-6">
-          <div className="w-full h-[200px] border border-border rounded" />
-          <div className="space-y-2">
-            <p className="text-muted text-sm">コメント</p>
-            <Separator />
-          </div>
-        </div>
+        {/* TODO */}
+        {task && (
+          <>
+            <p className="font-bold text-xl mt-1">{task.title}</p>
+            <div className="flex flex-col py-8 gap-6">
+              <EditableTaskDescription task={task} />
+              <div className="space-y-2">
+                <p className="text-muted text-sm">コメント</p>
+                <Separator />
+              </div>
+            </div>
+          </>
+        )}
       </SheetContent>
     </Sheet>
   );
