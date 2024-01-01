@@ -15,6 +15,7 @@ export const users = sqliteTable("users", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   tasks: many(tasks),
+  taskMemos: many(taskMemos),
 }));
 
 export const signupSessions = sqliteTable("signup_sessions", {
@@ -44,6 +45,32 @@ export const tasks = sqliteTable("tasks", {
     .default(sql`(${currentTime()})`),
 });
 
-export const tasksRelations = relations(tasks, ({ one }) => ({
+export const tasksRelations = relations(tasks, ({ one, many }) => ({
   author: one(users, { fields: [tasks.authorId], references: [users.id] }),
+  memos: many(taskMemos),
+}));
+
+export const taskMemos = sqliteTable("taskMemos", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  content: text("content").notNull().default(""),
+  taskId: text("task_id")
+    .notNull()
+    .references(() => tasks.id, { onDelete: "cascade" }),
+  authorId: text("author_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(${currentTime()})`),
+  updatedAt: text("updated_at")
+    .notNull()
+    .default(sql`(${currentTime()})`),
+});
+
+export const taskMemosRelations = relations(taskMemos, ({ one }) => ({
+  task: one(tasks, { fields: [taskMemos.taskId], references: [tasks.id] }),
+  author: one(users, { fields: [taskMemos.authorId], references: [users.id] }),
 }));

@@ -8,6 +8,13 @@
       "when": 1703850278833,
       "tag": "0000_bouncy_paibok",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1704109853783,
+      "tag": "0001_magical_centennial",
+      "breakpoints": true
     }
   ]
 }

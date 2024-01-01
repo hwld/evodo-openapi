@@ -1,5 +1,5 @@
 import { InferInsertModel } from "drizzle-orm";
-import { signupSessions, tasks, users } from "../services/db/schema";
+import { signupSessions, taskMemos, tasks, users } from "../services/db/schema";
 import { testDb, testKv } from "../../setup-vitest";
 import { AuthAdapter } from "../services/auth/adapter";
 import { TimeSpan, createDate } from "oslo";
@@ -37,6 +37,20 @@ export const Factories = {
       .returning();
 
     return createdTask;
+  },
+
+  taskMemo: async (
+    taskMemo: Partial<InferInsertModel<typeof taskMemos>> & {
+      taskId: string;
+      authorId: string;
+    },
+  ) => {
+    const [createdTaskMemo] = await testDb
+      .insert(taskMemos)
+      .values({ content: "メモ", ...taskMemo })
+      .returning();
+
+    return createdTaskMemo;
   },
 
   loginSession: async (
