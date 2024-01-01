@@ -8,11 +8,33 @@ import { useTask } from "../-hooks/use-task";
 import { TaskMemoForm } from "./task-memo-form";
 import { useTaskMemos } from "../-hooks/use-task-memos";
 import { TaskMemoCard } from "./task-memo-card";
+import { useTimer } from "@/lib/use-timer";
+import { Spinner } from "@/components/ui/spinner";
+import { ErrorPage } from "@/app/error";
 
 export const taskDetailRoute = new Route({
   getParentRoute: () => tasksRoute,
   path: "$taskId",
   component: TaskDetailPage,
+  pendingComponent: function Pending() {
+    const isVisible = useTimer(500);
+    if (!isVisible) {
+      return null;
+    }
+
+    return (
+      <div className="fixed inset-0 bg-black/70 flex justify-center items-center">
+        <Spinner />
+      </div>
+    );
+  },
+  errorComponent: () => {
+    return (
+      <div className="fixed inset-0 bg-black/80">
+        <ErrorPage />
+      </div>
+    );
+  },
 });
 
 export function TaskDetailPage() {
@@ -44,27 +66,22 @@ export function TaskDetailPage() {
     >
       <SheetContent>
         <p className="text-muted-foreground text-xs">TASK DETAIL</p>
-        {/* TODO */}
-        {task && (
-          <>
-            <p className="font-bold text-xl mt-1">{task.title}</p>
-            <div className="flex flex-col py-8 gap-6">
-              <EditableTaskDescription task={task} />
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <p className="text-muted-foreground text-sm">コメント</p>
-                  <Separator />
-                </div>
-                <div className="space-y-1">
-                  {taskMemos.map((memo) => {
-                    return <TaskMemoCard memo={memo} key={memo.id} />;
-                  })}
-                </div>
-                <TaskMemoForm taskId={task.id} />
-              </div>
+        <p className="font-bold text-xl mt-1">{task.title}</p>
+        <div className="flex flex-col py-8 gap-6">
+          <EditableTaskDescription task={task} />
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-muted-foreground text-sm">コメント</p>
+              <Separator />
             </div>
-          </>
-        )}
+            <div className="space-y-1">
+              {taskMemos.map((memo) => {
+                return <TaskMemoCard memo={memo} key={memo.id} />;
+              })}
+            </div>
+            <TaskMemoForm taskId={task.id} />
+          </div>
+        </div>
       </SheetContent>
     </Sheet>
   );

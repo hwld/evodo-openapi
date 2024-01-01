@@ -1,6 +1,7 @@
 import { api } from "@/api";
 import { schemas } from "@/api/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const taskMemoFormSchema = schemas.CreateTaskMemoInput;
@@ -18,6 +19,9 @@ export const useCreateTaskMemo = () => {
         { content },
         { params: { taskId } },
       );
+    },
+    onError: () => {
+      toast.error("タスクにメモを追加できませんでした。");
     },
     onSettled: () => {
       return client.invalidateQueries();

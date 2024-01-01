@@ -9,17 +9,17 @@ import {
 import { SidebarItem } from "./sidebar-item";
 import { Button } from "@/components/ui/button";
 import { api } from "@/api";
-import { useRouter } from "@tanstack/react-router";
 import { Session } from "@/api/types";
 import { Tooltip } from "@/components/ui/tooltip";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = { session: Session };
 export const Sidebar: React.FC<Props> = ({ session }) => {
-  const route = useRouter();
+  const client = useQueryClient();
 
   const handleLogout = async () => {
     await api.post("/logout", undefined);
-    route.invalidate();
+    client.invalidateQueries();
   };
 
   return (

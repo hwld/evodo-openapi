@@ -1,10 +1,11 @@
 import { api } from "@/api";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { tasksRoute } from "../page";
 
 export const useTaskPage = () => {
   const taskSearchParams = tasksRoute.useSearch();
-  const { data: taskPageEntry } = useQuery({
+  // TODO: キャッシュにないページに移動すると一瞬fallbackが表示されてしまう。
+  const { data: taskPageEntry, status } = useSuspenseQuery({
     queryKey: ["tasks", { taskSearchParams }],
     queryFn: () => {
       return api.get("/tasks", {
@@ -16,8 +17,7 @@ export const useTaskPage = () => {
         },
       });
     },
-    placeholderData: keepPreviousData,
   });
 
-  return { taskPageEntry };
+  return { taskPageEntry, status };
 };

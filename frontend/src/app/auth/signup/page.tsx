@@ -139,7 +139,12 @@ export function SignupPage() {
               />
             </Form>
             <div className="flex gap-3 justify-end">
-              <Button onClick={handleSignup}>登録する</Button>
+              <Button
+                onClick={handleSignup}
+                disabled={signupMutation.isPending}
+              >
+                登録する
+              </Button>
             </div>
           </CardContent>
           <Button

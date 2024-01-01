@@ -6,10 +6,10 @@ import { Tooltip } from "@/components/ui/tooltip";
 
 type Props = { memo: TaskMemo };
 export const TaskMemoCard: React.FC<Props> = ({ memo }) => {
-  const deleteTaskMemoMutation = useDeleteTaskMemo();
+  const deleteMutation = useDeleteTaskMemo();
 
   const handleDeleteTaskMemo = () => {
-    deleteTaskMemoMutation.mutate({ taskId: memo.taskId, taskMemoId: memo.id });
+    deleteMutation.mutate({ taskId: memo.taskId, taskMemoId: memo.id });
   };
 
   return (
@@ -22,7 +22,12 @@ export const TaskMemoCard: React.FC<Props> = ({ memo }) => {
         <p className="text-sm"> {memo.content}</p>
       </div>
       <Tooltip label="メモを削除する">
-        <Button size="icon" variant="outline" onClick={handleDeleteTaskMemo}>
+        <Button
+          size="icon"
+          variant="outline"
+          onClick={handleDeleteTaskMemo}
+          disabled={deleteMutation.isPending}
+        >
           <TrashIcon size={16} />
         </Button>
       </Tooltip>

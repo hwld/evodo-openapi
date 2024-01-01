@@ -16,6 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 export const TaskActionColumn = createTaskColumn.display({
   id: "action",
@@ -24,7 +25,14 @@ export const TaskActionColumn = createTaskColumn.display({
     const deleteMutation = useDeleteTask();
 
     const handleDeleteTask = () => {
-      deleteMutation.mutate({ taskId: row.original.id });
+      deleteMutation.mutate(
+        { taskId: row.original.id },
+        {
+          onSuccess: () => {
+            toast.success("タスクを削除しました。");
+          },
+        },
+      );
     };
 
     return (
@@ -43,7 +51,11 @@ export const TaskActionColumn = createTaskColumn.display({
         <AlertDialog>
           <Tooltip label="タスクを削除する">
             <AlertDialogTrigger asChild>
-              <Button size="icon" variant="outline">
+              <Button
+                size="icon"
+                variant="outline"
+                disabled={deleteMutation.isPending}
+              >
                 <TrashIcon size={16} />
               </Button>
             </AlertDialogTrigger>
@@ -61,7 +73,10 @@ export const TaskActionColumn = createTaskColumn.display({
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>キャンセル</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteTask}>
+              <AlertDialogAction
+                onClick={handleDeleteTask}
+                disabled={deleteMutation.isPending}
+              >
                 削除する
               </AlertDialogAction>
             </AlertDialogFooter>

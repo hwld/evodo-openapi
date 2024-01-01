@@ -17,7 +17,10 @@ i18next.init({
 });
 z.setErrorMap(zodI18nMap);
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  // TODO: エラーの確認のためにretryをfalseにする
+  defaultOptions: { queries: { retry: false } },
+});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

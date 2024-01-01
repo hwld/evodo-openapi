@@ -1,9 +1,9 @@
 import { api } from "@/api";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 type UseTaskMemosArgs = { taskId: string };
 export const useTaskMemos = ({ taskId }: UseTaskMemosArgs) => {
-  const { data: taskMemos } = useQuery({
+  const { data: taskMemos } = useSuspenseQuery({
     queryKey: ["tasks", taskId, "memos"],
     queryFn: async () => {
       const result = await api.get("/tasks/:taskId/memos", {
@@ -14,5 +14,5 @@ export const useTaskMemos = ({ taskId }: UseTaskMemosArgs) => {
     },
   });
 
-  return { taskMemos: taskMemos ?? [] };
+  return { taskMemos };
 };
