@@ -58,8 +58,8 @@ export const TaskForm: React.FC = () => {
       className="flex gap-2 items-center relative"
     >
       <div className="flex items-center border border-muted-foreground p-2 rounded-md text-sm gap-2 focus-within:ring-2 ring-offset-2 ring-ring ring-offset-background">
-        <div className="flex items-center gap-0.5 text-xs border px-[6px] py-[3px] rounded-md text-muted-foreground border-muted-foreground">
-          <CommandIcon size={15} />K
+        <div className="flex items-center gap-0.5 text-xs border px-[6px] py-[2px] rounded-md text-muted-foreground border-muted-foreground">
+          <CommandIcon size={12} />K
         </div>
         <input
           ref={inputRef}
@@ -68,7 +68,7 @@ export const TaskForm: React.FC = () => {
           onBlur={handleBlur}
           className="w-[600px] bg-transparent placeholder:text-sm placeholder:text-muted-foreground focus-visible:outline-none"
         />
-        <SendHorizonalIcon size={18} className="text-muted-foreground" />
+        <SendHorizonalIcon size={15} className="text-muted-foreground" />
       </div>
       {errors.title && (
         <div className="absolute top-[130%] bg-background border border-border rounded px-3 py-2 text-sm text-destructive shadow-2xl animate-in fade-in slide-in-from-top-1">
