@@ -32,9 +32,11 @@ export const Tooltip: React.FC<
     <TooltipProvider>
       <TooltipRoot>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent {...props}>
-          <p className="text-sm">{label}</p>
-        </TooltipContent>
+        <TooltipPrimitive.TooltipPortal>
+          <TooltipContent {...props}>
+            <p className="text-sm">{label}</p>
+          </TooltipContent>
+        </TooltipPrimitive.TooltipPortal>
       </TooltipRoot>
     </TooltipProvider>
   );

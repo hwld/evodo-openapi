@@ -41,6 +41,15 @@ const UpdateTaskInput = z.object({
   description: z.string().max(1000),
   status: z.union([z.literal("todo"), z.literal("done")]),
 });
+const TaskMemo = z.object({
+  id: z.string(),
+  taskId: z.string(),
+  authorId: z.string(),
+  content: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+const CreateTaskMemoInput = z.object({ content: z.string().min(1).max(500) });
 const TaskStatusFilters = z.union([
   z.array(z.union([z.literal("todo"), z.literal("done")])),
   z.literal("todo"),
@@ -65,6 +74,8 @@ export const schemas = {
   TaskPageEntry,
   CreateTaskInput,
   UpdateTaskInput,
+  TaskMemo,
+  CreateTaskMemoInput,
   TaskStatusFilters,
   TaskSort,
   TaskSortOrder,
@@ -270,6 +281,11 @@ const endpoints = makeApi([
     response: TaskPageEntry,
     errors: [
       {
+        status: 400,
+        description: `不正なリクエスト`,
+        schema: z.void(),
+      },
+      {
         status: 500,
         description: `内部エラー`,
         schema: z.void(),
@@ -387,6 +403,91 @@ const endpoints = makeApi([
       {
         status: 404,
         description: `タスクが存在しない`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/tasks/:taskId/memos",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "taskId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.object({ taskMemos: z.array(TaskMemo) }),
+    errors: [
+      {
+        status: 400,
+        description: `不正なリクエスト`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "post",
+    path: "/tasks/:taskId/memos",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
+        schema: z.object({ content: z.string().min(1).max(500) }),
+      },
+      {
+        name: "taskId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.object({ createdTaskMemo: TaskMemo }),
+    errors: [
+      {
+        status: 400,
+        description: `不正なリクエスト`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `内部エラー`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "delete",
+    path: "/tasks/:taskId/memos/:taskMemoId",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "taskId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "taskMemoId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.object({ deletedTaskMemo: TaskMemo }),
+    errors: [
+      {
+        status: 400,
+        description: `不正なリクエスト`,
         schema: z.void(),
       },
       {
