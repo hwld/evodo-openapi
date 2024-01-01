@@ -14,7 +14,7 @@ export const useCreateTask = () => {
       toast.error("タスクが作成できませんでした。");
     },
     onSettled: () => {
-      client.invalidateQueries();
+      return client.invalidateQueries();
     },
   });
 };

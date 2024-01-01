@@ -13,8 +13,8 @@ export const useDeleteTask = () => {
     onError: async () => {
       toast.error("タスクを削除できませんでした。");
     },
-    onSettled: async () => {
-      await client.invalidateQueries();
+    onSettled: () => {
+      return client.invalidateQueries();
     },
   });
 };

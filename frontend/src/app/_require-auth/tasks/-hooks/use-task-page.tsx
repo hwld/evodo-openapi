@@ -6,8 +6,8 @@ export const useTaskPage = () => {
   const taskSearchParams = tasksRoute.useSearch();
   const { data: taskPageEntry } = useQuery({
     queryKey: ["tasks", { taskSearchParams }],
-    queryFn: async () => {
-      return await api.get("/tasks", {
+    queryFn: () => {
+      return api.get("/tasks", {
         queries: {
           "status_filter[]": taskSearchParams.status_filter,
           sort: taskSearchParams.sort,

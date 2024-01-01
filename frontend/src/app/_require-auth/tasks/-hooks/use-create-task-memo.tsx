@@ -19,8 +19,8 @@ export const useCreateTaskMemo = () => {
         { params: { taskId } },
       );
     },
-    onSettled: async () => {
-      await client.invalidateQueries();
+    onSettled: () => {
+      return client.invalidateQueries();
     },
   });
 };

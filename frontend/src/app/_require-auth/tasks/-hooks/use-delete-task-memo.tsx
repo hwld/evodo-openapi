@@ -15,8 +15,8 @@ export const useDeleteTaskMemo = () => {
         params: { taskId, taskMemoId },
       });
     },
-    onSettled: async () => {
-      await client.invalidateQueries();
+    onSettled: () => {
+      return client.invalidateQueries();
     },
   });
 };

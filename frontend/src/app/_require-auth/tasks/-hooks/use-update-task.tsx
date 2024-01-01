@@ -23,8 +23,8 @@ export const useUpdateTask = () => {
     onError: () => {
       toast.error("タスクを更新できませんでした。");
     },
-    onSettled: async () => {
-      await client.invalidateQueries();
+    onSettled: () => {
+      return client.invalidateQueries();
     },
   });
 };
