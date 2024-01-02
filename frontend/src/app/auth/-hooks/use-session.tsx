@@ -1,14 +1,15 @@
 import { api } from "@/api";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+
+export const sessionQueryOptions = queryOptions({
+  queryKey: ["session"],
+  queryFn: async () => {
+    const result = await api.get("/session");
+    return result.session;
+  },
+});
 
 export const useSession = () => {
-  const { data: session } = useSuspenseQuery({
-    queryKey: ["session"],
-    queryFn: async () => {
-      const result = await api.get("/session");
-      return result.session;
-    },
-  });
-
+  const { data: session } = useSuspenseQuery(sessionQueryOptions);
   return { session };
 };

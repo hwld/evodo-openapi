@@ -8,7 +8,6 @@ import { taskQueryOptions, useTask } from "../-hooks/use-task";
 import { TaskMemoForm } from "./task-memo-form";
 import { taskMemosQueryOptions, useTaskMemos } from "../-hooks/use-task-memos";
 import { TaskMemoCard } from "./task-memo-card";
-import { useTimer } from "@/lib/use-timer";
 import { Spinner } from "@/components/ui/spinner";
 import { ErrorPage } from "@/app/error";
 
@@ -23,11 +22,6 @@ export const taskDetailRoute = new Route({
     ]);
   },
   pendingComponent: function Pending() {
-    const isVisible = useTimer(500);
-    if (!isVisible) {
-      return null;
-    }
-
     return (
       <div className="fixed inset-0 bg-black/70 flex justify-center items-center">
         <Spinner />
