@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import GoogleIcon from "@/components/ui/google-icon";
 import { LOGIN_URL } from "@/lib/login-url";
 import { Route } from "@tanstack/react-router";
-import { motion } from "framer-motion";
 
 export const loginRoute = new Route({
   getParentRoute: () => rootRoute,
@@ -17,14 +16,10 @@ export function LoginPage() {
     <div className="flex h-full justify-center items-center">
       <div className="flex flex-col items-center gap-8">
         <div className="flex flex-col items-center gap-5">
-          <motion.div
-            animate={{
-              rotate: -360,
-            }}
-            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-          >
-            <AppLogo size={150} />
-          </motion.div>
+          <AppLogo
+            size={150}
+            className="animate-in spin-in-360 duration-3s ease-linear repeat-infinite"
+          />
           <p className="text-lg text-muted-foreground">Evodo OpenAPI</p>
         </div>
         <Button className="gap-2" asChild>

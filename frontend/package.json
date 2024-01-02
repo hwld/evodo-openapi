@@ -25,7 +25,6 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
-    "framer-motion": "^10.16.16",
     "i18next": "^23.7.11",
     "lucide-react": "^0.300.0",
     "react": "^18.2.0",

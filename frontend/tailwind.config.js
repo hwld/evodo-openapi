@@ -94,6 +94,7 @@ export default {
       },
       animationDuration: {
         "2s": "2s",
+        "3s": "3s",
       },
     },
   },

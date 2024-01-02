@@ -23,7 +23,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { motion } from "framer-motion";
 import { rootRoute } from "@/app/layout";
 import { useSignup } from "../-hooks/use-signup";
 
@@ -74,13 +73,10 @@ export function SignupPage() {
     <div className="flex flex-col h-full justify-center items-center">
       <div className="space-y-3">
         <Card className="w-[500px] relative">
-          <motion.div
-            className="absolute bottom-[105%] left-0 right-0 m-auto w-fit"
-            animate={{ scale: [1, 1.1, 1], rotate: [0, -10, 0] }}
-            transition={{ repeat: Infinity }}
-          >
-            <AppLogo size={75} />
-          </motion.div>
+          <AppLogo
+            size={75}
+            className="absolute bottom-[105%] left-0 right-0 m-auto"
+          />
           <CardHeader>
             <CardTitle>ユーザーを登録する</CardTitle>
             <CardDescription>
