@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 whitespace-nowrap focus-visible:ring-offset-background select-none",
+  "inline-flex items-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 whitespace-nowrap focus-visible:ring-offset-background select-none disabled:opacity-50 disabled:pointer-events-none",
   {
     variants: {
       variant: {
@@ -34,6 +34,7 @@ export type BadgeProps = VariantProps<typeof badgeVariants> & {
   className?: string;
   onClick?: () => void;
   children: React.ReactNode;
+  disabled?: boolean;
 };
 
 function Badge({

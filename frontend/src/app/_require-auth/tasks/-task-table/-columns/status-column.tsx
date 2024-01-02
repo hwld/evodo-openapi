@@ -4,7 +4,7 @@ import { useSortTaskTable } from "../use-sort-task-table";
 import { TaskTableSortedIcon } from "../sorted-icon";
 import { CircleDashedIcon, CircleDotIcon, CircleIcon } from "lucide-react";
 import { useUpdateTask } from "../../-hooks/use-update-task";
-import { StatusBadge } from "../../task-status-badge";
+import { TaskStatusBadge } from "../../task-status-badge";
 
 export const statusColumnOptions = [
   { value: "done", label: "完了", icon: CircleDotIcon },
@@ -38,7 +38,12 @@ export const taskStatusColumn = createTaskColumn.accessor("status", {
     };
 
     return (
-      <StatusBadge size="sm" onClick={handleUpdateTaskStatus} status={status} />
+      <TaskStatusBadge
+        size="sm"
+        onClick={handleUpdateTaskStatus}
+        status={status}
+        disabled={updateMutation.isPending}
+      />
     );
   },
 });

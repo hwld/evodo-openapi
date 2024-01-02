@@ -6,11 +6,13 @@ type Props = {
   status: Task["status"];
   onClick?: () => void;
   size?: "default" | "sm";
+  disabled?: boolean;
 };
-export const StatusBadge: React.FC<Props> = ({
+export const TaskStatusBadge: React.FC<Props> = ({
   status,
   onClick,
   size = "default",
+  disabled = false,
 }) => {
   const option = statusColumnOptions.find((opt) => opt.value === status)!;
   const Icon = option.icon;
@@ -24,7 +26,12 @@ export const StatusBadge: React.FC<Props> = ({
   };
 
   return (
-    <Badge size={size} variant={variantMap[status]} onClick={onClick}>
+    <Badge
+      size={size}
+      variant={variantMap[status]}
+      onClick={onClick}
+      disabled={disabled}
+    >
       <Icon size={iconSizeMap[size]} className="mr-1" />
       {label}
     </Badge>

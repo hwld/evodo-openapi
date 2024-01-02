@@ -1,6 +1,7 @@
 import { LucideIcon } from "lucide-react";
+import { ReactNode } from "react";
 
-type Props = { icon: LucideIcon; label: string; value: string };
+type Props = { icon: LucideIcon; label: string; value: ReactNode };
 export const TaskSheetRow: React.FC<Props> = ({ icon: Icon, label, value }) => {
   return (
     <div className="flex items-center text-sm">

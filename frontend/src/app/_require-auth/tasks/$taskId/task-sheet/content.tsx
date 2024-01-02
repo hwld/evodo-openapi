@@ -4,22 +4,33 @@ import { EditableTaskDescription } from "../-editable-task-description/editable-
 import { TaskMemoForm } from "../task-memo-form";
 import { useTaskMemos } from "../../-hooks/use-task-memos";
 import { TaskMemoCard } from "../task-memo-card";
-import { StatusBadge } from "../../task-status-badge";
+import { TaskStatusBadge } from "../../task-status-badge";
 import { useUpdateTask } from "../../-hooks/use-update-task";
 import { Task } from "@/api/types";
 import { TaskSheetRow } from "./row";
 import { dateColumnOptions } from "../../-task-table/-columns/date-column";
+import { TaskPriorityBadge } from "../../task-priority-badge";
+import { ArrowUpDownIcon } from "lucide-react";
 
 type Props = { task: Task };
 export const TaskSheetContent: React.FC<Props> = ({ task }) => {
   const { taskMemos } = useTaskMemos({ taskId: task.id });
 
-  const updateMutation = useUpdateTask();
+  const updateStatusMutation = useUpdateTask();
   const handleUpdateTaskStatus = () => {
-    updateMutation.mutate({
+    updateStatusMutation.mutate({
       ...task,
-      status: task.status === "done" ? "todo" : "done",
       taskId: task.id,
+      status: task.status === "done" ? "todo" : "done",
+    });
+  };
+
+  const updatePriorityMutation = useUpdateTask();
+  const handleUpdateTaskPriority = (value: Task["priority"]) => {
+    updatePriorityMutation.mutate({
+      ...task,
+      taskId: task.id,
+      priority: value,
     });
   };
 
@@ -33,8 +44,24 @@ export const TaskSheetContent: React.FC<Props> = ({ task }) => {
           <p className="text-muted-foreground text-xs">TASK DETAIL</p>
           <p className="font-bold text-xl">{task.title}</p>
         </div>
-        <StatusBadge status={task.status} onClick={handleUpdateTaskStatus} />
+        <TaskStatusBadge
+          status={task.status}
+          onClick={handleUpdateTaskStatus}
+          disabled={updateStatusMutation.isPending}
+        />
         <div className="space-y-2">
+          <TaskSheetRow
+            icon={ArrowUpDownIcon}
+            label="優先度"
+            value={
+              <TaskPriorityBadge
+                size="md"
+                priority={task.priority}
+                onPriorityChange={handleUpdateTaskPriority}
+                disabled={updatePriorityMutation.isPending}
+              />
+            }
+          />
           <TaskSheetRow
             icon={createdAtOptions.icon}
             label={createdAtOptions.label}
