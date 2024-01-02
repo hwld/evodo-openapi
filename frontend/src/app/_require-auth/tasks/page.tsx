@@ -5,7 +5,7 @@ import { HomeIcon } from "lucide-react";
 import { Outlet, Route } from "@tanstack/react-router";
 import { TaskTable } from "./-task-table/task-table";
 import { requireAuthRoute } from "../layout";
-import { useTaskPage } from "./-hooks/use-task-page";
+import { taskPageQueryOptions, useTaskPage } from "./-hooks/use-task-page";
 import { TaskForm } from "./task-form";
 
 const taskSearchParamsSchema = z.object({
@@ -34,6 +34,12 @@ export const tasksRoute = new Route({
   getParentRoute: () => requireAuthRoute,
   path: "tasks",
   component: TasksPage,
+  loaderDeps: ({ search }) => {
+    return search;
+  },
+  loader: ({ deps, context }) => {
+    return context.queryClient.ensureQueryData(taskPageQueryOptions(deps));
+  },
   validateSearch: taskSearchParamsSchema,
 });
 

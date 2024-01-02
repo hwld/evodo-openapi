@@ -1,9 +1,8 @@
 import { api } from "@/api";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-type UseTaskMemosArgs = { taskId: string };
-export const useTaskMemos = ({ taskId }: UseTaskMemosArgs) => {
-  const { data: taskMemos } = useSuspenseQuery({
+export const taskMemosQueryOptions = (taskId: string) =>
+  queryOptions({
     queryKey: ["tasks", taskId, "memos"],
     queryFn: async () => {
       const result = await api.get("/tasks/:taskId/memos", {
@@ -13,6 +12,10 @@ export const useTaskMemos = ({ taskId }: UseTaskMemosArgs) => {
       return result.taskMemos;
     },
   });
+
+type UseTaskMemosArgs = { taskId: string };
+export const useTaskMemos = ({ taskId }: UseTaskMemosArgs) => {
+  const { data: taskMemos } = useSuspenseQuery(taskMemosQueryOptions(taskId));
 
   return { taskMemos };
 };

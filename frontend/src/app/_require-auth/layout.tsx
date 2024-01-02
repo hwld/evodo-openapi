@@ -10,6 +10,9 @@ export const requireAuthRoute = new Route({
 });
 
 function RequireAuthLayout() {
+  // beforeLoadでセッションを読み込むとpendingComponentが表示されないのでここでロードする。
+  // beforeLoadと違い、RequireAuthLayoutの子Routeのloaderが実行されてしまう。
+  // けど、認証が必須のページにある機密性の高いAPIはsession情報がなければエラーを返すと思うので問題ない？
   const { session } = useSession();
 
   if (!session) {
@@ -17,7 +20,7 @@ function RequireAuthLayout() {
   }
 
   return (
-    <div className="min-h-min flex">
+    <div className="min-h-min flex h-full">
       <div className="sticky top-0 px-3 py-5 h-[100dvh]">
         <Sidebar session={session} />
       </div>

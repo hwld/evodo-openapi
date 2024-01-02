@@ -1,13 +1,16 @@
 import { api } from "@/api";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-export const useTask = ({ taskId }: { taskId: string }) => {
-  const { data: task } = useSuspenseQuery({
+export const taskQueryOptions = (taskId: string) =>
+  queryOptions({
     queryKey: ["tasks", taskId],
     queryFn: () => {
       return api.get("/tasks/:id", { params: { id: taskId } });
     },
   });
+
+export const useTask = ({ taskId }: { taskId: string }) => {
+  const { data: task } = useSuspenseQuery(taskQueryOptions(taskId));
 
   return { task };
 };

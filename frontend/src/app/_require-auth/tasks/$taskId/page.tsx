@@ -4,9 +4,9 @@ import { Route, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { tasksRoute } from "../page";
 import { EditableTaskDescription } from "./-editable-task-description/editable-task-description";
-import { useTask } from "../-hooks/use-task";
+import { taskQueryOptions, useTask } from "../-hooks/use-task";
 import { TaskMemoForm } from "./task-memo-form";
-import { useTaskMemos } from "../-hooks/use-task-memos";
+import { taskMemosQueryOptions, useTaskMemos } from "../-hooks/use-task-memos";
 import { TaskMemoCard } from "./task-memo-card";
 import { useTimer } from "@/lib/use-timer";
 import { Spinner } from "@/components/ui/spinner";
@@ -16,6 +16,12 @@ export const taskDetailRoute = new Route({
   getParentRoute: () => tasksRoute,
   path: "$taskId",
   component: TaskDetailPage,
+  loader: ({ params, context: { queryClient } }) => {
+    return Promise.all([
+      queryClient.ensureQueryData(taskQueryOptions(params.taskId)),
+      queryClient.ensureQueryData(taskMemosQueryOptions(params.taskId)),
+    ]);
+  },
   pendingComponent: function Pending() {
     const isVisible = useTimer(500);
     if (!isVisible) {
@@ -40,7 +46,6 @@ export const taskDetailRoute = new Route({
 export function TaskDetailPage() {
   const { taskId } = taskDetailRoute.useParams();
   const { task } = useTask({ taskId });
-
   const { taskMemos } = useTaskMemos({ taskId });
 
   const search = taskDetailRoute.useSearch();
