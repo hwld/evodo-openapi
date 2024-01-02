@@ -1,23 +1,53 @@
 import { useNavigate } from "@tanstack/react-router";
 import { TaskSearchParams, tasksRoute } from "../page";
 
+type StatusFilterType = "status_filter";
+type StatusFilters = TaskSearchParams[StatusFilterType];
+
+type PriorityFilterType = "priority_filter";
+type PriorityFilters = TaskSearchParams[PriorityFilterType];
+
+type FilterType = StatusFilterType | PriorityFilterType;
+
+type ChangeFilterArgs =
+  | { type: StatusFilterType; value: StatusFilters[number] }
+  | { type: PriorityFilterType; value: PriorityFilters[number] };
+
 export const useTaskTableFilter = () => {
   const navigate = useNavigate();
   const search = tasksRoute.useSearch();
-  const statusFilters = search.status_filter;
-  const priorityFilters = search.priority_filter;
 
-  const changeStatusFilter = (newFilter: TaskSearchParams["status_filter"]) => {
-    navigate({ search: { ...search, page: 1, status_filter: newFilter } });
+  // newFiltersはFilterTypeに応じた配列として受け取りたかったが、使いづらくなるのでunknownにしている。
+  const changeFilter = (type: FilterType, newFilters: unknown[]) => {
+    navigate({
+      search: { ...search, page: 1, [type]: newFilters },
+    });
   };
 
-  const changePriorityFilter = (
-    newFilter: TaskSearchParams["priority_filter"],
-  ) => {
-    navigate({ search: { ...search, page: 1, priority_filter: newFilter } });
+  const toggleFilter = ({ type, value }: ChangeFilterArgs) => {
+    const filters = search[type];
+    const isSelected = (filters as unknown[]).includes(value);
+
+    if (isSelected) {
+      changeFilter(
+        type,
+        filters.filter((f) => f !== value),
+      );
+    } else {
+      changeFilter(type, [...filters, value]);
+    }
   };
 
-  const handleClearFilter = () => {
+  const removeFilter = ({ type, value }: ChangeFilterArgs) => {
+    const filters = search[type];
+
+    changeFilter(
+      type,
+      filters.filter((f) => f !== value),
+    );
+  };
+
+  const clearAllFilters = () => {
     navigate({
       search: {
         ...search,
@@ -29,10 +59,10 @@ export const useTaskTableFilter = () => {
   };
 
   return {
-    statusFilters,
-    priorityFilters,
-    changeStatusFilter,
-    changePriorityFilter,
-    handleClearFilter,
+    statusFilters: search["status_filter"],
+    priorityFilters: search["priority_filter"],
+    toggleFilter,
+    removeFilter,
+    clearAllFilters,
   };
 };

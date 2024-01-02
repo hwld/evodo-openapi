@@ -1,19 +1,12 @@
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { XIcon } from "lucide-react";
-import { TaskTableFilter } from "./filter";
-import { Button } from "@/components/ui/button";
+import { TaskTableFilter } from "./-filter/filter";
 import { useTaskTableFilter } from "./use-task-table-filter";
-import { statusColumnOptions } from "./-columns/status-column";
 import { priorityColumnOptions } from "./-columns/priority-column";
+import { TaskTableFilterBadge } from "./-filter/badge";
+import { Separator } from "@/components/ui/separator";
+import { statusColumnOptions } from "./-columns/status-column";
 
 export const TaskTableToolbar = () => {
-  const {
-    statusFilters,
-    priorityFilters,
-    changeStatusFilter,
-    changePriorityFilter,
-  } = useTaskTableFilter();
+  const { statusFilters, priorityFilters, removeFilter } = useTaskTableFilter();
 
   return (
     <div className="flex items-center gap-5 h-7">
@@ -25,18 +18,17 @@ export const TaskTableToolbar = () => {
             ({ value }) => value === filter,
           )[0];
 
-          const removeFilter = () => {
-            changeStatusFilter(statusFilters.filter((f) => f !== filter));
+          const removeStatusFilter = () => {
+            removeFilter({ type: "status_filter", value: filter });
           };
 
           return (
-            <Badge variant="secondary" size="sm" key={filter}>
-              <span className="text-muted-foreground mr-1">状態:</span>
-              {option.label}
-              <Button size="iconXs" variant="ghost" onClick={removeFilter}>
-                <XIcon size={15} />
-              </Button>
-            </Badge>
+            <TaskTableFilterBadge
+              type="status"
+              key={filter}
+              label={option.label}
+              onRemove={removeStatusFilter}
+            />
           );
         })}
         {priorityFilters.map((filter) => {
@@ -44,18 +36,17 @@ export const TaskTableToolbar = () => {
             (opt) => opt.value === filter,
           )!;
 
-          const removeFilter = () => {
-            changePriorityFilter(priorityFilters.filter((f) => f !== filter));
+          const removePriorityFilter = () => {
+            removeFilter({ type: "priority_filter", value: filter });
           };
 
           return (
-            <Badge variant="secondary" size="sm" key={filter}>
-              <span className="text-muted-foreground mr-1">優先度:</span>
-              {option.label}
-              <Button size="iconXs" variant="ghost" onClick={removeFilter}>
-                <XIcon size={15} />
-              </Button>
-            </Badge>
+            <TaskTableFilterBadge
+              type="priority"
+              key={filter}
+              label={option.label}
+              onRemove={removePriorityFilter}
+            />
           );
         })}
       </div>
