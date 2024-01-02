@@ -1,28 +1,38 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useCallback } from "react";
 import { TaskSearchParams, tasksRoute } from "../page";
 
-type UseTaskTableFilterArgs<T extends keyof TaskSearchParams> = {
-  filterName: T;
-};
-export const useTaskTableFilter = <T extends keyof TaskSearchParams>({
-  filterName,
-}: UseTaskTableFilterArgs<T>) => {
+export const useTaskTableFilter = () => {
   const navigate = useNavigate();
   const search = tasksRoute.useSearch();
+  const statusFilters = search.status_filter;
+  const priorityFilters = search.priority_filter;
 
-  const changeFilter = useCallback(
-    (newFilter: TaskSearchParams[T]) => {
-      navigate({
-        search: { ...search, page: 1, [filterName]: newFilter },
-      });
-    },
-    [filterName, navigate, search],
-  );
+  const changeStatusFilter = (newFilter: TaskSearchParams["status_filter"]) => {
+    navigate({ search: { ...search, page: 1, status_filter: newFilter } });
+  };
 
-  const clearFilter = useCallback(() => {
-    navigate({ search: { ...search, page: 1, [filterName]: undefined } });
-  }, [filterName, navigate, search]);
+  const changePriorityFilter = (
+    newFilter: TaskSearchParams["priority_filter"],
+  ) => {
+    navigate({ search: { ...search, page: 1, priority_filter: newFilter } });
+  };
 
-  return { filters: search[filterName], changeFilter, clearFilter };
+  const handleClearFilter = () => {
+    navigate({
+      search: {
+        ...search,
+        page: 1,
+        status_filter: undefined,
+        priority_filter: undefined,
+      },
+    });
+  };
+
+  return {
+    statusFilters,
+    priorityFilters,
+    changeStatusFilter,
+    changePriorityFilter,
+    handleClearFilter,
+  };
 };

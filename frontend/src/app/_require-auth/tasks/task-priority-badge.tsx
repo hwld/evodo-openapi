@@ -48,6 +48,7 @@ export const TaskPriorityBadge: React.FC<Props> = ({
         {priorityColumnOptions.map(({ label, icon: Icon, value }) => {
           return (
             <DropdownMenuItem
+              key={value}
               className={cn(priority === value && "pointer-events-none")}
               onClick={() => onPriorityChange(value)}
               disabled={disabled}

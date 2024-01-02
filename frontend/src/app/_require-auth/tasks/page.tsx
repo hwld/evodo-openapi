@@ -7,15 +7,15 @@ import { TaskTable } from "./-task-table/task-table";
 import { requireAuthRoute } from "../layout";
 import { taskPageQueryOptions, useTaskPage } from "./-hooks/use-task-page";
 import { TaskForm } from "./task-form";
+import { transformStringToArray } from "@/lib/utils";
 
 const taskSearchParamsSchema = z.object({
   status_filter: schemas["status_filter_"]
-    .transform((v) => {
-      if (typeof v === "string") {
-        return [v];
-      }
-      return v;
-    })
+    .transform(transformStringToArray)
+    .default([])
+    .catch([]),
+  priority_filter: schemas["priority_filter_"]
+    .transform(transformStringToArray)
     .default([])
     .catch([]),
   sort: schemas.TaskSort.catch("createdAt"),
@@ -25,6 +25,7 @@ const taskSearchParamsSchema = z.object({
 export type TaskSearchParams = z.infer<typeof taskSearchParamsSchema>;
 export const defaultTaskSearchParams: TaskSearchParams = {
   status_filter: [],
+  priority_filter: [],
   sort: "createdAt",
   order: "desc",
   page: 1,

@@ -9,6 +9,7 @@ export const taskPageQueryOptions = (search: TaskSearchParams) =>
       return api.get("/tasks", {
         queries: {
           "status_filter[]": search.status_filter,
+          "priority_filter[]": search.priority_filter,
           sort: search.sort,
           order: search.order,
           page: search.page.toString(),
