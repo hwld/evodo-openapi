@@ -50,7 +50,7 @@ export const updateTask = requireAuthRoute(updateTaskRoute.path).openapi(
   updateTaskRoute,
   async ({ json, var: { db, loggedInUserId }, req }) => {
     const taskId = req.valid("param").id;
-    const { title, description, status } = req.valid("json");
+    const { title, description, status, priority } = req.valid("json");
 
     const [updated] = await db
       .update(tasks)
@@ -58,6 +58,7 @@ export const updateTask = requireAuthRoute(updateTaskRoute.path).openapi(
         title,
         description,
         status,
+        priority,
         updatedAt: currentTime(),
       })
       .where(and(eq(tasks.id, taskId), eq(tasks.authorId, loggedInUserId)))

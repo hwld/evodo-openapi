@@ -15,6 +15,13 @@
       "when": 1704109853783,
       "tag": "0001_magical_centennial",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1704207620019,
+      "tag": "0002_cultured_stellaris",
+      "breakpoints": true
     }
   ]
 }

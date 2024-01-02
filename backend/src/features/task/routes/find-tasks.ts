@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { TaskSchema, TaskStatusSchema } from "../schema";
+import { TaskPrioritySchema, TaskSchema, TaskStatusSchema } from "../schema";
 import { tasks } from "../../../services/db/schema";
 import { requireAuthRoute } from "../../../app";
 import { tasksPath } from "../path";
@@ -30,9 +30,21 @@ const getTasksRoute = createRoute({
         })
         .optional()
         .openapi("TaskStatusFilters"),
+      ["priority_filter[]"]: z
+        .array(TaskPrioritySchema)
+        .or(TaskPrioritySchema)
+        .transform((v) => {
+          if (typeof v === "string") {
+            return [v];
+          }
+          return v;
+        })
+        .optional()
+        .openapi("TaskPriorityFilters"),
       sort: z
         .union([
           z.literal("title"),
+          z.literal("priority"),
           z.literal("status"),
           z.literal("createdAt"),
           z.literal("updatedAt"),
@@ -78,11 +90,13 @@ export const findTasks = requireAuthRoute(getTasksRoute.path).openapi(
   getTasksRoute,
   async ({ json, var: { db, loggedInUserId }, req }) => {
     const statusFilters = req.valid("query")["status_filter[]"];
+    const priorityFilters = req.valid("query")["priority_filter[]"];
     const { sort, order, page } = req.valid("query");
     const limit = 20;
 
     const sortMap = {
       title: tasks.title,
+      priority: tasks.priority,
       status: tasks.status,
       createdAt: tasks.createdAt,
       updatedAt: tasks.updatedAt,
@@ -95,6 +109,9 @@ export const findTasks = requireAuthRoute(getTasksRoute.path).openapi(
     const where = and(
       eq(tasks.authorId, loggedInUserId),
       statusFilters?.length ? inArray(tasks.status, statusFilters) : undefined,
+      priorityFilters?.length
+        ? inArray(tasks.priority, priorityFilters)
+        : undefined,
     );
 
     const allTasks = (await db.query.tasks.findMany({ where })).length;

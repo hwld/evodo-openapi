@@ -14,6 +14,7 @@ describe("タスクの更新", () => {
       title: "newTitle",
       description: "newDescription",
       status: "done",
+      priority: "2",
     } as const;
     const user = await Factories.user({});
     const task = await Factories.task({ authorId: user.id });
@@ -26,6 +27,7 @@ describe("タスクの更新", () => {
         title: newUser.title,
         description: newUser.description,
         status: newUser.status,
+        priority: newUser.priority,
       },
     });
 
@@ -44,7 +46,7 @@ describe("タスクの更新", () => {
     const result = await client().tasks[":id"].$put({
       cookie: { session: session.id },
       param: { id: task.id },
-      json: { title: "", description: "", status: "todo" },
+      json: { title: "", description: "", status: "todo", priority: "1" },
     });
     expect(result.ok).toBe(false);
   });
@@ -54,6 +56,8 @@ describe("タスクの更新", () => {
       authorId: (await Factories.user({})).id,
       title: "title",
       description: "description",
+      status: "todo",
+      priority: "2",
     });
     const user = await Factories.user({});
     const session = await Factories.loginSession({ userId: user.id });
@@ -61,7 +65,7 @@ describe("タスクの更新", () => {
     const result = await client().tasks[":id"].$put({
       cookie: { session: session.id },
       param: { id: otherUserTask.id },
-      json: { title: "new", description: "new", status: "done" },
+      json: { title: "new", description: "new", status: "done", priority: "3" },
     });
 
     expect(result.ok).toBe(false);
@@ -70,5 +74,7 @@ describe("タスクの更新", () => {
     });
     expect(task?.title).toBe(otherUserTask.title);
     expect(task?.description).toBe(otherUserTask.description);
+    expect(task?.status).toBe(otherUserTask.status);
+    expect(task?.priority).toBe(otherUserTask.priority);
   });
 });

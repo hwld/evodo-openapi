@@ -14,9 +14,18 @@ const status_filter_ = z
     z.literal("done"),
   ])
   .optional();
+const priority_filter_ = z
+  .union([
+    z.array(z.union([z.literal("1"), z.literal("2"), z.literal("3")])),
+    z.literal("1"),
+    z.literal("2"),
+    z.literal("3"),
+  ])
+  .optional();
 const sort = z
   .union([
     z.literal("title"),
+    z.literal("priority"),
     z.literal("status"),
     z.literal("createdAt"),
     z.literal("updatedAt"),
@@ -26,6 +35,7 @@ const order = z.union([z.literal("asc"), z.literal("desc")]).default("desc");
 const Task = z.object({
   id: z.string(),
   title: z.string(),
+  priority: z.union([z.literal("1"), z.literal("2"), z.literal("3")]),
   status: z.union([z.literal("todo"), z.literal("done")]),
   description: z.string(),
   createdAt: z.string(),
@@ -40,6 +50,7 @@ const UpdateTaskInput = z.object({
   title: z.string().min(1).max(200),
   description: z.string().max(1000),
   status: z.union([z.literal("todo"), z.literal("done")]),
+  priority: z.union([z.literal("1"), z.literal("2"), z.literal("3")]),
 });
 const TaskMemo = z.object({
   id: z.string(),
@@ -55,8 +66,15 @@ const TaskStatusFilters = z.union([
   z.literal("todo"),
   z.literal("done"),
 ]);
+const TaskPriorityFilters = z.union([
+  z.array(z.union([z.literal("1"), z.literal("2"), z.literal("3")])),
+  z.literal("1"),
+  z.literal("2"),
+  z.literal("3"),
+]);
 const TaskSort = z.union([
   z.literal("title"),
+  z.literal("priority"),
   z.literal("status"),
   z.literal("createdAt"),
   z.literal("updatedAt"),
@@ -68,6 +86,7 @@ export const schemas = {
   User,
   Session,
   status_filter_,
+  priority_filter_,
   sort,
   order,
   Task,
@@ -77,6 +96,7 @@ export const schemas = {
   TaskMemo,
   CreateTaskMemoInput,
   TaskStatusFilters,
+  TaskPriorityFilters,
   TaskSort,
   TaskSortOrder,
 };
@@ -261,6 +281,11 @@ const endpoints = makeApi([
         name: "status_filter[]",
         type: "Query",
         schema: status_filter_,
+      },
+      {
+        name: "priority_filter[]",
+        type: "Query",
+        schema: priority_filter_,
       },
       {
         name: "sort",

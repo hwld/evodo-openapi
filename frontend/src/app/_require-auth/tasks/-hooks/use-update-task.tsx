@@ -16,6 +16,7 @@ export const useUpdateTask = () => {
           title: data.title,
           description: data.description,
           status: data.status,
+          priority: data.priority,
         },
         { params: { id: data.taskId } },
       );

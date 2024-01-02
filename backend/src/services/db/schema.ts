@@ -1,6 +1,6 @@
 // テーブル以外をexportしない
 import { relations, sql } from "drizzle-orm";
-import { text, sqliteTable, integer } from "drizzle-orm/sqlite-core";
+import { text, sqliteTable, integer, int } from "drizzle-orm/sqlite-core";
 import { createId } from "@paralleldrive/cuid2";
 import { currentTime } from "./utils";
 
@@ -32,6 +32,12 @@ export const tasks = sqliteTable("tasks", {
   status: text("status", { enum: ["done", "todo"] })
     .notNull()
     .default("todo"),
+  // 小さい数字ほど優先順位が低い
+  // intを使うことも考えたが、drizzle側で優先順位の範囲を限定したかったため、enumのtextを使う。
+  // 2桁以上の数字を追加すると並び順がおかしくなるので使用できない。("2"よりも"10"のほうが小さいとみなされてしまう。)
+  priority: text("priority", { enum: ["1", "2", "3"] })
+    .notNull()
+    .default("2"),
   title: text("title").notNull(),
   description: text("description").notNull(),
   authorId: text("author_id")
