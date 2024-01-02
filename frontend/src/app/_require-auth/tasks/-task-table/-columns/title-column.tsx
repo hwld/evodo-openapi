@@ -2,9 +2,17 @@ import { createTaskColumn } from ".";
 import { useRef, useState } from "react";
 import { TaskTitleForm } from "./task-title-form";
 import { Tooltip } from "@/components/ui/tooltip";
+import { LayersIcon } from "lucide-react";
 
 export const taskTitleColumn = createTaskColumn.accessor("title", {
-  header: "タスク",
+  header: () => {
+    return (
+      <div className="flex items-center gap-1">
+        <LayersIcon size={15} />
+        <p className="font-medium">タイトル</p>
+      </div>
+    );
+  },
   cell: function Cell({ getValue, row }) {
     const inputRef = useRef<HTMLInputElement>(null);
     const [editable, setEditable] = useState(false);

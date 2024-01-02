@@ -4,7 +4,7 @@ import { XIcon } from "lucide-react";
 import { TaskTableStatusFilter } from "./status-filter";
 import { Button } from "@/components/ui/button";
 import { useTaskTableFilter } from "./use-task-table-filter";
-import { doneColumnOptions } from "./-columns/status-column";
+import { statusColumnOptions } from "./-columns/status-column";
 
 export const TaskTableToolbar = () => {
   const { changeFilter, filters: statusFilters } = useTaskTableFilter({
@@ -17,7 +17,7 @@ export const TaskTableToolbar = () => {
       <Separator orientation="vertical" />
       <div className="flex items-center gap-2">
         {statusFilters.map((filter) => {
-          const option = doneColumnOptions.filter(
+          const option = statusColumnOptions.filter(
             ({ value }) => value === filter,
           )[0];
 

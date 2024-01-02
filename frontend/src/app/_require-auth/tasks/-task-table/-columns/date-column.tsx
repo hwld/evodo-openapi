@@ -2,13 +2,19 @@ import { createTaskColumn } from ".";
 import { useSortTaskTable } from "../use-sort-task-table";
 import { Button } from "@/components/ui/button";
 import { TaskTableSortedIcon } from "../sorted-icon";
+import { Clock4Icon, HistoryIcon } from "lucide-react";
+
+export const dateColumnOptions = {
+  createdAt: { label: "作成日", icon: Clock4Icon },
+  updatedAt: { label: "更新日", icon: HistoryIcon },
+};
 
 export const createTaskDateColumn = (type: "updatedAt" | "createdAt") => {
-  const labelMap = { createdAt: "作成日", updatedAt: "更新日" };
-
   return createTaskColumn.accessor(type, {
     header: function Header() {
       const { sortStatus, toggleSorting } = useSortTaskTable(type);
+
+      const { label, icon: Icon } = dateColumnOptions[type];
 
       return (
         <Button
@@ -19,7 +25,8 @@ export const createTaskDateColumn = (type: "updatedAt" | "createdAt") => {
           }}
         >
           <div className="flex items-center gap-1">
-            {labelMap[type]}
+            <Icon size={15} />
+            {label}
             <TaskTableSortedIcon sortStatus={sortStatus} />
           </div>
         </Button>

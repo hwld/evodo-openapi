@@ -14,7 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { CheckIcon, PlusCircleIcon } from "lucide-react";
 import { useTaskTableFilter } from "./use-task-table-filter";
-import { doneColumnOptions } from "./-columns/status-column";
+import { statusColumnOptions } from "./-columns/status-column";
 
 export const TaskTableStatusFilter: React.FC = () => {
   const {
@@ -39,7 +39,7 @@ export const TaskTableStatusFilter: React.FC = () => {
         <Command>
           <CommandList>
             <CommandGroup>
-              {doneColumnOptions.map(({ icon: Icon, label, value }, i) => {
+              {statusColumnOptions.map(({ icon: Icon, label, value }, i) => {
                 const isSelected = statusFilters.includes(value);
 
                 return (
