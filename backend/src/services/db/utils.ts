@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 
 export const currentTime = () => {
-  return sql`strftime('%Y/%m/%d %H:%M:%S', 'now')`;
+  return sql`strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime')`;
 };
 
 export const formatDate = (date: Date) => {

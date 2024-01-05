@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "f53d3535-461a-4469-89f9-b36a0d9d15da",
+  "id": "569f7f39-a04d-4cfc-8ba8-4737700cc9c7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "signup_sessions": {
@@ -42,6 +42,87 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "taskMemos": {
+      "name": "taskMemos",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "task_id": {
+          "name": "task_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "author_id": {
+          "name": "author_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime'))"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime'))"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "taskMemos_task_id_tasks_id_fk": {
+          "name": "taskMemos_task_id_tasks_id_fk",
+          "tableFrom": "taskMemos",
+          "tableTo": "tasks",
+          "columnsFrom": [
+            "task_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "taskMemos_author_id_users_id_fk": {
+          "name": "taskMemos_author_id_users_id_fk",
+          "tableFrom": "taskMemos",
+          "tableTo": "users",
+          "columnsFrom": [
+            "author_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "tasks": {
       "name": "tasks",
       "columns": {
@@ -59,6 +140,14 @@
           "notNull": true,
           "autoincrement": false,
           "default": "'todo'"
+        },
+        "priority": {
+          "name": "priority",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'2'"
         },
         "title": {
           "name": "title",
@@ -87,7 +176,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(strftime('%Y/%m/%d %H:%M:%S', 'now'))"
+          "default": "(strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime'))"
         },
         "updated_at": {
           "name": "updated_at",
@@ -95,7 +184,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(strftime('%Y/%m/%d %H:%M:%S', 'now'))"
+          "default": "(strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime'))"
         }
       },
       "indexes": {},
