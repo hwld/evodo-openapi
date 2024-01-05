@@ -98,7 +98,7 @@ export const TaskTable: React.FC<Props> = ({ taskPageEntry }) => {
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={5} className="p-4">
+              <TableCell colSpan={taskColumns.length} className="p-4">
                 <div className="flex items-center justify-between">
                   <p className="text-sm">
                     <span className="text-muted-foreground">Showing</span>

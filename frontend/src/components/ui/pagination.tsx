@@ -1,4 +1,3 @@
-import { calcPageRange } from "@/lib/calc-page-range";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
 import {
@@ -8,6 +7,7 @@ import {
   ChevronsRightIcon,
   MoreHorizontal,
 } from "lucide-react";
+import { usePagination } from "@mantine/hooks";
 
 type Props = {
   currentPage: number;
@@ -19,94 +19,69 @@ export const Pagination: React.FC<Props> = ({
   totalPages,
   onChangePage,
 }) => {
-  const { pageRange, after, before } = calcPageRange({
-    currentPage,
-    totalPages,
-    displayPages: 9,
+  const pagination = usePagination({
+    total: totalPages,
+    page: currentPage,
+    siblings: 3,
+    onChange: onChangePage,
   });
+
+  const isFirst = pagination.active === 1;
+  const isLast = pagination.active === totalPages;
 
   const handleChangePage = (page: number) => {
     onChangePage(page);
-  };
-
-  const first = currentPage === 1;
-  const last = currentPage === totalPages;
-
-  const handleGoFirstPage = () => {
-    if (first) {
-      return;
-    }
-    onChangePage(1);
-  };
-
-  const handleGoPrevPage = () => {
-    if (first) {
-      return;
-    }
-    onChangePage(currentPage - 1);
-  };
-
-  const handleGoNextPage = () => {
-    if (last) {
-      return;
-    }
-    onChangePage(currentPage + 1);
-  };
-
-  const handleGoLastPage = () => {
-    if (last) {
-      return;
-    }
-    onChangePage(totalPages);
   };
 
   return (
     <div className="flex gap-1 items-center">
       <Button
         size="icon"
-        onClick={handleGoFirstPage}
+        onClick={pagination.first}
         variant="outline"
         className="pr-[1px]"
-        disabled={first}
+        disabled={isFirst}
       >
         <ChevronsLeftIcon size={15} />
       </Button>
       <Button
         size="icon"
-        onClick={handleGoPrevPage}
+        onClick={pagination.previous}
         variant="outline"
         className="pr-[1px]"
-        disabled={first}
+        disabled={isFirst}
       >
         <ChevronLeftIcon size={15} />
       </Button>
-      {before && <MoreHorizontal size={15} className="mx-1" />}
-      {pageRange.map((page, i) => {
+      {pagination.range.map((page, i) => {
+        if (page === "dots") {
+          return <MoreHorizontal key={i} size={15} className="mx-1" />;
+        }
+
         return (
           <PagionationItem
             key={i}
-            active={page === currentPage}
+            active={page === pagination.active}
             page={page}
             onClick={handleChangePage}
           />
         );
       })}
-      {after && <MoreHorizontal size={15} className="mx-1" />}
       <Button
         size="icon"
-        onClick={handleGoNextPage}
+        onClick={pagination.next}
         variant="outline"
         className="pr-[1px]"
-        disabled={last}
+        disabled={isLast}
       >
         <ChevronRightIcon size={15} />
       </Button>
       <Button
         size="icon"
-        onClick={handleGoLastPage}
+        onClick={pagination.last}
         variant="outline"
         className="pr-[1px]"
-        disabled={last}
+        disabled={isLast}
       >
         <ChevronsRightIcon size={15} />
       </Button>

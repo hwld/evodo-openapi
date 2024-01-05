@@ -1,7 +1,7 @@
 import { schemas } from "@/api/schema";
 import { Task } from "@/api/types";
 import { Button } from "@/components/ui/button";
-import { useMergedRef } from "@/lib/use-merged-ref";
+import { useMergedRef } from "@mantine/hooks";
 import { cn, stopPropagation } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forwardRef, useLayoutEffect, useRef } from "react";

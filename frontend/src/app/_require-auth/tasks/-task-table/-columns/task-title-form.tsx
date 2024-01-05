@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useUpdateTask } from "../../-hooks/use-update-task";
 import { RefObject } from "react";
-import { useMergedRef } from "@/lib/use-merged-ref";
+import { useMergedRef } from "@mantine/hooks";
 import { cn } from "@/lib/utils";
 
 const taskTitleFormSchema = schemas.UpdateTaskInput.pick({ title: true });

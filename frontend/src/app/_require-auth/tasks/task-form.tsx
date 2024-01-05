@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useCreateTask } from "./-hooks/use-create-task";
 import { useEffect, useRef } from "react";
-import { useMergedRef } from "@/lib/use-merged-ref";
+import { useMergedRef } from "@mantine/hooks";
 import { CommandIcon, SendHorizonalIcon } from "lucide-react";
 
 const taskFormSchema = schemas.CreateTaskInput;
