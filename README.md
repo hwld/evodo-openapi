@@ -1,5 +1,7 @@
 # evodo-openapi
 
+<img src="https://raw.githubusercontent.com/hwld/evodo-openapi/main/images/evodo-openapi.png" alt="screenshot">
+
 ## 概要
 
 hono+OpenAPI を試すために作った Todo リスト  
