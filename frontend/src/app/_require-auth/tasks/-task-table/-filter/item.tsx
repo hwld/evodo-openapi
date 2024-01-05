@@ -1,4 +1,4 @@
-import { CommandItem } from "@/components/ui/command";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { CheckIcon, LucideIcon } from "lucide-react";
 
@@ -14,8 +14,13 @@ export const TaskTableFilterItem: React.FC<Props> = ({
   label,
   onSelect,
 }) => {
+  const handleSelect = (e: Event) => {
+    e.preventDefault();
+    onSelect();
+  };
+
   return (
-    <CommandItem onSelect={onSelect}>
+    <DropdownMenuItem onSelect={handleSelect}>
       <div
         className={cn(
           "h-4 w-4 border border-foreground rounded mr-3 flex justify-center items-center",
@@ -30,6 +35,6 @@ export const TaskTableFilterItem: React.FC<Props> = ({
         <Icon size={15} />
         <span>{label}</span>
       </div>
-    </CommandItem>
+    </DropdownMenuItem>
   );
 };
