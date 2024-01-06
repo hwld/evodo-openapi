@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "wrangler dev src/index.ts --env dev",
     "deploy": "wrangler deploy --minify src/index.ts",
-    "wrangler": "wrangler"
+    "wrangler": "wrangler",
+    "test": "vitest run"
   },
   "dependencies": {
     "@hono/swagger-ui": "^0.2.0",
