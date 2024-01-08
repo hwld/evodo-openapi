@@ -3,22 +3,13 @@ import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./main.css";
 import { Router, RouterProvider } from "@tanstack/react-router";
-import i18next from "i18next";
-import { zodI18nMap } from "zod-i18n-map";
-import translation from "zod-i18n-map/locales/ja/zod.json";
-import { z } from "zod";
 import { routeTree } from "./routes";
 import { notFoundRoute } from "./app/404.tsx";
 import { LoadingPage } from "./app/loading.tsx";
 import { ErrorPage } from "./app/error.tsx";
+import { setupI18Next } from "./lib/i18next.ts";
 
-i18next.init({
-  lng: "ja",
-  resources: {
-    ja: { zod: translation },
-  },
-});
-z.setErrorMap(zodI18nMap);
+setupI18Next();
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },

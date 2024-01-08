@@ -1,10 +1,9 @@
-import { api } from "@/api";
+import { Api } from "@/api/types";
 import { ZodiosRequestOptions } from "@zodios/core";
 
 const buildLoginUrl = () => {
-  type API = typeof api.api;
   type Q = keyof NonNullable<
-    ZodiosRequestOptions<API, "get", "/login/google">["queries"]
+    ZodiosRequestOptions<Api, "get", "/login/google">["queries"]
   >;
 
   const url = new URL(`${import.meta.env.VITE_API_URL}/login/google`);

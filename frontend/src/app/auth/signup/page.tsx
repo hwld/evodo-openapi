@@ -2,8 +2,6 @@ import { Route, redirect, useNavigate } from "@tanstack/react-router";
 import { api } from "../../../api";
 import { Button } from "@/components/ui/button";
 import { AppLogo } from "@/components/ui/app-logo";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Card,
   CardContent,
@@ -11,20 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { schemas } from "@/api/schema";
-import { z } from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { SignupForm } from "./-signup-form/signup-form";
 import { rootRoute } from "@/app/layout";
-import { useSignup } from "../-hooks/use-signup";
 
 export const signupRoute = new Route({
   getParentRoute: () => rootRoute,
@@ -38,28 +24,8 @@ export const signupRoute = new Route({
   component: SignupPage,
 });
 
-const signupFormSchema = schemas.SignupInput;
-type SignupFormData = z.infer<typeof signupFormSchema>;
-
 export function SignupPage() {
   const navigate = useNavigate();
-  const signupMutation = useSignup();
-
-  const form = useForm<SignupFormData>({
-    defaultValues: { username: "", profile: "" },
-    resolver: zodResolver(schemas.SignupInput),
-  });
-
-  const handleSignup = form.handleSubmit(async ({ username, profile }) => {
-    signupMutation.mutate(
-      { username, profile },
-      {
-        onSettled: async () => {
-          await navigate({ to: "/" });
-        },
-      },
-    );
-  });
 
   const handleCancel = async () => {
     try {
@@ -87,61 +53,7 @@ export function SignupPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-6">
-            <Form {...form}>
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <div className="flex items-end justify-between h-5">
-                        <FormLabel>ユーザー名</FormLabel>
-                        <FormMessage />
-                      </div>
-                      <FormControl>
-                        <Input
-                          error={!!form.formState.errors.username}
-                          placeholder="username..."
-                          autoComplete="off"
-                          {...field}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  );
-                }}
-              />
-              <FormField
-                control={form.control}
-                name="profile"
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <div className="flex items-end justify-between h-5">
-                        <FormLabel>プロフィール</FormLabel>
-                        <FormMessage />
-                      </div>
-                      <FormControl>
-                        <Textarea
-                          rows={5}
-                          placeholder="profile..."
-                          className="resize-none"
-                          error={!!form.formState.errors.profile}
-                          {...field}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  );
-                }}
-              />
-            </Form>
-            <div className="flex gap-3 justify-end">
-              <Button
-                onClick={handleSignup}
-                disabled={signupMutation.isPending}
-              >
-                登録する
-              </Button>
-            </div>
+            <SignupForm />
           </CardContent>
           <Button
             className="absolute top-[103%]"
