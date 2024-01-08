@@ -1,8 +1,7 @@
 import { Api } from "@/api/types";
 import type {
-  Method,
+  ZodiosBodyByPath,
   ZodiosPathsByMethod,
-  ZodiosRequestOptionsByPath,
   ZodiosResponseByPath,
 } from "@zodios/core";
 import { http, HttpHandler, RequestHandler, ResponseResolver } from "msw";
@@ -16,17 +15,45 @@ export const setupMockServer = (...handlers: RequestHandler[]) => {
   return server;
 };
 
-export const createMswHandler = <
-  M extends Method,
-  Path extends ZodiosPathsByMethod<Api, M>,
->(
-  method: M,
+// ZodiosPathsByMethodのMethodの部分など、Methoを型引数にするとTypeScriptの補完が重たくなるのと、
+// resolverの返り値の型が効かなくなるので、Methodごとにハンドラを作る関数を用意する。
+
+export const createGetHandler = <Path extends ZodiosPathsByMethod<Api, "get">>(
   path: Path,
   resolver: ResponseResolver<
     Record<string, unknown>,
-    ZodiosRequestOptionsByPath<Api, M, Path>,
-    Awaited<ZodiosResponseByPath<Api, M, Path>>
+    ZodiosBodyByPath<Api, "get", Path>,
+    Awaited<ZodiosResponseByPath<Api, "get", Path>>
   >,
 ): HttpHandler => {
-  return http[method](path, resolver);
+  const url = new URL(path, import.meta.env.VITE_API_URL);
+  return http.get(url.toString(), resolver);
+};
+
+export const createPostHandler = <
+  Path extends ZodiosPathsByMethod<Api, "post">,
+>(
+  path: Path,
+  resolver: ResponseResolver<
+    Record<string, unknown>,
+    ZodiosBodyByPath<Api, "post", Path>,
+    Awaited<ZodiosResponseByPath<Api, "post", Path>>
+  >,
+): HttpHandler => {
+  const url = new URL(path, import.meta.env.VITE_API_URL);
+  return http.post(url.toString(), resolver);
+};
+
+export const createDeleteHandler = <
+  Path extends ZodiosPathsByMethod<Api, "delete">,
+>(
+  path: Path,
+  resolver: ResponseResolver<
+    Record<string, unknown>,
+    ZodiosBodyByPath<Api, "delete", Path>,
+    Awaited<ZodiosResponseByPath<Api, "delete", Path>>
+  >,
+): HttpHandler => {
+  const url = new URL(path, import.meta.env.VITE_API_URL);
+  return http.delete(url.toString(), resolver);
 };
