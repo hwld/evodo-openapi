@@ -8,6 +8,13 @@ CLIENT_URL="http://localhost:5173"
 GOOGLE_CLIENT_ID=""
 GOOGLE_CLIENT_SECRET=""
 
+[env.prod.vars]
+ENVIRONMENT="prod"
+BASE_URL="http://localhost:8787"
+CLIENT_URL="http://localhost:5173"
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+
 [env.test]
 # テスト専用のDB
 d1_databases = [
@@ -19,6 +26,14 @@ kv_namespaces = [
 
 [env.dev]
 # ローカルで動かすときのDB
+d1_databases = [
+  { binding = "DB", database_name = "evodo_openapi", database_id = "***", migrations_dir = "./drizzle" }
+]
+kv_namespaces = [
+  { binding = "KV", id = "***" }
+]
+
+[env.prod]
 d1_databases = [
   { binding = "DB", database_name = "evodo_openapi", database_id = "***", migrations_dir = "./drizzle" }
 ]

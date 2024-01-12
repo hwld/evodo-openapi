@@ -50,11 +50,23 @@ export const createApp = () => {
   });
 
   // OpenAPI
-  app.doc("/doc", {
+
+  app.use("/open-api/*", async (c, next) => {
+    if (c.env.ENVIRONMENT === "prod") {
+      throw new HTTPException(404, { message: "404 Not Found" });
+    }
+    await next();
+  });
+  app.doc("/open-api/doc", {
     openapi: "3.0.0",
     info: { version: "1.0.0", title: "evodo-openapi API" },
   });
-  app.get("/ui", swaggerUI({ url: "/doc" }));
+  app.get("/open-api/ui", async (c, next) => {
+    if (c.env.ENVIRONMENT === "prod") {
+      await next();
+    }
+    return swaggerUI<AppEnv>({ url: "/open-api/doc" })(c, next);
+  });
 
   return app;
 };
