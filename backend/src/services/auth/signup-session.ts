@@ -8,6 +8,7 @@ import { alphabet, generateRandomString } from "oslo/random";
 import { TimeSpan, createDate } from "oslo";
 import { AppBindings } from "../../app";
 import { log } from "../logger";
+import { defaultCookieOptions } from "../../lib/cookie";
 
 export class SignupSession {
   constructor(
@@ -75,7 +76,7 @@ export class SignupSession {
   private setCookie = async (sessionId: string) => {
     setCookie(this.context, SIGNUP_SESSION_COOKIE, sessionId, {
       httpOnly: true,
-      secure: this.env.ENVIRONMENT === "prod",
+      ...defaultCookieOptions(this.env.ENVIRONMENT === "prod"),
     });
   };
 }

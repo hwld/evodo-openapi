@@ -5,10 +5,13 @@ import { SessionCookie } from "lucia";
 import { CookieAttributes } from "oslo/cookie";
 import { AppLucia } from "./auth";
 import { log } from "../logger";
+import { defaultCookieOptions } from "../../lib/cookie";
+import { AppBindings } from "../../app";
 
 export class LoginSession {
   constructor(
     private context: Context,
+    private env: AppBindings,
     private lucia: AppLucia,
   ) {}
 
@@ -53,12 +56,10 @@ export class LoginSession {
   };
 
   private setCookie = (sessionCookie: SessionCookie) => {
-    setCookie(
-      this.context,
-      sessionCookie.name,
-      sessionCookie.value,
-      this.convertCookieAttr(sessionCookie.attributes),
-    );
+    setCookie(this.context, sessionCookie.name, sessionCookie.value, {
+      ...this.convertCookieAttr(sessionCookie.attributes),
+      ...defaultCookieOptions(this.env.ENVIRONMENT === "prod"),
+    });
   };
 
   private convertCookieAttr = (attributes: CookieAttributes): CookieOptions => {

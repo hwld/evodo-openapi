@@ -38,7 +38,7 @@ export const taskTitleColumn = createTaskColumn.accessor("title", {
     ) : (
       <Tooltip label="タイトルを編集する">
         <button
-          className="inline focus-visible:outline-none focus-visible:ring-1 ring-ring p-1 rounded hover:bg-accent transition-colors"
+          className="inline focus-visible:outline-none focus-visible:ring-1 ring-ring p-1 rounded hover:bg-accent transition-colors whitespace-nowrap"
           onClick={handleEnableEditing}
         >
           {getValue()}

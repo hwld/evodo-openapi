@@ -50,6 +50,7 @@ export const TaskTableFilter: React.FC = () => {
             };
             return (
               <TaskTableFilterItem
+                key={value}
                 icon={icon}
                 label={label}
                 isSelected={isSelected}
@@ -74,6 +75,7 @@ export const TaskTableFilter: React.FC = () => {
             };
             return (
               <TaskTableFilterItem
+                key={value}
                 icon={icon}
                 label={label}
                 isSelected={isSelected}

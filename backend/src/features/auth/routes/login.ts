@@ -10,6 +10,7 @@ import {
   RELATIVE_PATH_REGEX,
   SIGNUP_REDIRECT,
 } from "../consts";
+import { defaultCookieOptions } from "../../../lib/cookie";
 
 const loginRoute = createRoute({
   tags: [Features.auth],
@@ -40,20 +41,24 @@ export const login = route(loginRoute.path).openapi(
       req,
       redirect,
       var: { auth },
+      env,
     } = context;
 
     const { after_login_redirect, signup_redirect, error_redirect } =
       req.valid("query");
 
+    const options = defaultCookieOptions(env.ENVIRONMENT === "prod");
+
     if (after_login_redirect) {
-      setCookie(context, AFTER_LOGIN_REDIRECT, after_login_redirect);
+      setCookie(context, AFTER_LOGIN_REDIRECT, after_login_redirect, options);
     }
     if (error_redirect) {
-      setCookie(context, ERROR_REDIRECT, error_redirect);
+      setCookie(context, ERROR_REDIRECT, error_redirect, options);
     }
     if (signup_redirect) {
-      setCookie(context, SIGNUP_REDIRECT, signup_redirect);
+      setCookie(context, SIGNUP_REDIRECT, signup_redirect, options);
     }
+    console.log(options);
 
     const url = await auth.createAuthUrl();
     return redirect(url.toString());

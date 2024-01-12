@@ -16,6 +16,7 @@ import { CookieOptions } from "hono/utils/cookie";
 import { HTTPException } from "hono/http-exception";
 import { AuthAdapter } from "./adapter";
 import { log } from "../logger";
+import { defaultCookieOptions } from "../../lib/cookie";
 
 declare module "lucia" {
   interface Register {
@@ -47,9 +48,6 @@ export class Auth {
     this.lucia = new Lucia(new AuthAdapter(db, env.KV), {
       sessionCookie: {
         name: LOGIN_SESSION_COOKIE,
-        attributes: {
-          secure: env.ENVIRONMENT === "prod",
-        },
       },
       getUserAttributes: (data) => {
         return {
@@ -65,7 +63,7 @@ export class Auth {
       `${env.BASE_URL}${loginCallbackPath}`,
     );
 
-    this.loginSession = new LoginSession(this.context, this.lucia);
+    this.loginSession = new LoginSession(this.context, this.env, this.lucia);
     this.signupSession = new SignupSession(this.context, this.env, this.db);
   }
 
@@ -73,11 +71,12 @@ export class Auth {
     const state = generateState();
     const codeVerifier = generateCodeVerifier();
 
+    const isProd = this.env.ENVIRONMENT === "prod";
     const cookieOptions: CookieOptions = {
       httpOnly: true,
-      secure: this.env.ENVIRONMENT === "prod",
       path: "/",
       maxAge: 60 * 10,
+      ...defaultCookieOptions(isProd),
     };
     setCookie(this.context, STATE_COOKIE, state, cookieOptions);
     setCookie(this.context, CODE_VERIFIER_COOKIE, codeVerifier, cookieOptions);

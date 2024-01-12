@@ -7,6 +7,7 @@ import { cors } from "hono/cors";
 import { swaggerUI } from "@hono/swagger-ui";
 import { HTTPException } from "hono/http-exception";
 import { log, loggingContext } from "./services/logger";
+import { csrf } from "hono/csrf";
 
 type Env<B, V> = {
   Bindings: B;
@@ -37,6 +38,10 @@ export type AppEnv = Env<AppBindings, {}>;
  */
 export const createApp = () => {
   const app = new OpenAPIHono<AppEnv>();
+
+  app.use("*", (c, next) => {
+    return csrf({ origin: c.env.CLIENT_URL })(c as any, next);
+  });
 
   app.use("*", (c, next) => {
     return cors({ origin: c.env.CLIENT_URL, credentials: true })(c, next);
