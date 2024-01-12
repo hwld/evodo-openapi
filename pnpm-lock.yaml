@@ -19,10 +19,10 @@ importers:
     dependencies:
       '@hono/swagger-ui':
         specifier: ^0.2.0
-        version: 0.2.0(hono@3.11.9)
+        version: 0.2.0(hono@3.12.2)
       '@hono/zod-openapi':
         specifier: ^0.9.3
-        version: 0.9.3(hono@3.11.9)(zod@3.22.4)
+        version: 0.9.3(hono@3.12.2)(zod@3.22.4)
       '@lucia-auth/adapter-sqlite':
         specifier: 3.0.0-beta.10
         version: 3.0.0-beta.10(better-sqlite3@9.2.2)(lucia@3.0.0-beta.12)
@@ -39,8 +39,8 @@ importers:
         specifier: ^0.29.1
         version: 0.29.1(@cloudflare/workers-types@4.20231121.0)(better-sqlite3@9.2.2)
       hono:
-        specifier: ^3.11.9
-        version: 3.11.9
+        specifier: ^3.12.2
+        version: 3.12.2
       lucia:
         specifier: 3.0.0-beta.12
         version: 3.0.0-beta.12
@@ -1414,15 +1414,15 @@ packages:
     resolution: {integrity: sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==}
     dev: false
 
-  /@hono/swagger-ui@0.2.0(hono@3.11.9):
+  /@hono/swagger-ui@0.2.0(hono@3.12.2):
     resolution: {integrity: sha512-ulWqCI+38vTlxxBmOAi5VTOUDa5/7fKHPTwyq00kRUjUxPp3Ej5Cs+B/fvGs5gd3KraArLArkln7sHhb5vODZA==}
     peerDependencies:
       hono: '*'
     dependencies:
-      hono: 3.11.9
+      hono: 3.12.2
     dev: false
 
-  /@hono/zod-openapi@0.9.3(hono@3.11.9)(zod@3.22.4):
+  /@hono/zod-openapi@0.9.3(hono@3.12.2)(zod@3.22.4):
     resolution: {integrity: sha512-PdKWwUvMdoQ2eqJZtbo4N4qb2VRjHNnDcfWW3/IqSeJDyK4vIPHAzWfgtUOYHAXJAiooQQ87m0sw2iME2H1+zQ==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
@@ -1430,18 +1430,18 @@ packages:
       zod: 3.*
     dependencies:
       '@asteasolutions/zod-to-openapi': 5.5.0(zod@3.22.4)
-      '@hono/zod-validator': 0.1.11(hono@3.11.9)(zod@3.22.4)
-      hono: 3.11.9
+      '@hono/zod-validator': 0.1.11(hono@3.12.2)(zod@3.22.4)
+      hono: 3.12.2
       zod: 3.22.4
     dev: false
 
-  /@hono/zod-validator@0.1.11(hono@3.11.9)(zod@3.22.4):
+  /@hono/zod-validator@0.1.11(hono@3.12.2)(zod@3.22.4):
     resolution: {integrity: sha512-PQXeHUP0+36qpRt8yfeD7N2jbK3ETlGvSN6dMof/HwUC/APRokQRjpXZm4rrlG71Ft0aWE01+Bm4XejqPie5Uw==}
     peerDependencies:
       hono: '>=3.9.0'
       zod: ^3.19.1
     dependencies:
-      hono: 3.11.9
+      hono: 3.12.2
       zod: 3.22.4
     dev: false
 
@@ -5149,8 +5149,8 @@ packages:
     resolution: {integrity: sha512-2bsegYkkHO+h/9MGbn6KWcE45cHZgPANo5LXF7EvWdT0yT2EguSVO1nDgU5c8+ZOPwp2vMNa7YFsJhVcDR9Sdg==}
     dev: true
 
-  /hono@3.11.9:
-    resolution: {integrity: sha512-vjwVHw/y9xXPf7a87XjAPE9d3NFLyDiDBHmTU5SsGiJoe4BSiU/Yiu5UB9orhP+YGkSwD7fzXmuG7lpvKnr15w==}
+  /hono@3.12.2:
+    resolution: {integrity: sha512-h8MlaLiWEeiqMtpQBBhWor4UTu/8bYWuv0yc7DaCRsG3Ny2rXdkXzrYrgc+FWXoyh06CL2QDB/HbjJ9XJLjEhw==}
     engines: {node: '>=16.0.0'}
     dev: false
 
