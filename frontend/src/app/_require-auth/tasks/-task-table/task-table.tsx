@@ -56,7 +56,11 @@ export const TaskTable: React.FC<Props> = ({ taskPageEntry }) => {
             <TableRow>
               {headers.map((header) => {
                 return (
-                  <TableHead key={header.id} className="relative">
+                  <TableHead
+                    key={header.id}
+                    className="relative"
+                    style={{ width: header.getSize() }}
+                  >
                     {flexRender(
                       header.column.columnDef.header,
                       header.getContext(),

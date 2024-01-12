@@ -5,6 +5,8 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { LayersIcon } from "lucide-react";
 
 export const taskTitleColumn = createTaskColumn.accessor("title", {
+  size: 10000,
+  minSize: 0,
   header: () => {
     return (
       <div className="flex items-center gap-1">
@@ -38,7 +40,7 @@ export const taskTitleColumn = createTaskColumn.accessor("title", {
     ) : (
       <Tooltip label="タイトルを編集する">
         <button
-          className="inline focus-visible:outline-none focus-visible:ring-1 ring-ring p-1 rounded hover:bg-accent transition-colors whitespace-nowrap"
+          className="inline focus-visible:outline-none focus-visible:ring-1 ring-ring p-1 rounded hover:bg-accent transition-colors "
           onClick={handleEnableEditing}
         >
           {getValue()}

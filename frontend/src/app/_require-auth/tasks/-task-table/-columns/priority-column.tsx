@@ -19,6 +19,8 @@ export const priorityColumnOptions = [
 ] as const;
 
 export const taskPriorityColumn = createTaskColumn.accessor("priority", {
+  size: 0,
+  minSize: 0,
   header: function Header() {
     const { sortStatus, toggleSorting } = useSortTaskTable("priority");
 

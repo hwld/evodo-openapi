@@ -20,6 +20,8 @@ import { toast } from "sonner";
 
 export const TaskActionColumn = createTaskColumn.display({
   id: "action",
+  size: 0,
+  minSize: 0,
   cell: function Cell({ row }) {
     const search = tasksRoute.useSearch();
     const deleteMutation = useDeleteTask();

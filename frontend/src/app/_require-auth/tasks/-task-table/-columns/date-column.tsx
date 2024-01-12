@@ -11,6 +11,8 @@ export const dateColumnOptions = {
 
 export const createTaskDateColumn = (type: "updatedAt" | "createdAt") => {
   return createTaskColumn.accessor(type, {
+    size: 0,
+    minSize: 0,
     header: function Header() {
       const { sortStatus, toggleSorting } = useSortTaskTable(type);
 

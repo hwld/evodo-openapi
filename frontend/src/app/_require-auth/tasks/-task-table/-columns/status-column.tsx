@@ -12,6 +12,8 @@ export const statusColumnOptions = [
 ] as const;
 
 export const taskStatusColumn = createTaskColumn.accessor("status", {
+  size: 0,
+  minSize: 0,
   header: function Header() {
     const { sortStatus, toggleSorting } = useSortTaskTable("status");
 
