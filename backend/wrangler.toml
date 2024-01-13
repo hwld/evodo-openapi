@@ -1,0 +1,35 @@
+# database_idがプライベートな情報なのか公式ドキュメントに記載がない気がするが、
+# discordをみてみると、テクニカルサポートの人が自分のアカウント以外では使用できないと言ってたので
+# 公開しても問題なさそう?
+# https://discord.com/channels/595317990191398933/799437470004412476/1189156335510618162
+
+name = "evodo-openapi-backend"
+compatibility_date = "2023-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[env.test]
+# テスト専用のDB
+d1_databases = [
+  { binding = "DB", database_name = "test_evodo_openapi", database_id = "test", migrations_dir = "./drizzle" }
+]
+kv_namespaces = [
+  { binding = "KV", id = "test" }
+]
+
+[env.dev]
+# ローカルで動かすときのDB
+d1_databases = [
+  { binding = "DB", database_name = "evodo_openapi", database_id = "b2c12f6c-7a0d-4718-bc51-07e023662124", migrations_dir = "./drizzle" }
+]
+kv_namespaces = [
+  { binding = "KV", id = "48e1e08edc90471b94be89639d76d4b8" }
+]
+
+# 本番環境
+[env.prod]
+d1_databases = [
+  { binding = "DB", database_name = "evodo_openapi", database_id = "c2cde0ef-40e6-484b-9595-84b8ccf20a30", migrations_dir = "./drizzle" }
+]
+kv_namespaces = [
+  { binding = "KV", id = "fcfde808516c4c2da0f936530ca7900d" }
+]

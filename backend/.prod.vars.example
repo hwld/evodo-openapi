@@ -1,0 +1,5 @@
+ENVIRONMENT="prod"
+BASE_URL="http://localhost:8787"
+CLIENT_URL="http://localhost:5173"
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""

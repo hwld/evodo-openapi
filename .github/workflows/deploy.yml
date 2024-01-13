@@ -1,0 +1,56 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Deploy to workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          secrets: |
+            GOOGLE_CLIENT_ID
+            GOOGLE_CLIENT_SECRET
+          vars: |
+            ENVIRONMENT
+            CLIENT_URL
+            BASE_URL
+          # https://github.com/cloudflare/wrangler-action/issues/209#issuecomment-1868189425
+          wranglerVersion: 3.15.0
+          packageManager: pnpm
+          workingDirectory: backend
+          preCommands: pnpm db:migrations
+          command: deploy --minify src/index.ts --env prod
+        env:
+          ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+          CLIENT_URL: ${{vars.CLIENT_URL}}
+          BASE_URL: ${{vars.BASE_URL}}
+          GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}}
+          GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
+
+      - name: Deploy to pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # https://github.com/cloudflare/wrangler-action/issues/209#issuecomment-1868189425
+          wranglerVersion: 3.15.0
+          packageManager: pnpm
+          workingDirectory: frontend
+          preCommands: pnpm build
+          command: pages deploy dist --project-name evodo-openapi
+        env:
+          VITE_API_URL: ${{vars.BASE_URL}}
