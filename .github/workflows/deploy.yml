@@ -30,10 +30,11 @@ jobs:
             BASE_URL
           # https://github.com/cloudflare/wrangler-action/issues/209#issuecomment-1868189425
           wranglerVersion: 3.15.0
+          environment: prod
           packageManager: pnpm
           workingDirectory: backend
           preCommands: pnpm db:migrations
-          command: deploy --minify src/index.ts --env prod
+          command: deploy --minify src/index.ts
         env:
           ENVIRONMENT: ${{ vars.ENVIRONMENT }}
           CLIENT_URL: ${{vars.CLIENT_URL}}
