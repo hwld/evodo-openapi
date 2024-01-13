@@ -6,7 +6,8 @@
     "db:migrations": "wrangler d1 migrations apply evodo_openapi --env prod",
     "deploy:workers": "wrangler deploy --minify src/index.ts --env prod",
     "wrangler": "wrangler",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test-setup": "wrangler d1 migrations apply test_evodo_openapi --local --env test"
   },
   "dependencies": {
     "@hono/swagger-ui": "^0.2.0",

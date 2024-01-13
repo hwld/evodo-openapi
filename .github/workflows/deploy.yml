@@ -16,7 +16,7 @@ jobs:
         with:
           version: 8
 
-      - name: Deploy to workers
+      - name: Test and deploy to workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -33,7 +33,10 @@ jobs:
           environment: prod
           packageManager: pnpm
           workingDirectory: backend
-          preCommands: pnpm db:migrations
+          preCommands: |
+            pnpm test-setup
+            pnpm test
+            pnpm db:migrations
           command: deploy --minify src/index.ts
         env:
           ENVIRONMENT: ${{ vars.ENVIRONMENT }}
@@ -42,7 +45,7 @@ jobs:
           GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}}
           GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
 
-      - name: Deploy to pages
+      - name: Test and deploy to pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -51,7 +54,9 @@ jobs:
           wranglerVersion: 3.15.0
           packageManager: pnpm
           workingDirectory: frontend
-          preCommands: pnpm build
+          preCommands: |
+            pnpm test
+            pnpm build
           command: pages deploy dist --project-name evodo-openapi
         env:
           VITE_API_URL: ${{vars.BASE_URL}}

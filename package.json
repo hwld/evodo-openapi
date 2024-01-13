@@ -12,7 +12,7 @@
     "migrations:apply": "pnpm backend exec wrangler d1 migrations apply evodo_openapi --local --env dev",
     "db:studio": "pnpm backend exec drizzle-kit studio",
     "test:api": "pnpm backend test",
-    "test:api-setup": "pnpm backend exec wrangler d1 migrations apply test_evodo_openapi --local --env test",
+    "test:api-setup": "pnpm backend test-setup",
     "test:front": "pnpm frontend test"
   },
   "keywords": [],
