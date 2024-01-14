@@ -4,7 +4,7 @@ import { testDb, testKv } from "../../setup-vitest";
 import { AuthAdapter } from "../services/auth/adapter";
 import { TimeSpan, createDate } from "oslo";
 import { DatabaseSession } from "lucia";
-import { formatDate } from "../services/db/utils";
+import { formatDateTime } from "../lib/date";
 
 // 一旦全部ここに入れるけど、大きくなりすぎたら分割するかも
 export const Factories = {
@@ -31,7 +31,7 @@ export const Factories = {
         id: crypto.randomUUID(),
         title: "title",
         description: "description",
-        updatedAt: formatDate(new Date()),
+        updatedAt: formatDateTime(new Date()),
         ...task,
       })
       .returning();

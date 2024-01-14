@@ -4,13 +4,13 @@ CREATE TABLE `signup_sessions` (
 	`expires` integer NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE `taskMemos` (
+CREATE TABLE `task_memos` (
 	`id` text PRIMARY KEY NOT NULL,
 	`content` text DEFAULT '' NOT NULL,
 	`task_id` text NOT NULL,
 	`author_id` text NOT NULL,
-	`created_at` text DEFAULT (strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime')) NOT NULL,
-	`updated_at` text DEFAULT (strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime')) NOT NULL,
+	`created_at` text NOT NULL,
+	`updated_at` text NOT NULL,
 	FOREIGN KEY (`task_id`) REFERENCES `tasks`(`id`) ON UPDATE no action ON DELETE cascade,
 	FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
@@ -22,8 +22,8 @@ CREATE TABLE `tasks` (
 	`title` text NOT NULL,
 	`description` text NOT NULL,
 	`author_id` text NOT NULL,
-	`created_at` text DEFAULT (strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime')) NOT NULL,
-	`updated_at` text DEFAULT (strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime')) NOT NULL,
+	`created_at` text NOT NULL,
+	`updated_at` text NOT NULL,
 	FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint

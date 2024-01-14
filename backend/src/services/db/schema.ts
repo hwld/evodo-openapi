@@ -2,7 +2,7 @@
 import { relations, sql } from "drizzle-orm";
 import { text, sqliteTable, integer, int } from "drizzle-orm/sqlite-core";
 import { createId } from "@paralleldrive/cuid2";
-import { currentTime } from "./utils";
+import { currentDateTime } from "../../lib/date";
 
 export const users = sqliteTable("users", {
   id: text("id")
@@ -43,12 +43,8 @@ export const tasks = sqliteTable("tasks", {
   authorId: text("author_id")
     .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
-  createdAt: text("created_at")
-    .notNull()
-    .default(sql`(${currentTime()})`),
-  updatedAt: text("updated_at")
-    .notNull()
-    .default(sql`(${currentTime()})`),
+  createdAt: text("created_at").notNull().$defaultFn(currentDateTime),
+  updatedAt: text("updated_at").notNull().$defaultFn(currentDateTime),
 });
 
 export const tasksRelations = relations(tasks, ({ one, many }) => ({
@@ -56,7 +52,7 @@ export const tasksRelations = relations(tasks, ({ one, many }) => ({
   memos: many(taskMemos),
 }));
 
-export const taskMemos = sqliteTable("taskMemos", {
+export const taskMemos = sqliteTable("task_memos", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => createId()),
@@ -68,12 +64,8 @@ export const taskMemos = sqliteTable("taskMemos", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
 
-  createdAt: text("created_at")
-    .notNull()
-    .default(sql`(${currentTime()})`),
-  updatedAt: text("updated_at")
-    .notNull()
-    .default(sql`(${currentTime()})`),
+  createdAt: text("created_at").notNull().$defaultFn(currentDateTime),
+  updatedAt: text("updated_at").notNull().$defaultFn(currentDateTime),
 });
 
 export const taskMemosRelations = relations(taskMemos, ({ one }) => ({

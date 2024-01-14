@@ -3,7 +3,7 @@ import { findTasks } from "./find-tasks";
 import { testD1, testKv } from "../../../../setup-vitest";
 import { describe, it, expect } from "vitest";
 import { Factories } from "../../factories";
-import { formatDate } from "../../../services/db/utils";
+import { formatDateTime } from "../../../lib/date";
 
 const client = () => testClient(findTasks, { DB: testD1, KV: testKv });
 
@@ -53,17 +53,17 @@ describe("タスクをすべて収録", () => {
       Factories.task({
         id: "1",
         authorId: user.id,
-        createdAt: formatDate(new Date("2020/1/1")),
+        createdAt: formatDateTime(new Date("2020/1/1")),
       }),
       Factories.task({
         id: "2",
         authorId: user.id,
-        createdAt: formatDate(new Date("2020/1/10")),
+        createdAt: formatDateTime(new Date("2020/1/10")),
       }),
       Factories.task({
         id: "3",
         authorId: user.id,
-        createdAt: formatDate(new Date("2021/1/1")),
+        createdAt: formatDateTime(new Date("2021/1/1")),
       }),
     ]);
     const session = await Factories.loginSession({ userId: user.id });

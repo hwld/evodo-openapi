@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "569f7f39-a04d-4cfc-8ba8-4737700cc9c7",
+  "id": "e55c11d6-719a-43ec-abd8-bcfc0f9e0d14",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "signup_sessions": {
@@ -42,8 +42,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "taskMemos": {
-      "name": "taskMemos",
+    "task_memos": {
+      "name": "task_memos",
       "columns": {
         "id": {
           "name": "id",
@@ -79,23 +79,21 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime'))"
+          "autoincrement": false
         },
         "updated_at": {
           "name": "updated_at",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime'))"
+          "autoincrement": false
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "taskMemos_task_id_tasks_id_fk": {
-          "name": "taskMemos_task_id_tasks_id_fk",
-          "tableFrom": "taskMemos",
+        "task_memos_task_id_tasks_id_fk": {
+          "name": "task_memos_task_id_tasks_id_fk",
+          "tableFrom": "task_memos",
           "tableTo": "tasks",
           "columnsFrom": [
             "task_id"
@@ -106,9 +104,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "taskMemos_author_id_users_id_fk": {
-          "name": "taskMemos_author_id_users_id_fk",
-          "tableFrom": "taskMemos",
+        "task_memos_author_id_users_id_fk": {
+          "name": "task_memos_author_id_users_id_fk",
+          "tableFrom": "task_memos",
           "tableTo": "users",
           "columnsFrom": [
             "author_id"
@@ -175,16 +173,14 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime'))"
+          "autoincrement": false
         },
         "updated_at": {
           "name": "updated_at",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(strftime('%Y/%m/%d %H:%M:%S', 'now', 'localtime'))"
+          "autoincrement": false
         }
       },
       "indexes": {},

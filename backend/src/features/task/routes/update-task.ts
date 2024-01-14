@@ -2,14 +2,14 @@ import { createRoute } from "@hono/zod-openapi";
 import { z } from "zod";
 import { taskPath } from "../path";
 import { TaskSchema, UpdasteTaskInputSchema } from "../schema";
-import { requireAuthRoute, route } from "../../../app";
+import { requireAuthRoute } from "../../../app";
 import { tasks } from "../../../services/db/schema";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { Features } from "../../features";
 import { errorResponse } from "../../../lib/openapi";
 import { LOGIN_SESSION_COOKIE } from "../../auth/consts";
-import { currentTime } from "../../../services/db/utils";
+import { currentDateTime } from "../../../lib/date";
 
 const updateTaskRoute = createRoute({
   tags: [Features.task],
@@ -59,7 +59,7 @@ export const updateTask = requireAuthRoute(updateTaskRoute.path).openapi(
         description,
         status,
         priority,
-        updatedAt: currentTime(),
+        updatedAt: currentDateTime(),
       })
       .where(and(eq(tasks.id, taskId), eq(tasks.authorId, loggedInUserId)))
       .returning();
