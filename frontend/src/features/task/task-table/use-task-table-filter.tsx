@@ -1,5 +1,8 @@
 import { useNavigate } from "@tanstack/react-router";
-import { TaskSearchParams, tasksRoute } from "../page";
+import {
+  TaskSearchParams,
+  tasksRoute,
+} from "../../../app/_require-auth/tasks/page";
 
 type StatusFilterType = "status_filter";
 type StatusFilters = TaskSearchParams[StatusFilterType];

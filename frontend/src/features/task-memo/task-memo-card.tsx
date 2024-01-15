@@ -1,7 +1,7 @@
 import { TaskMemo } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "lucide-react";
-import { useDeleteTaskMemo } from "../-hooks/use-delete-task-memo";
+import { useDeleteTaskMemo } from "./use-delete-task-memo";
 import { Tooltip } from "@/components/ui/tooltip";
 
 type Props = { memo: TaskMemo };

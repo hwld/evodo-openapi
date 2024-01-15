@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useSignup } from "../../-hooks/use-signup";
+import { useSignup } from "../use-signup";
 
 const signupFormSchema = schemas.SignupInput;
 type SignupFormData = z.infer<typeof signupFormSchema>;

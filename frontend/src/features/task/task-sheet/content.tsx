@@ -1,15 +1,15 @@
 import { Separator } from "@/components/ui/separator";
 import { SheetContent } from "@/components/ui/sheet";
-import { EditableTaskDescription } from "../-editable-task-description/editable-task-description";
-import { TaskMemoForm } from "../task-memo-form";
-import { useTaskMemos } from "../../-hooks/use-task-memos";
-import { TaskMemoCard } from "../task-memo-card";
-import { TaskStatusBadge } from "../../task-status-badge";
-import { useUpdateTask } from "../../-hooks/use-update-task";
+import { EditableTaskDescription } from "../editable-task-description/editable-task-description";
+import { TaskMemoForm } from "../../task-memo/task-memo-form";
+import { useTaskMemos } from "../../task-memo/use-task-memos";
+import { TaskMemoCard } from "../../task-memo/task-memo-card";
+import { TaskStatusBadge } from "../task-status-badge";
+import { useUpdateTask } from "../use-update-task";
 import { Task } from "@/api/types";
 import { TaskSheetRow } from "./row";
-import { dateColumnOptions } from "../../-task-table/-columns/date-column";
-import { TaskPriorityBadge } from "../../task-priority-badge";
+import { dateColumnOptions } from "../task-table/columns/date-column";
+import { TaskPriorityBadge } from "../task-priority-badge";
 import { ArrowUpDownIcon } from "lucide-react";
 
 type Props = { task: Task };

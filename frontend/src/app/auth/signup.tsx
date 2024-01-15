@@ -1,5 +1,5 @@
 import { Route, redirect, useNavigate } from "@tanstack/react-router";
-import { api } from "../../../api";
+import { api } from "../../api";
 import { Button } from "@/components/ui/button";
 import { AppLogo } from "@/components/ui/app-logo";
 import {
@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SignupForm } from "./-signup-form/signup-form";
+import { SignupForm } from "../../features/auth/signup-form/signup-form";
 import { rootRoute } from "@/app/layout";
 
 export const signupRoute = new Route({

@@ -3,7 +3,7 @@ import { createTaskColumn } from ".";
 import { useSortTaskTable } from "../use-sort-task-table";
 import { TaskTableSortedIcon } from "../sorted-icon";
 import { CircleDashedIcon, CircleDotIcon, CircleIcon } from "lucide-react";
-import { useUpdateTask } from "../../-hooks/use-update-task";
+import { useUpdateTask } from "../../use-update-task";
 import { TaskStatusBadge } from "../../task-status-badge";
 
 export const statusColumnOptions = [

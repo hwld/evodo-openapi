@@ -17,11 +17,11 @@ import { Pagination } from "@/components/ui/pagination";
 import { z } from "zod";
 import { schemas } from "@/api/schema";
 import { useTaskTablePagination } from "./use-task-table-pagination";
-import { taskStatusColumn } from "./-columns/status-column";
-import { taskTitleColumn } from "./-columns/title-column";
-import { createTaskDateColumn } from "./-columns/date-column";
-import { TaskActionColumn } from "./-columns/action-column";
-import { taskPriorityColumn } from "./-columns/priority-column";
+import { taskStatusColumn } from "./columns/status-column";
+import { taskTitleColumn } from "./columns/title-column";
+import { createTaskDateColumn } from "./columns/date-column";
+import { TaskActionColumn } from "./columns/action-column";
+import { taskPriorityColumn } from "./columns/priority-column";
 
 const taskColumns = [
   taskStatusColumn,

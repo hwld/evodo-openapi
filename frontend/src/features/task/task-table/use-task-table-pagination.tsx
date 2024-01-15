@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback } from "react";
-import { tasksRoute } from "../page";
+import { tasksRoute } from "../../../app/_require-auth/tasks/page";
 
 export const useTaskTablePagination = () => {
   const navigate = useNavigate();

@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { forwardRef, useLayoutEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useUpdateTask } from "../../-hooks/use-update-task";
+import { useUpdateTask } from "../use-update-task";
 
 export const taskDescriptionTextareaClass =
   "w-full border border-border rounded p-3 text-sm bg-transparent min-h-[200px] focus-visible:outline-none focus-visible:ring-1  resize-none overflow-hidden focus-visible:ring-ring";

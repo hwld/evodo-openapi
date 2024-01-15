@@ -1,9 +1,9 @@
-import { TaskTableFilter } from "./-filter/filter";
+import { TaskTableFilter } from "./filter/filter";
 import { useTaskTableFilter } from "./use-task-table-filter";
-import { priorityColumnOptions } from "./-columns/priority-column";
-import { TaskTableFilterBadge } from "./-filter/badge";
+import { priorityColumnOptions } from "./columns/priority-column";
+import { TaskTableFilterBadge } from "./filter/badge";
 import { Separator } from "@/components/ui/separator";
-import { statusColumnOptions } from "./-columns/status-column";
+import { statusColumnOptions } from "./columns/status-column";
 
 export const TaskTableToolbar = () => {
   const { statusFilters, priorityFilters, removeFilter } = useTaskTableFilter();

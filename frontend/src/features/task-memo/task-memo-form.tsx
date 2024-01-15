@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SendHorizonalIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useCreateTaskMemo } from "../-hooks/use-create-task-memo";
+import { useCreateTaskMemo } from "./use-create-task-memo";
 
 const taskMemoFormSchema = schemas.CreateTaskMemoInput;
 type TaskMemoFormData = z.infer<typeof taskMemoFormSchema>;

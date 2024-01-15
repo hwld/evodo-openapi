@@ -5,8 +5,8 @@ import {
   PlusCircleIcon,
   XCircleIcon,
 } from "lucide-react";
-import { statusColumnOptions } from "../-columns/status-column";
-import { priorityColumnOptions } from "../-columns/priority-column";
+import { statusColumnOptions } from "../columns/status-column";
+import { priorityColumnOptions } from "../columns/priority-column";
 import { useTaskTableFilter } from "../use-task-table-filter";
 import { TaskTableFilterItem } from "./item";
 import {
