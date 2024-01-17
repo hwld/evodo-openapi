@@ -3,7 +3,7 @@
 
 # evodo-openapi
 
-hono+OpenAPI を試すために作った [evodo](https://github.com/hwld/evodo)  
+hono+OpenAPI を試すために作る [evodo](https://github.com/hwld/evodo)  
 monorepo で作ってるけど、OpenAPI を試したいから`hono RPC`ではなくて`@hono/openapi-zod`を使う。
 
 ## 使用する技術(想定)
