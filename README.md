@@ -1,10 +1,9 @@
-# evodo-openapi
 
 <img src="https://raw.githubusercontent.com/hwld/evodo-openapi/main/images/evodo-openapi.png" alt="screenshot">
 
-## 概要
+# evodo-openapi
 
-hono+OpenAPI を試すために作った Todo リスト  
+hono+OpenAPI を試すために作った [evodo](https://github.com/hwld/evodo)  
 monorepo で作ってるけど、OpenAPI を試したいから`hono RPC`ではなくて`@hono/openapi-zod`を使う。
 
 ## 使用する技術(想定)
