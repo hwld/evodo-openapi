@@ -2,7 +2,7 @@ import {
   Adapter,
   DatabaseSession,
   DatabaseUser,
-  DatabaseUserAttributes,
+  RegisteredDatabaseUserAttributes,
 } from "lucia";
 import { DB } from "../db";
 import { eq } from "drizzle-orm";
@@ -43,7 +43,7 @@ export class AuthAdapter implements Adapter {
   };
 
   private transformIntoDatabaseUser = (
-    raw: DatabaseUserAttributes & { id: string },
+    raw: RegisteredDatabaseUserAttributes & { id: string },
   ): DatabaseUser => {
     const { id, ...attributes } = raw;
 
@@ -71,7 +71,7 @@ export class AuthAdapter implements Adapter {
 
   public setSession = async (session: DatabaseSession): Promise<void> => {
     await Promise.all([
-      // KVがkeyとmetadataのリストしか取得してくれないので、
+      // KVのlistがkeyとmetadataのリストしか取得してくれないので、
       // userIdをkeyにしてsessionIdを取り出しやすくするためにmetadataに格納する。
       // https://developers.cloudflare.com/kv/api/list-keys/#list-method
       this.kv.put(
@@ -79,9 +79,12 @@ export class AuthAdapter implements Adapter {
         "user_session",
         {
           metadata: { sessionId: session.id } satisfies UserSessionMetadata,
+          expiration: session.expiresAt.getTime() / 1000,
         },
       ),
-      this.kv.put(this.sessionKey(session.id), JSON.stringify(session)),
+      this.kv.put(this.sessionKey(session.id), JSON.stringify(session), {
+        expiration: session.expiresAt.getTime() / 1000,
+      }),
     ]);
   };
 
@@ -95,10 +98,19 @@ export class AuthAdapter implements Adapter {
     }
 
     const updatedSession: DatabaseSession = { ...session, expiresAt };
-    await this.kv.put(
-      this.sessionKey(session.id),
-      JSON.stringify(updatedSession),
-    );
+    await Promise.all([
+      this.kv.put(this.sessionKey(session.id), JSON.stringify(updatedSession), {
+        expiration: session.expiresAt.getTime() / 1000,
+      }),
+      this.kv.put(
+        this.userSessionKey(session.userId, session.id),
+        "user_session",
+        {
+          metadata: { sessionId: session.id } satisfies UserSessionMetadata,
+          expiration: session.expiresAt.getTime() / 1000,
+        },
+      ),
+    ]);
   };
 
   public deleteSession = async (sessionId: string): Promise<void> => {
@@ -123,6 +135,28 @@ export class AuthAdapter implements Adapter {
         ])
         .flat(),
     ]);
+  };
+
+  public deleteExpiredSessions = async (): Promise<void> => {
+    let deletePromises: Promise<void>[] = [];
+    let cursor: string | undefined;
+
+    while (true) {
+      const value = await this.kv.list(cursor ? { cursor } : undefined);
+
+      deletePromises.push(
+        ...value.keys
+          .filter((key) => key.expiration && key.expiration < Date.now() / 1000)
+          .map((key) => this.kv.delete(key.name)),
+      );
+
+      if (value.list_complete) {
+        break;
+      }
+      cursor = value.cursor;
+    }
+
+    await Promise.all(deletePromises);
   };
 
   private getSession = async (
