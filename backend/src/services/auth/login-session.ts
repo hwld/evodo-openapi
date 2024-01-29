@@ -1,7 +1,7 @@
 import { Context } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { CookieOptions } from "hono/utils/cookie";
-import { SessionCookie } from "lucia";
+import { Cookie } from "lucia";
 import { CookieAttributes } from "oslo/cookie";
 import { AppLucia } from "./auth";
 import { log } from "../logger";
@@ -55,7 +55,7 @@ export class LoginSession {
     this.setCookie(this.lucia.createBlankSessionCookie());
   };
 
-  private setCookie = (sessionCookie: SessionCookie) => {
+  private setCookie = (sessionCookie: Cookie) => {
     setCookie(this.context, sessionCookie.name, sessionCookie.value, {
       ...this.convertCookieAttr(sessionCookie.attributes),
       ...defaultCookieOptions(this.env.ENVIRONMENT === "prod"),

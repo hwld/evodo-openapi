@@ -58,7 +58,6 @@ export const login = route(loginRoute.path).openapi(
     if (signup_redirect) {
       setCookie(context, SIGNUP_REDIRECT, signup_redirect, options);
     }
-    console.log(options);
 
     const url = await auth.createAuthUrl();
     return redirect(url.toString());
