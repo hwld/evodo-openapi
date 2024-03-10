@@ -30,7 +30,7 @@ function RequireAuthLayout() {
       <div className="sticky top-0 px-3 py-5 h-[100dvh]">
         <Sidebar session={session} />
       </div>
-      <div className="grow">
+      <div className="grow flex">
         <Outlet />
       </div>
     </div>

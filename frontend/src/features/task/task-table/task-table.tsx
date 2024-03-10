@@ -50,8 +50,8 @@ export const TaskTable: React.FC<Props> = ({ taskPageEntry }) => {
   return (
     <div className="flex flex-col gap-3">
       <TaskTableToolbar />
-      <div className="rounded border flex w-full overflow-auto">
-        <Table className="w-full">
+      <div className="rounded border flex w-full overflow-auto grow">
+        <Table className="w-full grow">
           <TableHeader>
             <TableRow>
               {headers.map((header) => {
@@ -72,22 +72,26 @@ export const TaskTable: React.FC<Props> = ({ taskPageEntry }) => {
           </TableHeader>
           <TableBody>
             {rows.length ? (
-              rows.map((row) => {
-                return (
-                  <TableRow key={row.id}>
-                    {row.getAllCells().map((cell) => {
-                      return (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })
+              <>
+                {rows.map((row) => {
+                  return (
+                    <TableRow key={row.id} className="h-[40px]">
+                      {row.getAllCells().map((cell) => {
+                        return (
+                          <TableCell key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+                {/* 高さが足りないときに間を埋める */}
+                <TableRow />
+              </>
             ) : (
               <TableRow className="pointer-events-none select-none">
                 <TableCell colSpan={5}>

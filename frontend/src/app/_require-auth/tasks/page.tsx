@@ -59,7 +59,7 @@ export function TasksPage() {
         </div>
         <Card className="p-6 grow flex flex-col gap-6">
           <TaskForm />
-          <div className="grow">
+          <div className="grow flex">
             <TaskTable taskPageEntry={taskPageEntry} />
           </div>
         </Card>
