@@ -8,7 +8,7 @@ import { createTaskColumn } from ".";
 import { Button } from "@/components/ui/button";
 import { TaskTableSortedIcon } from "../sorted-icon";
 import { useSortTaskTable } from "../use-sort-task-table";
-import { useUpdateTask } from "../../-hooks/use-update-task";
+import { useUpdateTask } from "../../use-update-task";
 import { Task } from "@/api/types";
 import { TaskPriorityBadge } from "../../task-priority-badge";
 

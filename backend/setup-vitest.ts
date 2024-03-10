@@ -2,7 +2,7 @@ import { DrizzleD1Database, drizzle } from "drizzle-orm/d1";
 import { Miniflare } from "miniflare";
 import * as schema from "./src/services/db/schema";
 import { SQLiteTable, getTableConfig } from "drizzle-orm/sqlite-core";
-import { beforeAll, beforeEach, afterAll } from "vitest";
+import { beforeAll, beforeEach, afterAll, afterEach, vi } from "vitest";
 
 export let testD1: D1Database;
 export let testKv: KVNamespace;
@@ -44,6 +44,10 @@ beforeEach(async () => {
   await Promise.all(keys.map(({ name }) => testKv.delete(name)));
 
   await testD1.exec("PRAGMA foreign_keys = true;");
+});
+
+afterEach(() => {
+  vi.useRealTimers();
 });
 
 afterAll(() => {

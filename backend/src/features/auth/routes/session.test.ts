@@ -4,7 +4,7 @@ import { testD1, testDb, testKv } from "../../../../setup-vitest";
 import { LOGIN_SESSION_COOKIE } from "../consts";
 import { parseSetCookie } from "../../../lib/cookie";
 import { AuthAdapter } from "../../../services/auth/adapter";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { Factories } from "../../factories";
 import { TimeSpan, createDate } from "oslo";
 
@@ -37,11 +37,15 @@ describe("セッションの取得", () => {
   });
 
   it("セッションの期限が切れていればnullが返され、sessionが削除される", async () => {
+    vi.useFakeTimers();
+
     const loggedInUser = await Factories.user({});
     const loginSession = await Factories.loginSession({
       userId: loggedInUser.id,
-      expiresAt: createDate(new TimeSpan(-1, "w")),
+      expiresAt: createDate(new TimeSpan(10, "m")),
     });
+
+    vi.setSystemTime(createDate(new TimeSpan(1, "h")));
 
     const result = await client().session.$get({
       cookie: { session: loginSession.id },

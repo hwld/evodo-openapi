@@ -2,7 +2,7 @@ import { schemas } from "@/api/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useCreateTask } from "./-hooks/use-create-task";
+import { useCreateTask } from "./use-create-task";
 import { useEffect, useRef } from "react";
 import { useMergedRef } from "@mantine/hooks";
 import { CommandIcon, SendHorizonalIcon } from "lucide-react";

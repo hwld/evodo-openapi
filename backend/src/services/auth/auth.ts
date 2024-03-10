@@ -21,11 +21,7 @@ import { defaultCookieOptions } from "../../lib/cookie";
 declare module "lucia" {
   interface Register {
     Lucia: AppLucia;
-  }
-  interface DatabaseUserAttributes {
-    name: string;
-    profile: string;
-    googleId: string;
+    DatabaseUserAttributes: { name: string; profile: string; googleId: string };
   }
 }
 

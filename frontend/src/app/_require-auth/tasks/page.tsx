@@ -3,10 +3,13 @@ import { schemas } from "../../../api/schema";
 import { Card } from "@/components/ui/card";
 import { HomeIcon } from "lucide-react";
 import { Outlet, Route } from "@tanstack/react-router";
-import { TaskTable } from "./-task-table/task-table";
+import { TaskTable } from "../../../features/task/task-table/task-table";
 import { requireAuthRoute } from "../layout";
-import { taskPageQueryOptions, useTaskPage } from "./-hooks/use-task-page";
-import { TaskForm } from "./task-form";
+import {
+  taskPageQueryOptions,
+  useTaskPage,
+} from "../../../features/task/use-task-page";
+import { TaskForm } from "../../../features/task/task-form";
 import { transformStringToArray } from "@/lib/utils";
 
 const taskSearchParamsSchema = z.object({
@@ -56,7 +59,7 @@ export function TasksPage() {
         </div>
         <Card className="p-6 grow flex flex-col gap-6">
           <TaskForm />
-          <div className="grow">
+          <div className="grow flex">
             <TaskTable taskPageEntry={taskPageEntry} />
           </div>
         </Card>

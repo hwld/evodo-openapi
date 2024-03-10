@@ -1,5 +1,5 @@
 import { Task } from "@/api/types";
-import { statusColumnOptions } from "./-task-table/-columns/status-column";
+import { statusColumnOptions } from "./task-table/columns/status-column";
 import { Badge } from "@/components/ui/badge";
 
 type Props = {

@@ -3,7 +3,7 @@ import { Task } from "@/api/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useUpdateTask } from "../../-hooks/use-update-task";
+import { useUpdateTask } from "../../use-update-task";
 import { RefObject } from "react";
 import { useMergedRef } from "@mantine/hooks";
 import { cn } from "@/lib/utils";

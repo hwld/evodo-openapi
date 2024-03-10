@@ -1,7 +1,7 @@
 import { testClient } from "hono/testing";
 import { createTask } from "./create-task";
 import { testD1, testDb, testKv } from "../../../../setup-vitest";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { Factories } from "../../factories";
 import { TimeSpan, createDate } from "oslo";
 
@@ -37,11 +37,15 @@ describe("タスクの作成", () => {
   });
 
   it("ログインセッションが期限切れだとタスクが作成できない", async () => {
+    vi.useFakeTimers();
+
     const user = await Factories.user({});
     const session = await Factories.loginSession({
       userId: user.id,
-      expiresAt: createDate(new TimeSpan(-10, "m")),
+      expiresAt: createDate(new TimeSpan(10, "m")),
     });
+
+    vi.setSystemTime(createDate(new TimeSpan(1, "h")));
 
     const result = await client().tasks.$post({
       cookie: { session: session.id },

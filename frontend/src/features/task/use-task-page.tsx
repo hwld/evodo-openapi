@@ -1,6 +1,9 @@
 import { api } from "@/api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { TaskSearchParams, tasksRoute } from "../page";
+import {
+  TaskSearchParams,
+  tasksRoute,
+} from "../../app/_require-auth/tasks/page";
 
 export const taskPageQueryOptions = (search: TaskSearchParams) =>
   queryOptions({

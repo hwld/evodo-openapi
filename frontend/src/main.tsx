@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./main.css";
 import { Router, RouterProvider } from "@tanstack/react-router";
 import { routeTree } from "./routes";
-import { notFoundRoute } from "./app/404.tsx";
+import { notFoundRoute } from "./app/not-found.tsx";
 import { LoadingPage } from "./app/loading.tsx";
 import { ErrorPage } from "./app/error.tsx";
 import { setupI18Next } from "./lib/i18next.ts";

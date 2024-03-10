@@ -12,16 +12,16 @@
   "dependencies": {
     "@hono/swagger-ui": "^0.2.0",
     "@hono/zod-openapi": "^0.9.3",
-    "@lucia-auth/adapter-sqlite": "3.0.0-beta.10",
+    "@lucia-auth/adapter-sqlite": "3.0.0",
     "@paralleldrive/cuid2": "^2.2.2",
-    "arctic": "^0.10.0",
+    "arctic": "^1.1.0",
     "better-sqlite3": "^9.2.2",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
     "drizzle-orm": "^0.29.1",
     "hono": "^3.12.2",
-    "lucia": "3.0.0-beta.12",
-    "oslo": "^0.24.0",
+    "lucia": "3.0.1",
+    "oslo": "^1.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {

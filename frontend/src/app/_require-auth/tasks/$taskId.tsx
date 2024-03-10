@@ -1,12 +1,12 @@
 import { Sheet } from "@/components/ui/sheet";
 import { Route, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { tasksRoute } from "../page";
-import { taskQueryOptions, useTask } from "../-hooks/use-task";
-import { taskMemosQueryOptions } from "../-hooks/use-task-memos";
+import { tasksRoute } from "./page";
+import { taskQueryOptions, useTask } from "../../../features/task/use-task";
+import { taskMemosQueryOptions } from "../../../features/task-memo/use-task-memos";
 import { Spinner } from "@/components/ui/spinner";
 import { ErrorPage } from "@/app/error";
-import { TaskSheetContent } from "./task-sheet/content";
+import { TaskSheetContent } from "../../../features/task/task-sheet/content";
 
 export const taskDetailRoute = new Route({
   getParentRoute: () => tasksRoute,

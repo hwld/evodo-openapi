@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { SIGNUP_SESSION_COOKIE } from "../../features/auth/consts";
 import { signupSessions } from "../db/schema";
-import { alphabet, generateRandomString } from "oslo/random";
+import { alphabet, generateRandomString } from "oslo/crypto";
 import { TimeSpan, createDate } from "oslo";
 import { AppBindings } from "../../app";
 import { log } from "../logger";

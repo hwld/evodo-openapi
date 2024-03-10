@@ -2,7 +2,7 @@ import { schemas } from "@/api/schema";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useMemo } from "react";
 import { z } from "zod";
-import { tasksRoute } from "../page";
+import { tasksRoute } from "../../../app/_require-auth/tasks/page";
 
 export type SortStatus = false | "asc" | "desc";
 

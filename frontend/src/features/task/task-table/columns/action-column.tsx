@@ -2,9 +2,9 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { PanelRightIcon, TrashIcon } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { tasksRoute } from "../../page";
+import { tasksRoute } from "../../../../app/_require-auth/tasks/page";
 import { createTaskColumn } from ".";
-import { useDeleteTask } from "../../-hooks/use-delete-task";
+import { useDeleteTask } from "../../use-delete-task";
 import {
   AlertDialog,
   AlertDialogAction,

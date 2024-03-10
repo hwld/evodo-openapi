@@ -1,7 +1,10 @@
 import { Navigate, Outlet, Route } from "@tanstack/react-router";
 import { rootRoute } from "../layout";
-import { Sidebar } from "./-sidebar/sidebar";
-import { sessionQueryOptions, useSession } from "../auth/-hooks/use-session";
+import { Sidebar } from "../../components/sidebar/sidebar";
+import {
+  sessionQueryOptions,
+  useSession,
+} from "../../features/auth/use-session";
 
 export const requireAuthRoute = new Route({
   id: "requireAuth",
@@ -27,7 +30,7 @@ function RequireAuthLayout() {
       <div className="sticky top-0 px-3 py-5 h-[100dvh]">
         <Sidebar session={session} />
       </div>
-      <div className="grow">
+      <div className="grow flex">
         <Outlet />
       </div>
     </div>

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { Task } from "@/api/types";
-import { priorityColumnOptions } from "./-task-table/-columns/priority-column";
+import { priorityColumnOptions } from "./task-table/columns/priority-column";
 
 type Props = {
   priority: Task["priority"];
